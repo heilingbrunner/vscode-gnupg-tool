@@ -1,0 +1,91 @@
+{
+  "name": "vscode-gnupg-tool",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heilingbrunner/vscode-gnupg-tool.git"
+  },
+  "displayName": "GnuPG-Tool",
+  "description": "GnuPG tool",
+  "version": "0.0.1",
+  "publisher": "JHeilingbrunner",
+  "license": "MIT",
+  "icon": "images/vscode-gnupg-tool-logo.png",
+  "engines": {
+    "vscode": "^1.27.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "encryption",
+    "decryption"
+  ],
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onCommand:extension.CheckGnuPG",
+    "onCommand:extension.ListRecipients",
+    "onCommand:extension.EncryptSelection",
+    "onCommand:extension.DecryptSelection",
+    "onCommand:extension.EndSession"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.CheckGnuPG",
+        "title": "GnuPG Tool: Check GnuPG"
+      },
+      {
+        "command": "extension.ListRecipients",
+        "title": "GnuPG Tool: List Recipients"
+      },
+      {
+        "command": "extension.EncryptSelection",
+        "title": "GnuPG Tool: Encrypt Selection"
+      },
+      {
+        "command": "extension.DecryptSelection",
+        "title": "GnuPG Tool: Decrypt Selection"
+      },
+      {
+        "command": "extension.EndSession",
+        "title": "GnuPG Tool: End Session (kill gpg-agent)"
+      }
+    ],
+    "menus": {
+      "explorer/context": [],
+      "editor/context": []
+    },
+    "configuration": {
+      "type": "object",
+      "title": "GnuPG Tool Configuration",
+      "properties": {}
+    }
+  },
+  "main": "./dist/extension",
+  "scripts": {
+    "vscode:prepublish": "webpack --mode production",
+    "prev-vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "webpack": "webpack --mode development",
+    "webpack-dev": "webpack --mode development --watch",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "dependencies": {
+    "gpg": "^0.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.21",
+    "tslint": "^5.8.0",
+    "@types/node": "^8.10.25",
+    "@types/mocha": "^2.2.42",
+    "ts-loader": "^4.4.2",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.0"
+  }
+}
