@@ -63,6 +63,10 @@
 
 ## Release Notes
 
+### 0.0.2
+
+Validity in recipient information.
+
 ### 0.0.1
 
 Initial release.

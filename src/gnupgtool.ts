@@ -156,7 +156,10 @@ function promise_readKeys(stdout: string): Promise<Map<string, GnuPGKey>> {
 
           //create new key
           key = new GnuPGKey();
-          (key.keyId = record[4]), (key.expiration = record[6]), (key.capabilities = record[11]);
+          (key.keyId = record[4]),
+            (key.expiration = record[6]),
+            (key.capabilities = record[11]),
+            (key.validity = record[1]);
 
           break;
         case 'fpr':
@@ -276,9 +279,10 @@ function promise_KeysToOptions(
     const arr = Array.from(keys.values()).map(k => ({
       label: k.name,
       description: k.email,
-      detail: 'Fingerprint: ' + k.fingerprint,
+      detail: k.fingerprint + ', ' + k.validityDescription,
       name: k.name,
-      email: k.email
+      email: k.email,
+      validity: k.validity
     }));
 
     arr ? resolve(arr) : reject();

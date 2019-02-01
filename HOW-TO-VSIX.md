@@ -8,6 +8,7 @@
 
 - rename `*.vsix` to `*.zip`
 - open zip file with explorer
-- delete directories `./src`, `./out`, `./.vscode`
+- delete directories `./src`, `./typings`, `./.vscode`
+- delete HOW-TO-VSIX.md
 - delete unused images. Leave `vscode-gnupg-tool-logo.png` in `./images` folder.
 - rename `*.zip` to `*.vsix` back again

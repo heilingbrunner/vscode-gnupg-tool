@@ -5,6 +5,8 @@ export class GnuPGKey {
   expiration = '';
   capabilities = '';
   fingerprint = '';
+  validity = '';
+
   private _userId = '';
   private _name = '';
   private _email = '';
@@ -34,6 +36,55 @@ export class GnuPGKey {
     }
   }
 
+  get validityDescription(): string {
+    let desc = '';
+
+    switch (this.validity) {
+      case 'o':
+        desc += 'unknown';
+        break;
+      case 'i':
+        desc += 'invalid';
+        break;
+      case 'd':
+        desc += 'disabled';
+        break;
+      case 'r':
+        desc += 'revoked';
+        break;
+      case 'e':
+        desc += 'expired';
+        break;
+      case '-':
+        desc += 'unknown';
+        break;
+      case 'q':
+        desc += 'undefined';
+        break;
+      case 'n':
+        desc += 'not valid';
+        break;
+      case 'm':
+        desc += 'marginal valid';
+        break;
+      case 'f':
+        desc += 'fully valid';
+        break;
+      case 'u':
+        desc += 'ultimately valid';
+        break;
+      case 'w':
+        desc += 'well known private part';
+        break;
+      case 's':
+        desc += 'special validity';
+        break;
+    }
+
+    desc += ' (' + this.validity + ')';
+    return desc;
+  }
+
   get name(): string {
     return this._name;
   }
@@ -43,6 +94,6 @@ export class GnuPGKey {
   }
 
   toString() {
-    return this.keyId + ': ' + this.name + ' <' + this.email + '>';
+    return this.keyId + ': ' + this.name + ' <' + this.email + '>, ' + this.validityDescription;
   }
 }
