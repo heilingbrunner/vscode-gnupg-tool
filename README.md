@@ -63,6 +63,10 @@
 
 ## Release Notes
 
+### 0.0.3
+
+End session command `gpgconf --kill gpg-agent` replaced with `gpg-connect-agent killagent /bye`
+
 ### 0.0.2
 
 Validity in recipient information.

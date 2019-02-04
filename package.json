@@ -6,7 +6,7 @@
   },
   "displayName": "GnuPG-Tool",
   "description": "GnuPG tool",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "JHeilingbrunner",
   "license": "MIT",
   "icon": "images/vscode-gnupg-tool-logo.png",
@@ -53,7 +53,7 @@
       },
       {
         "command": "extension.EndSession",
-        "title": "GnuPG Tool: End Session (kill gpg-agent)"
+        "title": "GnuPG Tool: End Session"
       }
     ],
     "menus": {

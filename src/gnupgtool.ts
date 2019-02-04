@@ -239,7 +239,11 @@ function promise_decrypt(selectedText: string): Promise<string> {
 }
 
 function promise_killgpgagent(): Promise<{ stdout: string; stderr: string }> {
-  return promise_exec('gpgconf --kill gpg-agent', {});
+  //https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html
+  //https://www.gnupg.org/documentation/manuals/gnupg/Controlling-gpg_002dconnect_002dagent.html#Controlling-gpg_002dconnect_002dagent
+  //gpgconf --kill gpg-agent: works on Windows
+  //gpg-connect-agent killagent /bye
+  return promise_exec('gpg-connect-agent killagent /bye', {});
 }
 
 function promise_extractVersions(stdout: string): Promise<string> {
