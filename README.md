@@ -46,7 +46,10 @@
 
 ### End Session
 
-1. Select command `GnuPG Tool: End Session (kill gpg-agent)`
+1. Select command `GnuPG Tool: End Session`
+
+
+> Mac/OSX: This works on Mac/OSX only if password is __not__ stored in macOS key ring. Check `System settings/GPG Suite`.
 
 ## Requirements
 
