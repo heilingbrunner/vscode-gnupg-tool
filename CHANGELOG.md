@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.4] - 2019-02-06
+
+- README.md
+
 ## [0.0.3] - 2019-02-04
 
 - End session command `gpgconf --kill gpg-agent` replaced with `gpg-connect-agent killagent /bye`
