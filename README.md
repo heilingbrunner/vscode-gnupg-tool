@@ -4,6 +4,7 @@
 
 ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Installs](https://vsmarketplacebadge.apphb.com/installs-short/JHeilingbrunner.vscode-gnupg-tool.svg)
+![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/JHeilingbrunner.vscode-gnupg-tool.svg)
 
 ![Encrypt-Decrypt-Smartcard](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/Encrypt-Decrypt.gif)
 
