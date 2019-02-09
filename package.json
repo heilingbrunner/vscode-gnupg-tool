@@ -6,7 +6,7 @@
   },
   "displayName": "GnuPG-Tool",
   "description": "GnuPG tool",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "JHeilingbrunner",
   "license": "MIT",
   "icon": "images/vscode-gnupg-tool-logo.png",
@@ -29,8 +29,10 @@
   "activationEvents": [
     "onCommand:extension.CheckGnuPG",
     "onCommand:extension.ListRecipients",
+    "onCommand:extension.ShowSmartcard",
     "onCommand:extension.EncryptSelection",
     "onCommand:extension.DecryptSelection",
+    "onCommand:extension.DecryptFile",
     "onCommand:extension.EndSession"
   ],
   "contributes": {
@@ -44,6 +46,10 @@
         "title": "GnuPG Tool: List Recipients"
       },
       {
+        "command": "extension.ShowSmartcard",
+        "title": "GnuPG Tool: Show Smartcard"
+      },
+      {
         "command": "extension.EncryptSelection",
         "title": "GnuPG Tool: Encrypt Selection"
       },
@@ -52,12 +58,20 @@
         "title": "GnuPG Tool: Decrypt Selection"
       },
       {
+        "command": "extension.DecryptFile",
+        "title": "GnuPG Tool: Decrypt File"
+      },
+      {
         "command": "extension.EndSession",
         "title": "GnuPG Tool: End Session"
       }
     ],
     "menus": {
-      "explorer/context": [],
+      "explorer/context": [
+        {
+          "command": "extension.DecryptFile"
+        }
+      ],
       "editor/context": []
     },
     "configuration": {

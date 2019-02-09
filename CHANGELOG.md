@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.5] - 2019-02-09
+
+- Encryption only for enabled, capable [E] recipients
+
 ## [0.0.4] - 2019-02-06
 
 - README.md

@@ -21,6 +21,7 @@
 - [VSCode GPG extension](https://marketplace.visualstudio.com/items?itemName=jvalecillos.gpg) by Jose Valecillos
 - [node-gpg](https://github.com/drudge/node-gpg) by Nicholas Penree
 - [GnuPG](https://www.gnupg.org/documentation/manuals/gnupg/index.html#SEC_Contents) documentation
+- [gpg](https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=blob_plain;f=doc/DETAILS) details
 
 ## Usage
 
@@ -32,6 +33,14 @@
 ### List Recipients
 
 1. Select command `GnuPG Tool: List Recipients`
+
+Output:
+
+- fingerprint
+- name
+- email
+- capability D:disabled, S:sign, C:certify, E:encrypt
+- validity
 
 ### Encrypt
 
@@ -66,6 +75,10 @@
 - Refer to [GnuPG binary releases](https://gnupg.org/download/)
 
 ## Release Notes
+
+## 0.0.5
+
+- Encryption only for enabled, capable [E] recipients
 
 ## 0.0.4
 

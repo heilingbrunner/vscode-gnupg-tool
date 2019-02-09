@@ -11,6 +11,10 @@ export class GnuPGKey {
   private _name = '';
   private _email = '';
 
+  get isDisabled(): boolean {
+    return this.capabilities.match(/d/i) !== null;
+  }
+
   get canSign(): boolean {
     return this.capabilities.match(/s/i) !== null;
   }
@@ -94,6 +98,6 @@ export class GnuPGKey {
   }
 
   toString() {
-    return this.keyId + ': ' + this.name + ' <' + this.email + '>, ' + this.validityDescription;
+    return this.keyId + ': ' + this.name + ' <' + this.email + '>, [' + (this.isDisabled?'D':(this.canSign?'S':'') + (this.canCertify?'C':'') + (this.canEncrypt?'E':'')) + '], ' + this.validityDescription;
   }
 }

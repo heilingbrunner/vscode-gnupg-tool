@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
 import * as gpg from 'gpg';
 import * as child_process from 'child_process';
 import { ExecOptions } from 'child_process';
@@ -21,6 +22,14 @@ export function listRecipients() {
     });
 }
 
+export function showSmartcard() {
+  promise_showSmartcard()
+    .then(stdout => showSmartcardContent(stdout))
+    .catch(() => {
+      vscode.window.showErrorMessage('GnuPG show smartcard failed ! ');
+    });
+}
+
 export function encryptSelection(editor: vscode.TextEditor) {
   if (editor) {
     const selection = editor.selection;
@@ -29,7 +38,7 @@ export function encryptSelection(editor: vscode.TextEditor) {
     if (selectedText && selectedText.length > 0) {
       promise_listRecipients()
         .then(stdout => promise_readKeys(stdout))
-        .then(keys => promise_KeysToOptions(keys))
+        .then(keys => promise_RecipientsToOptions(keys))
         .then(options => vscode.window.showQuickPick(options, { placeHolder: 'Select recipient', canPickMany: true }))
         .then(recipients => promise_encrypt(selectedText, recipients))
         .then(encrypted => {
@@ -67,6 +76,33 @@ export function endSession() {
   promise_killgpgagent()
     .then(() => vscode.window.showInformationMessage('GnuPG session ended.'))
     .catch(err => vscode.window.showErrorMessage('GnuPG end session failed !'));
+}
+
+export function decryptFile(fileUri: vscode.Uri) {
+
+    if (typeof fileUri === 'undefined' || !(fileUri instanceof vscode.Uri)) {
+        if (vscode.window.activeTextEditor === undefined) {
+            vscode.commands.executeCommand('extension.decryptPath');
+            return;
+        }
+        fileUri = vscode.window.activeTextEditor.document.uri;
+    }
+
+    if (fileUri.scheme === 'decrypted') {
+        //toggle with actual file
+        var filePath = getPhysicalPath(fileUri);
+        for (const editor of vscode.window.visibleTextEditors) {
+            if (editor.document.uri.fsPath === filePath) {
+                vscode.window.showTextDocument(editor.document, editor.viewColumn);
+                return;
+            }
+        }
+
+        vscode.commands.executeCommand("vscode.open", vscode.Uri.file(filePath));
+
+    } else {
+        decryptFilePath(fileUri.fsPath);
+    }
 }
 
 function promise_checkVersion(): Promise<string> {
@@ -121,6 +157,25 @@ function promise_readKeys(stdout: string): Promise<Map<string, GnuPGKey>> {
       const line = lines[i].trim();
       const record = line.split(':');
 
+      //pub :: Public key
+      //crt :: X.509 certificate
+      //crs :: X.509 certificate and private key available
+      //sub :: Subkey (secondary key)
+      //sec :: Secret key
+      //ssb :: Secret subkey (secondary key)
+      //uid :: User id
+      //uat :: User attribute (same as user id except for field 10).
+      //sig :: Signature
+      //rev :: Revocation signature
+      //rvs :: Revocation signature (standalone) [since 2.2.9]
+      //fpr :: Fingerprint (fingerprint is in field 10)
+      //pkd :: Public key data [*]
+      //grp :: Keygrip
+      //rvk :: Revocation key
+      //tfs :: TOFU statistics [*]
+      //tru :: Trust database information [*]
+      //spk :: Signature subpacket [*]
+      //cfg :: Configuration data [*]
       switch (record[0]) {
         case 'pub':
           //#region Details pub Record:
@@ -238,6 +293,20 @@ function promise_decrypt(selectedText: string): Promise<string> {
   });
 }
 
+function promise_showSmartcard(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    var args = ['--card-status'];
+
+    gpg.call('', args, (err: string, result: string) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result.toString());
+      }
+    });
+  });
+}
+
 function promise_killgpgagent(): Promise<{ stdout: string; stderr: string }> {
   //https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html
   //https://www.gnupg.org/documentation/manuals/gnupg/Controlling-gpg_002dconnect_002dagent.html#Controlling-gpg_002dconnect_002dagent
@@ -276,11 +345,11 @@ function promise_exec(cmd: string, opts: ExecOptions): Promise<{ stdout: string;
   });
 }
 
-function promise_KeysToOptions(
+function promise_RecipientsToOptions(
   keys: Map<string, GnuPGKey>
 ): Promise<{ label: string; description: string; detail: string; name: string; email: string }[]> {
   return new Promise((resolve, reject) => {
-    const arr = Array.from(keys.values()).map(k => ({
+    const arr = Array.from(keys.values()).filter(k => (!k.isDisabled && k.canEncrypt)).map(k => ({
       label: k.name,
       description: k.email,
       detail: k.fingerprint + ', ' + k.validityDescription,
@@ -308,9 +377,46 @@ function promise_KeysToText(keys: Map<string, GnuPGKey>): Promise<string[]> {
 function showRecipients(recipients: string[]) {
   let content = 'GnuPG Recipients:\r\n';
 
+  //content += '\r\n';
+  //content += '  fingerprint     : name <email>, capabilities (D:disabled, S:sign, C:certify, E: encrypt), validity\r\n';
+  content += '\r\n';
+
   recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));
 
   vscode.workspace.openTextDocument({ content: content, language: 'txt' }).then((doc: vscode.TextDocument) => {
     return vscode.window.showTextDocument(doc, 1, false);
   });
+}
+
+function showSmartcardContent(stdout: string) {
+  let content = stdout;
+  
+  vscode.workspace.openTextDocument({ content: content, language: 'txt' }).then((doc: vscode.TextDocument) => {
+    return vscode.window.showTextDocument(doc, 1, false);
+  });
+}
+
+function decryptFilePath(filePath: string) {
+  if (typeof filePath === 'undefined') {
+      return;
+  }
+
+  if (!fs.existsSync(filePath)) {
+      return;
+  }
+
+  let fileUri = vscode.Uri.file(filePath.concat('.decrypted'));
+  let decryptedUri = fileUri.with({ scheme: 'decrypted' });
+
+  vscode.commands.executeCommand('vscode.open', decryptedUri);
+}
+
+function getPhysicalPath(uri: vscode.Uri): string {
+  if (uri.scheme === 'decrypted') {
+      // remove the '.decrypted' extension
+      let filepath = uri.with({ scheme: 'file' }).fsPath.slice(0, -10);
+      return filepath;
+  }
+
+  return uri.fsPath;
 }
