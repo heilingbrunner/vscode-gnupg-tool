@@ -1,61 +1,63 @@
 import * as vscode from 'vscode';
 import * as gnupgtool from './gnupgtool';
-import DecryptedContentProvider from './decryptedcontentprovider';
+import EncryptProvider from './encryptprovider';
+import DecryptProvider from './decryptprovider';
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('GnuPG Tool activated');
 
-  //TODO:
-  //Show Smartcard
+  let encryptProvider = vscode.workspace.registerTextDocumentContentProvider('gpg-encrypt', new EncryptProvider());
+  let decryptProvider = vscode.workspace.registerTextDocumentContentProvider('gpg-decrypt', new DecryptProvider());
 
-  let provider = new DecryptedContentProvider();
-  let registration = vscode.workspace.registerTextDocumentContentProvider('decrypted', provider);
-
-
-  const disposableCommandCheckGnuPG = vscode.commands.registerCommand('extension.CheckGnuPG', () => {
+  const commandCheckGnuPG = vscode.commands.registerCommand('extension.CheckGnuPG', () => {
     gnupgtool.checkGnuPG();
   });
 
-  const disposableCommandListRecipients = vscode.commands.registerCommand('extension.ListRecipients', () => {
+  const commandListRecipients = vscode.commands.registerCommand('extension.ListRecipients', () => {
     gnupgtool.listRecipients();
   });
 
-  const disposableCommandShowSmartcard = vscode.commands.registerCommand('extension.ShowSmartcard', () => {
+  const commandShowSmartcard = vscode.commands.registerCommand('extension.ShowSmartcard', () => {
     gnupgtool.showSmartcard();
   });
 
-  const disposableCommandEncryptSelection = vscode.commands.registerCommand('extension.EncryptSelection', () => {
+  const commandEncryptSelection = vscode.commands.registerCommand('extension.EncryptSelection', () => {
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       gnupgtool.encryptSelection(editor);
     }
   });
 
-  const disposableCommandDecryptSelection = vscode.commands.registerCommand('extension.DecryptSelection', () => {
+  const commandEncryptFile = vscode.commands.registerCommand('extension.EncryptFile', (fileUri: vscode.Uri) => {
+    gnupgtool.encryptFile(fileUri);
+  });
+
+  const commandDecryptSelection = vscode.commands.registerCommand('extension.DecryptSelection', () => {
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       gnupgtool.decryptSelection(editor);
-    } else {
     }
   });
 
-  const disposableCommandEndSession = vscode.commands.registerCommand('extension.EndSession', () => {
-    gnupgtool.endSession();
-  });
-
-  const disposableCommandDecryptFile = vscode.commands.registerCommand('extension.DecryptFile', (fileUri: vscode.Uri) => {
+  const commandDecryptFile = vscode.commands.registerCommand('extension.DecryptFile', (fileUri: vscode.Uri) => {
     gnupgtool.decryptFile(fileUri);
   });
 
+  const commandEndSession = vscode.commands.registerCommand('extension.EndSession', () => {
+    gnupgtool.endSession();
+  });
 
   //Disposables
-  context.subscriptions.push(disposableCommandCheckGnuPG);
-  context.subscriptions.push(disposableCommandListRecipients);
-  context.subscriptions.push(disposableCommandShowSmartcard);
-  context.subscriptions.push(disposableCommandEncryptSelection);
-  context.subscriptions.push(disposableCommandDecryptSelection);
-  context.subscriptions.push(disposableCommandEndSession);
-  context.subscriptions.push(disposableCommandDecryptFile);
+  context.subscriptions.push(encryptProvider);
+  context.subscriptions.push(decryptProvider);
+  context.subscriptions.push(commandCheckGnuPG);
+  context.subscriptions.push(commandListRecipients);
+  context.subscriptions.push(commandShowSmartcard);
+  context.subscriptions.push(commandEncryptSelection);
+  context.subscriptions.push(commandEncryptFile);
+  context.subscriptions.push(commandDecryptSelection);
+  context.subscriptions.push(commandDecryptFile);
+  context.subscriptions.push(commandEndSession);
 }
 
 // this method is called when your extension is deactivated

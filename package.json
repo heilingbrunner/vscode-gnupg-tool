@@ -31,6 +31,7 @@
     "onCommand:extension.ListRecipients",
     "onCommand:extension.ShowSmartcard",
     "onCommand:extension.EncryptSelection",
+    "onCommand:extension.EncryptFile",
     "onCommand:extension.DecryptSelection",
     "onCommand:extension.DecryptFile",
     "onCommand:extension.EndSession"
@@ -54,6 +55,10 @@
         "title": "GnuPG Tool: Encrypt Selection"
       },
       {
+        "command": "extension.EncryptFile",
+        "title": "GnuPG Tool: Encrypt File"
+      },
+      {
         "command": "extension.DecryptSelection",
         "title": "GnuPG Tool: Decrypt Selection"
       },
@@ -69,10 +74,20 @@
     "menus": {
       "explorer/context": [
         {
+          "command": "extension.EncryptFile"
+        },
+        {
           "command": "extension.DecryptFile"
         }
       ],
-      "editor/context": []
+      "editor/context": [
+        {
+          "command": "extension.EncryptFile"
+        },
+        {
+          "command": "extension.DecryptFile"
+        }
+      ]
     },
     "configuration": {
       "type": "object",

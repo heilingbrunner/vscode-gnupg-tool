@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import * as gpg from 'gpg';
+import { call, encrypt, decrypt } from 'gpg';
 import * as child_process from 'child_process';
 import { ExecOptions } from 'child_process';
 import { GnuPGKey } from './gnupgkey';
@@ -33,14 +33,16 @@ export function showSmartcard() {
 export function encryptSelection(editor: vscode.TextEditor) {
   if (editor) {
     const selection = editor.selection;
-    const selectedText = editor.document.getText(selection);
+    const content = editor.document.getText(selection);
 
-    if (selectedText && selectedText.length > 0) {
+    if (content && content.length > 0) {
       promise_listRecipients()
         .then(stdout => promise_readKeys(stdout))
         .then(keys => promise_RecipientsToOptions(keys))
-        .then(options => vscode.window.showQuickPick(options, { placeHolder: 'Select recipient', canPickMany: true }))
-        .then(recipients => promise_encrypt(selectedText, recipients))
+        .then(options =>
+          vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
+        )
+        .then(recipients => promise_encrypt(content, recipients))
         .then(encrypted => {
           if (encrypted !== undefined) {
             editor.edit(edit => edit.replace(selection, encrypted));
@@ -53,13 +55,38 @@ export function encryptSelection(editor: vscode.TextEditor) {
   }
 }
 
+export function encryptFile(fileUri: vscode.Uri) {
+
+  if (typeof fileUri === 'undefined' || !(fileUri instanceof vscode.Uri)) {
+    return;
+  }
+
+  //already encrpyted, show as normal text file
+  if (fileUri.scheme === 'file' && fileUri.fsPath.endsWith('.asc')) {
+    //toggle with actual file
+    var filePath = fileUri.fsPath; //getPhysicalPath(fileUri);
+    //already opened
+    for (const editor of vscode.window.visibleTextEditors) {
+      if (editor.document.uri.fsPath === filePath) {
+        vscode.window.showTextDocument(editor.document, editor.viewColumn);
+        return;
+      }
+    }
+
+    //open text file in new editor
+    vscode.commands.executeCommand('vscode.open', vscode.Uri.file(filePath));
+  } else {
+    encryptFilePath(fileUri.fsPath);
+  }
+}
+
 export function decryptSelection(editor: vscode.TextEditor) {
   if (editor) {
     const selection = editor.selection;
-    const selectedText = editor.document.getText(selection);
+    const content = editor.document.getText(selection);
 
-    if (selectedText && selectedText.length > 0) {
-      promise_decrypt(selectedText)
+    if (content && content.length > 0) {
+      promise_decrypt(content)
         .then(decrypted => {
           if (decrypted !== undefined) {
             editor.edit(edit => edit.replace(selection, decrypted));
@@ -72,44 +99,44 @@ export function decryptSelection(editor: vscode.TextEditor) {
   }
 }
 
+export function decryptFile(fileUri: vscode.Uri) {
+
+  // no uri, no active editor
+  if (typeof fileUri === 'undefined' || !(fileUri instanceof vscode.Uri)) {
+    if (vscode.window.activeTextEditor === undefined) {
+      vscode.commands.executeCommand('extension.decryptPath');
+      return;
+    }
+    fileUri = vscode.window.activeTextEditor.document.uri;
+  }
+
+  if (fileUri.scheme === 'file') {
+  //  //toggle with actual file
+  //  var filePath = getPhysicalPath(fileUri);
+  //  for (const editor of vscode.window.visibleTextEditors) {
+  //    if (editor.document.uri.fsPath === filePath) {
+  //      vscode.window.showTextDocument(editor.document, editor.viewColumn);
+  //      return;
+  //    }
+  //  }
+  //
+  //  vscode.commands.executeCommand('vscode.open', vscode.Uri.file(filePath));
+  //} else {
+    decryptFilePath(fileUri.fsPath);
+  }
+}
+
 export function endSession() {
   promise_killgpgagent()
     .then(() => vscode.window.showInformationMessage('GnuPG session ended.'))
     .catch(err => vscode.window.showErrorMessage('GnuPG end session failed !'));
 }
 
-export function decryptFile(fileUri: vscode.Uri) {
-
-    if (typeof fileUri === 'undefined' || !(fileUri instanceof vscode.Uri)) {
-        if (vscode.window.activeTextEditor === undefined) {
-            vscode.commands.executeCommand('extension.decryptPath');
-            return;
-        }
-        fileUri = vscode.window.activeTextEditor.document.uri;
-    }
-
-    if (fileUri.scheme === 'decrypted') {
-        //toggle with actual file
-        var filePath = getPhysicalPath(fileUri);
-        for (const editor of vscode.window.visibleTextEditors) {
-            if (editor.document.uri.fsPath === filePath) {
-                vscode.window.showTextDocument(editor.document, editor.viewColumn);
-                return;
-            }
-        }
-
-        vscode.commands.executeCommand("vscode.open", vscode.Uri.file(filePath));
-
-    } else {
-        decryptFilePath(fileUri.fsPath);
-    }
-}
-
 function promise_checkVersion(): Promise<string> {
   return new Promise(function(resolve, reject) {
     var args = ['--version'];
 
-    gpg.call('', args, (err: string, result: string) => {
+    call('', args, (err: string, result: string) => {
       if (err) {
         reject(err);
       } else {
@@ -131,7 +158,7 @@ function promise_listRecipients(): Promise<string> {
   return new Promise(function(resolve, reject) {
     var args = ['-k', '--with-colons'];
 
-    gpg.call('', args, (err: string, result: string) => {
+    call('', args, (err: string, result: string) => {
       if (err) {
         reject(err);
       } else {
@@ -269,7 +296,7 @@ function promise_encrypt(selectedText: string, recipients?: { name: string; emai
       });
     }
 
-    gpg.encrypt(selectedText, args, (err: string, result: string) => {
+    encrypt(selectedText, args, (err: string, result: string) => {
       if (err) {
         reject(err);
       } else {
@@ -283,7 +310,7 @@ function promise_decrypt(selectedText: string): Promise<string> {
   return new Promise((resolve, reject) => {
     let args = ['--decrypt'];
 
-    gpg.decrypt(selectedText, args, (err: string, result: string) => {
+    decrypt(selectedText, args, (err: string, result: string) => {
       if (err) {
         reject(err);
       } else {
@@ -297,7 +324,7 @@ function promise_showSmartcard(): Promise<string> {
   return new Promise((resolve, reject) => {
     var args = ['--card-status'];
 
-    gpg.call('', args, (err: string, result: string) => {
+    call('', args, (err: string, result: string) => {
       if (err) {
         reject(err);
       } else {
@@ -349,14 +376,16 @@ function promise_RecipientsToOptions(
   keys: Map<string, GnuPGKey>
 ): Promise<{ label: string; description: string; detail: string; name: string; email: string }[]> {
   return new Promise((resolve, reject) => {
-    const arr = Array.from(keys.values()).filter(k => (!k.isDisabled && k.canEncrypt)).map(k => ({
-      label: k.name,
-      description: k.email,
-      detail: k.fingerprint + ', ' + k.validityDescription,
-      name: k.name,
-      email: k.email,
-      validity: k.validity
-    }));
+    const arr = Array.from(keys.values())
+      .filter(k => !k.isDisabled && k.canEncrypt)
+      .map(k => ({
+        label: k.name,
+        description: k.email,
+        detail: k.fingerprint + ', ' + k.validityDescription,
+        name: k.name,
+        email: k.email,
+        validity: k.validity
+      }));
 
     arr ? resolve(arr) : reject();
   });
@@ -384,39 +413,44 @@ function showRecipients(recipients: string[]) {
   recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));
 
   vscode.workspace.openTextDocument({ content: content, language: 'txt' }).then((doc: vscode.TextDocument) => {
-    return vscode.window.showTextDocument(doc, 1, false);
+    return vscode.window.showTextDocument(doc, { preview: true });
   });
 }
 
 function showSmartcardContent(stdout: string) {
   let content = stdout;
-  
+
   vscode.workspace.openTextDocument({ content: content, language: 'txt' }).then((doc: vscode.TextDocument) => {
-    return vscode.window.showTextDocument(doc, 1, false);
+    return vscode.window.showTextDocument(doc, { preview: true });
   });
 }
 
-function decryptFilePath(filePath: string) {
-  if (typeof filePath === 'undefined') {
-      return;
+function encryptFilePath(filePath: string) {
+
+  // check filePath ...
+  if ((typeof filePath === 'undefined')|| !fs.existsSync(filePath)) {
+    return;
   }
 
-  if (!fs.existsSync(filePath)) {
-      return;
-  }
+  // change scheme for content provider
+  let fileUri = vscode.Uri.file(filePath.concat('.asc'));
+  let newUri = fileUri.with({ scheme: 'gpg-encrypt' });
 
-  let fileUri = vscode.Uri.file(filePath.concat('.decrypted'));
-  let decryptedUri = fileUri.with({ scheme: 'decrypted' });
-
-  vscode.commands.executeCommand('vscode.open', decryptedUri);
+  // go on to content provider ...
+  vscode.commands.executeCommand('vscode.open', newUri);
 }
 
-function getPhysicalPath(uri: vscode.Uri): string {
-  if (uri.scheme === 'decrypted') {
-      // remove the '.decrypted' extension
-      let filepath = uri.with({ scheme: 'file' }).fsPath.slice(0, -10);
-      return filepath;
+function decryptFilePath(filePath: string) {
+
+  // check filePath ...
+  if ((typeof filePath === 'undefined')|| !fs.existsSync(filePath)) {
+    return;
   }
 
-  return uri.fsPath;
+  // change scheme for content provider
+  let fileUri = vscode.Uri.file(filePath.concat('.decrypted'));
+  let newUri = fileUri.with({ scheme: 'gpg-decrypt' });
+
+  // go on to content provider ...
+  vscode.commands.executeCommand('vscode.open', newUri);
 }
