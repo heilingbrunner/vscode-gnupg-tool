@@ -12,6 +12,7 @@
 
 - Check GnuPG availability/version.
 - Encryption for multiple recipients.
+- Decryption
 - Passphrase/Pin entry __only__ into original GnuPG dialog. __Not through__ Visual Studio Code or something else.
 - End session by killing gpg-agent.
 - Works with smartcards.
