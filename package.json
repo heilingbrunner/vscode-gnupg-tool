@@ -32,8 +32,10 @@
     "onCommand:extension.ShowSmartcard",
     "onCommand:extension.EncryptSelection",
     "onCommand:extension.EncryptFile",
+    "onCommand:extension.PreviewEncryptedFile",
     "onCommand:extension.DecryptSelection",
     "onCommand:extension.DecryptFile",
+    "onCommand:extension.PreviewDecryptedFile",
     "onCommand:extension.EndSession"
   ],
   "contributes": {
@@ -59,12 +61,20 @@
         "title": "GnuPG Tool: Encrypt File"
       },
       {
+        "command": "extension.PreviewEncryptedFile",
+        "title": "GnuPG Tool: Preview Encrypted File"
+      },
+      {
         "command": "extension.DecryptSelection",
         "title": "GnuPG Tool: Decrypt Selection"
       },
       {
         "command": "extension.DecryptFile",
         "title": "GnuPG Tool: Decrypt File"
+      },
+      {
+        "command": "extension.PreviewDecryptedFile",
+        "title": "GnuPG Tool: Preview Decrypted File"
       },
       {
         "command": "extension.EndSession",
@@ -77,10 +87,24 @@
           "command": "extension.EncryptFile"
         },
         {
+          "command": "extension.PreviewEncryptedFile"
+        },
+        {
           "command": "extension.DecryptFile"
+        },
+        {
+          "command": "extension.PreviewDecryptedFile"
         }
       ],
       "editor/context": [
+        {
+          "command": "extension.EncryptSelection",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "extension.DecryptSelection",
+          "when": "editorHasSelection"
+        },
         {
           "command": "extension.EncryptFile"
         },
