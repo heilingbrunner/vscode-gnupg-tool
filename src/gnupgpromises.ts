@@ -3,7 +3,7 @@ import * as child_process from 'child_process';
 import { ExecOptions } from 'child_process';
 import { GnuPGKey } from './gnupgkey';
 
-export function promise_checkVersion(): Promise<string> {
+export function promise_checkVersion(): Promise<Buffer> {
   return new Promise(function(resolve, reject) {
     var args = ['--version'];
 
@@ -11,13 +11,13 @@ export function promise_checkVersion(): Promise<string> {
       if (err) {
         reject(err);
       } else {
-        resolve(result.toString('utf8'));
+        resolve(result);
       }
     });
   });
 }
 
-export function promise_listRecipients(): Promise<string> {
+export function promise_listRecipients(): Promise<Buffer> {
   return new Promise(function(resolve, reject) {
     var args = ['-k', '--with-colons'];
 
@@ -25,13 +25,13 @@ export function promise_listRecipients(): Promise<string> {
       if (err) {
         reject(err);
       } else {
-        resolve(result.toString('utf8'));
+        resolve(result);
       }
     });
   });
 }
 
-export function promise_readKeys(stdout: string): Promise<Map<string, GnuPGKey>> {
+export function promise_readKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>> {
   //see source: gnupg-2.2.12\doc\DETAILS
 
   return new Promise((resolve, reject) => {
@@ -150,9 +150,9 @@ export function promise_readKeys(stdout: string): Promise<Map<string, GnuPGKey>>
 }
 
 export function promise_encrypt(
-  selectedText: string,
+  selectedText: Buffer,
   recipients?: { name: string; email: string; fingerprint: string }[]
-): Promise<string> {
+): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--armor'];
 
@@ -162,39 +162,39 @@ export function promise_encrypt(
       });
     }
 
-    encrypt(selectedText, args, (err: string, result: string) => {
+    encrypt(selectedText, args, (err: string, result: Buffer) => {
       if (err) {
         reject(err);
       } else {
-        resolve(result.toString());
+        resolve(result);
       }
     });
   });
 }
 
-export function promise_decrypt(selectedText: string): Promise<string> {
+export function promise_decrypt(selectedText: Buffer): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--decrypt'];
 
-    decrypt(selectedText, args, (err: string, result: string) => {
+    decrypt(selectedText, args, (err: string, result: Buffer) => {
       if (err) {
         reject(err);
       } else {
-        resolve(result.toString());
+        resolve(result);
       }
     });
   });
 }
 
-export function promise_showSmartcard(): Promise<string> {
+export function promise_showSmartcard(): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     var args = ['--card-status'];
 
-    call('', args, (err: string, result: string) => {
+    call('', args, (err: string, result: Buffer) => {
       if (err) {
         reject(err);
       } else {
-        resolve(result.toString());
+        resolve(result);
       }
     });
   });
@@ -208,7 +208,7 @@ export function promise_killgpgagent(): Promise<{ stdout: string; stderr: string
   return promise_exec('gpg-connect-agent killagent /bye', {});
 }
 
-export function promise_extractVersions(stdout: string): Promise<string[]> {
+export function promise_extractVersions(stdout: Buffer): Promise<string[]> {
   return new Promise((resolve, reject) => {
     let versions = '';
 

@@ -144,7 +144,7 @@ function showSmartcard() {
 function encryptSelection(editor: vscode.TextEditor) {
   if (editor) {
     const selection = editor.selection;
-    const content = editor.document.getText(selection);
+    const content = new Buffer(editor.document.getText(selection));
 
     if (content && content.length > 0) {
       promise_listRecipients()
@@ -156,7 +156,7 @@ function encryptSelection(editor: vscode.TextEditor) {
         .then(recipients => promise_encrypt(content, recipients))
         .then(encrypted => {
           if (encrypted !== undefined) {
-            editor.edit(edit => edit.replace(selection, encrypted));
+            editor.edit(edit => edit.replace(selection, encrypted.toString('utf8')));
           }
         })
         .catch(() => vscode.window.showErrorMessage('GnuPG encryption failed !'));
@@ -168,7 +168,7 @@ function encryptSelection(editor: vscode.TextEditor) {
 
 function encryptFile(fileUri: vscode.Uri) {
   if (fileUri !== undefined && fileUri.scheme === 'file') {
-    if (fileUri.fsPath.match(/\.(asc|gpg)$/i)) {
+    if (fileUri.fsPath.match(/\.(asc)$/i)) {
       vscode.window.showInformationMessage('GnuPG: File already encrypted (*.asc).');
     } else {
       encryptFileUri(fileUri);
@@ -180,7 +180,7 @@ function encryptFile(fileUri: vscode.Uri) {
 
 function previewEncryptedFile(fileUri: vscode.Uri) {
   if (fileUri !== undefined && fileUri.scheme === 'file') {
-    if (fileUri.fsPath.match(/\.(asc|gpg)$/i)) {
+    if (fileUri.fsPath.match(/\.(asc)$/i)) {
       vscode.window.showInformationMessage('GnuPG: File already encrypted (*.asc).');
     } else {
       launchEncryptProvider(fileUri);
@@ -193,13 +193,13 @@ function previewEncryptedFile(fileUri: vscode.Uri) {
 function decryptSelection(editor: vscode.TextEditor) {
   if (editor) {
     const selection = editor.selection;
-    const content = editor.document.getText(selection);
+    const content = new Buffer(editor.document.getText(selection));
 
     if (content && content.length > 0) {
       promise_decrypt(content)
         .then(decrypted => {
           if (decrypted !== undefined) {
-            editor.edit(edit => edit.replace(selection, decrypted));
+            editor.edit(edit => edit.replace(selection, decrypted.toString('utf8')));
           }
         })
         .catch(() => vscode.window.showErrorMessage('GnuPG decryption failed !'));
@@ -211,7 +211,7 @@ function decryptSelection(editor: vscode.TextEditor) {
 
 function decryptFile(fileUri: vscode.Uri) {
   if (fileUri !== undefined && fileUri.scheme === 'file') {
-    if (fileUri.fsPath.match(/\.(asc|gpg)$/i)) {
+    if (fileUri.fsPath.match(/\.(asc)$/i)) {
       decryptFileUri(fileUri);
     } else {
       vscode.window.showInformationMessage('GnuPG: File not encrypted (*.asc).');
@@ -223,7 +223,7 @@ function decryptFile(fileUri: vscode.Uri) {
 
 function previewDecryptedFile(fileUri: vscode.Uri) {
   if (fileUri !== undefined && fileUri.scheme === 'file') {
-    if (fileUri.fsPath.match(/\.(asc|gpg)$/i)) {
+    if (fileUri.fsPath.match(/\.(asc)$/i)) {
       launchDecryptProvider(fileUri);
     } else {
       vscode.window.showInformationMessage('GnuPG: File not encrypted (*.asc).');
@@ -313,7 +313,7 @@ function launchDecryptProvider(fileUri: vscode.Uri) {
   vscode.commands.executeCommand('vscode.open', newUri);
 }
 
-function getContent(uri: vscode.Uri): Promise<string> {
+function getContent(uri: vscode.Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     if (uri.scheme === 'file') {
       const filepath = uri.fsPath;
@@ -322,16 +322,16 @@ function getContent(uri: vscode.Uri): Promise<string> {
         if (err) {
           reject(err);
         } else {
-          resolve(buffer.toString());
+          resolve(buffer);
         }
       });
     } else {
-      resolve('.');
+      resolve(new Buffer('.'));
     }
   });
 }
 
-function setContent(uri: vscode.Uri, content: string): Promise<string> {
+function setContent(uri: vscode.Uri, content: Buffer): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     // fs.writeFileSync(newUri.fsPath, encrypted);
     fs.writeFile(uri.fsPath, content, err => {

@@ -19,14 +19,14 @@ export default class PreviewEncryptProvider implements vscode.TextDocumentConten
           )
           .then(recipients => promise_encrypt(content, recipients))
           .then(encrypted => {
-            resolve(encrypted);
+            resolve(encrypted.toString('utf8'));
           })
           .catch(err => resolve('GnuPG encryption failed !\r\n' + err));
       });
     });
   }
 
-  static getContent(uri: vscode.Uri): Promise<string> {
+  static getContent(uri: vscode.Uri): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       if (uri.scheme === 'gpg-preview-encrypt') {
         // remove the pseudo '.asc' extension, create new uri
@@ -36,11 +36,11 @@ export default class PreviewEncryptProvider implements vscode.TextDocumentConten
           if (err) {
             reject(err);
           } else {
-            resolve(buffer.toString());
+            resolve(buffer);
           }
         });
       } else {
-        resolve('.');
+        resolve(new Buffer('.'));
       }
     });
   }

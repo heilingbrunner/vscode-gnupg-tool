@@ -10,13 +10,13 @@ export default class PreviewDecryptProvider implements vscode.TextDocumentConten
           return promise_decrypt(content);
         })
         .then(decrypted => {
-          return resolve(decrypted);
+          return resolve(decrypted.toString('utf8'));
         })
         .catch(err => resolve('GnuPG decryption failed !\r\n' + err));
     });
   }
 
-  static getContent(uri: vscode.Uri): Promise<string> {
+  static getContent(uri: vscode.Uri): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       if (uri.scheme === 'gpg-preview-decrypt') {
         // remove the pseudo '.decrypted' extension, create new uri
@@ -26,11 +26,11 @@ export default class PreviewDecryptProvider implements vscode.TextDocumentConten
           if (err) {
             reject(err);
           } else {
-            resolve(buffer.toString());
+            resolve(buffer);
           }
         });
       } else {
-        resolve('.');
+        resolve(new Buffer('.'));
       }
     });
   }
