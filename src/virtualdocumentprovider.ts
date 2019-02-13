@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { promise_listRecipients, promise_readKeys, promise_KeysToText, promise_showSmartcard } from './gnupgpromises';
+import { promise_listRecipients, promise_readKeys, promise_KeysToText, promise_showSmartcard, promise_checkVersion } from './gnupgpromises';
 
 export default class VirtualDocumentProvider implements vscode.TextDocumentContentProvider {
 
@@ -9,10 +9,12 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
 
   getContent(uri: vscode.Uri): Promise<string> {
     switch (uri.path) {
-      case '/Recipients':
+      case '/GnuPG-Recipients':
         return this.listRecipients();
-      case '/Smartcard':
+      case '/GnuPG-Smartcard':
         return this.showSmartcard();
+      case '/GnuPG-Version':
+        return this.showVersion();
       default:
         return new Promise((resolve, reject) => resolve('...'));
     }
@@ -41,6 +43,16 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
         .then(stdout => resolve(stdout))
         .catch(err => {
           resolve('GnuPG show smartcard failed !\r\n' + err);
+        });
+    });
+  }
+
+  showVersion(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      promise_checkVersion()
+        .then(stdout => resolve(stdout))
+        .catch(err => {
+          resolve('GnuPG not available !\r\n' + err);
         });
     });
   }

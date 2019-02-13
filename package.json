@@ -42,69 +42,109 @@
     "commands": [
       {
         "command": "extension.CheckGnuPG",
-        "title": "GnuPG Tool: Check GnuPG"
+        "title": "Check GnuPG",
+        "category": "GnuPG"
       },
       {
         "command": "extension.ListRecipients",
-        "title": "GnuPG Tool: List Recipients"
+        "title": "List Recipients",
+        "category": "GnuPG"
       },
       {
         "command": "extension.ShowSmartcard",
-        "title": "GnuPG Tool: Show Smartcard"
-      },
-      {
-        "command": "extension.EncryptSelection",
-        "title": "GnuPG Tool: Encrypt Selection"
-      },
-      {
-        "command": "extension.EncryptFile",
-        "title": "GnuPG Tool: Encrypt File"
-      },
-      {
-        "command": "extension.PreviewEncryptedFile",
-        "title": "GnuPG Tool: Preview Encrypted File"
-      },
-      {
-        "command": "extension.DecryptSelection",
-        "title": "GnuPG Tool: Decrypt Selection"
-      },
-      {
-        "command": "extension.DecryptFile",
-        "title": "GnuPG Tool: Decrypt File"
-      },
-      {
-        "command": "extension.PreviewDecryptedFile",
-        "title": "GnuPG Tool: Preview Decrypted File"
+        "title": "Show Smartcard",
+        "category": "GnuPG"
       },
       {
         "command": "extension.EndSession",
-        "title": "GnuPG Tool: End Session"
+        "title": "End Session",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.EncryptSelection",
+        "title": "Encrypt Selection",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.EncryptFile",
+        "title": "Encrypt File",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.PreviewEncryptedFile",
+        "title": "Preview Encrypted File",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.DecryptSelection",
+        "title": "Decrypt Selection",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.DecryptFile",
+        "title": "Decrypt File",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.PreviewDecryptedFile",
+        "title": "Preview Decrypted File",
+        "category": "GnuPG"
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "extension.CheckGnuPG",
+          "group": "GnuPG"
+        },
+        {
+          "command": "extension.ListRecipients",
+          "group": "GnuPG"
+        },
+        {
+          "command": "extension.ShowSmartcard",
+          "group": "GnuPG"
+        },
+        {
+          "command": "extension.EndSession",
+          "group": "GnuPG"
+        },
+        {
+          "command": "extension.EncryptFile",
+          "group": "GnuPG"
+        }
+      ],
       "explorer/context": [
         {
-          "command": "extension.EncryptFile"
+          "command": "extension.PreviewEncryptedFile",
+          "group": "gnupg1@1"
         },
         {
-          "command": "extension.PreviewEncryptedFile"
+          "command": "extension.PreviewDecryptedFile",
+          "group": "gnupg1@2"
         },
         {
-          "command": "extension.DecryptFile"
+          "command": "extension.EncryptFile",
+          "group": "gnupg2@1"
         },
         {
-          "command": "extension.PreviewDecryptedFile"
+          "command": "extension.DecryptFile",
+          "group": "gnupg2@2"
         }
       ],
       "editor/context": [
         {
           "command": "extension.EncryptSelection",
-          "when": "editorHasSelection"
+          "when": "editorHasSelection",
+          "group": "gnupg@1"
         },
         {
           "command": "extension.DecryptSelection",
-          "when": "editorHasSelection"
-        },
+          "when": "editorHasSelection",
+          "group": "gnupg@2"
+        }
+      ],
+      "editor/title": [
         {
           "command": "extension.EncryptFile"
         },

@@ -7,11 +7,11 @@ export function promise_checkVersion(): Promise<string> {
   return new Promise(function(resolve, reject) {
     var args = ['--version'];
 
-    call('', args, (err: string, result: string[]) => {
+    call('', args, (err: string, result: Buffer) => {
       if (err) {
         reject(err);
       } else {
-        resolve(result.toString());
+        resolve(result.toString('utf8'));
       }
     });
   });
@@ -21,11 +21,11 @@ export function promise_listRecipients(): Promise<string> {
   return new Promise(function(resolve, reject) {
     var args = ['-k', '--with-colons'];
 
-    call('', args, (err: string, result: string) => {
+    call('', args, (err: string, result: Buffer) => {
       if (err) {
         reject(err);
       } else {
-        resolve(result.toString());
+        resolve(result.toString('utf8'));
       }
     });
   });
@@ -149,13 +149,16 @@ export function promise_readKeys(stdout: string): Promise<Map<string, GnuPGKey>>
   });
 }
 
-export function promise_encrypt(selectedText: string, recipients?: { name: string; email: string }[]): Promise<string> {
+export function promise_encrypt(
+  selectedText: string,
+  recipients?: { name: string; email: string; fingerprint: string }[]
+): Promise<string> {
   return new Promise((resolve, reject) => {
     let args = ['--armor'];
 
     if (recipients !== undefined) {
       recipients.forEach(recipient => {
-        args = args.concat(['--recipient', recipient.name]); // + ' <' + recipient.email + '>';
+        args = args.concat(['--recipient', recipient.fingerprint]); // + ' <' + recipient.email + '>';
       });
     }
 
@@ -238,7 +241,7 @@ export function promise_exec(cmd: string, opts: ExecOptions): Promise<{ stdout: 
 
 export function promise_RecipientsToOptions(
   keys: Map<string, GnuPGKey>
-): Promise<{ label: string; description: string; detail: string; name: string; email: string }[]> {
+): Promise<{ label: string; description: string; detail: string; name: string; email: string; fingerprint: string }[]> {
   return new Promise((resolve, reject) => {
     const arr = Array.from(keys.values())
       .filter(k => !k.isDisabled && k.canEncrypt)
@@ -248,7 +251,8 @@ export function promise_RecipientsToOptions(
         detail: k.fingerprint + ', ' + k.validityDescription,
         name: k.name,
         email: k.email,
-        validity: k.validity
+        validity: k.validity,
+        fingerprint: k.fingerprint
       }));
 
     arr ? resolve(arr) : reject();

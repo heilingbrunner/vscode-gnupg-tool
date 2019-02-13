@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { encrypt } from 'gpg';
 import {
   promise_listRecipients,
   promise_readKeys,
@@ -8,13 +7,10 @@ import {
   promise_encrypt
 } from './gnupgpromises';
 
-export default class EncryptProvider implements vscode.TextDocumentContentProvider {
-
+export default class PreviewEncryptProvider implements vscode.TextDocumentContentProvider {
   public provideTextDocumentContent(uri: vscode.Uri): Thenable<string> {
     return new Promise(async (resolve, reject) => {
-      let check = 'ok';
-      if (check === 'ok') {
-        let content = this.getContent(uri);
+      PreviewEncryptProvider.getContent(uri).then(content => {
         promise_listRecipients()
           .then(stdout => promise_readKeys(stdout))
           .then(keys => promise_RecipientsToOptions(keys))
@@ -25,23 +21,27 @@ export default class EncryptProvider implements vscode.TextDocumentContentProvid
           .then(encrypted => {
             resolve(encrypted);
           })
-          .catch(err => resolve('GnuPG encryption failed !' + err));
-      } else {
-        return resolve('(encryption cancelled.)');
-      }
+          .catch(err => resolve('GnuPG encryption failed !\r\n' + err));
+      });
     });
   }
 
-  getContent(uri: vscode.Uri): string {
-    let filepath = '';
-    let buffer: Buffer | undefined;
+  static getContent(uri: vscode.Uri): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (uri.scheme === 'gpg-preview-encrypt') {
+        // remove the pseudo '.asc' extension, create new uri
+        const filepath = uri.with({ scheme: 'file' }).fsPath.slice(0, -'.asc'.length);
 
-    if (uri.scheme === 'gpg-encrypt') {
-      // remove the pseudo '.asc' extension, create new uri
-      filepath = uri.with({ scheme: 'file' }).fsPath.slice(0, -'.asc'.length);
-      buffer = fs.readFileSync(filepath);
-    }
-
-    return buffer !== undefined ? buffer.toString() : '';
+        fs.readFile(filepath, (err, buffer) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(buffer.toString());
+          }
+        });
+      } else {
+        resolve('.');
+      }
+    });
   }
 }
