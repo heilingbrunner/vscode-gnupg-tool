@@ -15,6 +15,10 @@ export class GnuPGKey {
     return this.capabilities.match(/d/i) !== null;
   }
 
+  get isknown(): boolean {
+    return /[mfuws]/.test(this.validity);
+  }
+
   get canSign(): boolean {
     return this.capabilities.match(/s/i) !== null;
   }
@@ -25,6 +29,10 @@ export class GnuPGKey {
 
   get canEncrypt(): boolean {
     return this.capabilities.match(/e/i) !== null;
+  }
+
+  get isValidToEncrypt(): boolean {
+    return !this.isDisabled && this.canEncrypt && this.isknown;
   }
 
   get userId(): string {

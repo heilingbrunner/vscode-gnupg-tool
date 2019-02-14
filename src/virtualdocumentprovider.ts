@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
 import {
-  promise_listRecipients,
-  promise_readKeys,
+  promise_listPublicKeys,
+  promise_parseKeys,
   promise_KeysToText,
   promise_showSmartcard,
-  promise_checkVersion
+  promise_checkVersion,
+  promise_listPrivateKeys
 } from './gnupgpromises';
 
 export default class VirtualDocumentProvider implements vscode.TextDocumentContentProvider {
@@ -15,8 +16,10 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
 
   getContent(uri: vscode.Uri): Promise<Buffer> {
     switch (uri.path) {
-      case '/GnuPG-Recipients':
-        return this.listRecipients();
+      case '/GnuPG-Public-Keys':
+        return this.listPublicKeys();
+      case '/GnuPG-Private-Keys':
+        return this.listPrivateKeys();
       case '/GnuPG-Smartcard':
         return this.showSmartcard();
       case '/GnuPG-Version':
@@ -26,19 +29,36 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
     }
   }
 
-  listRecipients(): Promise<Buffer> {
+  listPublicKeys(): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-      promise_listRecipients()
-        .then(stdout => promise_readKeys(stdout))
+      promise_listPublicKeys()
+        .then(stdout => promise_parseKeys(stdout))
         .then(keys => promise_KeysToText(keys))
         .then(recipients => {
-          let content = 'GnuPG Recipients:\r\n';
+          let content = 'GnuPG Public Keys:\r\n';
           content += '\r\n';
           recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));
           resolve(new Buffer(content));
         })
         .catch(err => {
-          resolve(new Buffer('GnuPG list recipients failed !\r\n' + err)); //vscode.window.showErrorMessage('GnuPG list recipients failed ! ');
+          resolve(new Buffer('GnuPG list public keys failed !\r\n' + err)); //vscode.window.showErrorMessage('GnuPG list recipients failed ! ');
+        });
+    });
+  }
+
+  listPrivateKeys(): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+      promise_listPrivateKeys()
+        .then(stdout => promise_parseKeys(stdout))
+        .then(keys => promise_KeysToText(keys))
+        .then(recipients => {
+          let content = 'GnuPG Private Keys:\r\n';
+          content += '\r\n';
+          recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));
+          resolve(new Buffer(content));
+        })
+        .catch(err => {
+          resolve(new Buffer('GnuPG list private keys failed !\r\n' + err)); //vscode.window.showErrorMessage('GnuPG list recipients failed ! ');
         });
     });
   }

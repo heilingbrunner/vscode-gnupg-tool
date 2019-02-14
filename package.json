@@ -28,7 +28,8 @@
   },
   "activationEvents": [
     "onCommand:extension.CheckGnuPG",
-    "onCommand:extension.ListRecipients",
+    "onCommand:extension.ListPublicKeys",
+    "onCommand:extension.ListPrivateKeys",
     "onCommand:extension.ShowSmartcard",
     "onCommand:extension.EncryptSelection",
     "onCommand:extension.EncryptFile",
@@ -46,8 +47,13 @@
         "category": "GnuPG"
       },
       {
-        "command": "extension.ListRecipients",
-        "title": "List Recipients",
+        "command": "extension.ListPublicKeys",
+        "title": "List Public Keys",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.ListPrivateKeys",
+        "title": "List Private Keys",
         "category": "GnuPG"
       },
       {
@@ -98,7 +104,7 @@
           "group": "GnuPG"
         },
         {
-          "command": "extension.ListRecipients",
+          "command": "extension.ListPublicKeys",
           "group": "GnuPG"
         },
         {

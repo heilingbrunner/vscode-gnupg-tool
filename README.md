@@ -6,13 +6,13 @@
 ![Installs](https://vsmarketplacebadge.apphb.com/installs-short/JHeilingbrunner.vscode-gnupg-tool.svg)
 ![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/JHeilingbrunner.vscode-gnupg-tool.svg)
 
-![Encrypt-Decrypt-Smartcard](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/Encrypt-Decrypt.gif)
+![Decrypt-Selection](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/decryptselection.gif)
 
 ## Features
 
 - Check GnuPG availability/version.
 - Encryption for multiple recipients.
-- Decryption
+- Encrypt/decrypt text selection or file to text,file or preview
 - Passphrase/Pin entry __only__ into original GnuPG dialog. __Not through__ Visual Studio Code or something else.
 - End session by killing gpg-agent.
 - Works with smartcards.
@@ -28,14 +28,17 @@
 
 ### Check GnuPG
 
-1. Select command `GnuPG Tool: Check GnuPG`
-2. Info message will show version numbers
+1. Select command `GnuPG: Check GnuPG`
 
-### List Recipients
+Details will be shown in a virtual document.
 
-1. Select command `GnuPG Tool: List Recipients`
+![Check GnuPG](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/checkgnupg.gif)
 
-Output:
+### List Public Keys
+
+1. Select command `GnuPG: List Public Keys`
+
+Details will be shown in a virtual document.
 
 - fingerprint
 - name
@@ -43,22 +46,70 @@ Output:
 - capability D:disabled, S:sign, C:certify, E:encrypt
 - validity
 
-### Encrypt
+### List Private Keys
+
+1. Select command `GnuPG: List Private Keys`
+
+Details will be shown in a virtual document.
+
+- fingerprint
+- name
+- email
+- capability D:disabled, S:sign, C:certify, E:encrypt
+- validity
+
+### Show Smartcard
+
+1. Select command `GnuPG: Show Smatcard`
+
+Details will be shown in a virtual document.
+
+### Encrypt Selection
 
 1. Select text in editor
-2. Select command `GnuPG Tool: Encrypt Selection`
+2. Select command `GnuPG: Encrypt Selection` or open context menu in editor
 3. Select recipients with checkboxes
 4. Press `OK` button
 
-### Decrypt
+### Encrypt File
+
+1. Select file in VSCode explorer
+2. Select `Encrypt File` from context menu
+
+A new encrypted file (`<filename>.<ext>.asc`) will be generated.
+
+### Preview Encrypted File
+
+1. Select file in VSCode explorer
+2. Select `Preview Encrypted File` from context menu
+
+The encrypted file will be shown in a virtual document.
+
+### Decrypt Selection
 
 1. Select text in editor
-2. Select command `GnuPG Tool: Decrypt Selection`
+2. Select command `GnuPG: Decrypt Selection` or open context menu in editor
+3. Enter passphrase if required
+
+The selected text will be replaced by decrypted text.
+
+### Decrypt File
+
+1. Select file in VSCode explorer
+2. Select `Decrypt File` from context menu
+
+A new decrypted file (`<filename>.<ext>.decrypted`) will be generated.
+
+### Preview Decrypted File
+
+1. Select file in VSCode explorer
+2. Select `Preview Decrypted File` from context menu
+
+The decrypted file will be shown in a virtual document. __This is intended for encrypted files, which only should be temporary opened.__
 
 ### End Session
 
-1. Select command `GnuPG Tool: End Session`
-
+1. Select command `GnuPG: End Session`
 
 > Mac/OSX: This works on Mac/OSX only if password is __not__ stored in macOS key ring. Check `System settings/GPG Suite`.
 
@@ -79,7 +130,12 @@ Output:
 
 ## 0.0.5
 
-- Encryption only for enabled, capable [E] recipients
+- Encryption only for enabled, capable [E] and valid recipients
+- Previews
+- Context menus
+- Smartcard details
+- GnuPG version
+- Statusbar item with GnuPG version
 
 ## 0.0.4
 

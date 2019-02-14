@@ -4,9 +4,9 @@ import * as fs from 'fs';
 import {
   promise_checkVersion,
   promise_extractVersions,
-  promise_listRecipients,
-  promise_readKeys,
-  promise_RecipientsToOptions,
+  promise_listPublicKeys,
+  promise_parseKeys,
+  promise_KeysToOptions,
   promise_encrypt,
   promise_decrypt,
   promise_killgpgagent
@@ -25,17 +25,18 @@ export function activate(context: vscode.ExtensionContext) {
     'virtual-document',
     new VirtualDocumentProvider()
   );
-  let gnuPGProvider = vscode.workspace.registerTextDocumentContentProvider(
-    'gnupg',
-    new GnuPGProvider()
-  );
+  let gnuPGProvider = vscode.workspace.registerTextDocumentContentProvider('gnupg', new GnuPGProvider());
 
   const commandCheckGnuPG = vscode.commands.registerCommand('extension.CheckGnuPG', () => {
     showVersion();
   });
 
-  const commandListRecipients = vscode.commands.registerCommand('extension.ListRecipients', () => {
-    listRecipients();
+  const commandListPublicKeys = vscode.commands.registerCommand('extension.ListPublicKeys', () => {
+    listPublicKeys();
+  });
+
+  const commandListPrivateKeys = vscode.commands.registerCommand('extension.ListPrivateKeys', () => {
+    listPrivateKeys();
   });
 
   const commandShowSmartcard = vscode.commands.registerCommand('extension.ShowSmartcard', () => {
@@ -89,7 +90,8 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(virtualDocumentProvider);
   context.subscriptions.push(gnuPGProvider);
   context.subscriptions.push(commandCheckGnuPG);
-  context.subscriptions.push(commandListRecipients);
+  context.subscriptions.push(commandListPublicKeys);
+  context.subscriptions.push(commandListPrivateKeys);
   context.subscriptions.push(commandShowSmartcard);
   context.subscriptions.push(commandEncryptSelection);
   context.subscriptions.push(commandEncryptFile);
@@ -127,8 +129,13 @@ function showVersion() {
   vscode.commands.executeCommand('vscode.open', newUri);
 }
 
-function listRecipients() {
-  let newUri = vscode.Uri.parse('virtual-document://gnupg/GnuPG-Recipients');
+function listPublicKeys() {
+  let newUri = vscode.Uri.parse('virtual-document://gnupg/GnuPG-Public-Keys');
+  vscode.commands.executeCommand('vscode.open', newUri);
+}
+
+function listPrivateKeys() {
+  let newUri = vscode.Uri.parse('virtual-document://gnupg/GnuPG-Private-Keys');
   vscode.commands.executeCommand('vscode.open', newUri);
 }
 
@@ -143,9 +150,9 @@ function encryptSelection(editor: vscode.TextEditor) {
     const content = new Buffer(editor.document.getText(selection));
 
     if (content && content.length > 0) {
-      promise_listRecipients()
-        .then(stdout => promise_readKeys(stdout))
-        .then(keys => promise_RecipientsToOptions(keys))
+      promise_listPublicKeys()
+        .then(stdout => promise_parseKeys(stdout))
+        .then(keys => promise_KeysToOptions(keys))
         .then(options =>
           vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
         )
@@ -155,7 +162,7 @@ function encryptSelection(editor: vscode.TextEditor) {
             editor.edit(edit => edit.replace(selection, encrypted.toString('utf8')));
           }
         })
-        .catch(() => vscode.window.showErrorMessage('GnuPG encryption failed !'));
+        .catch(err => vscode.window.showErrorMessage('GnuPG encryption failed ! ' + err));
     } else {
       vscode.window.showWarningMessage('No text selected for GnuPG encryption.');
     }
@@ -240,9 +247,9 @@ function endSession() {
 function encryptFileUri(fileUri: vscode.Uri) {
   getContent(fileUri).then(content => {
     if (content && content.length > 0) {
-      promise_listRecipients()
-        .then(stdout => promise_readKeys(stdout))
-        .then(keys => promise_RecipientsToOptions(keys))
+      promise_listPublicKeys()
+        .then(stdout => promise_parseKeys(stdout))
+        .then(keys => promise_KeysToOptions(keys))
         .then(options =>
           vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
         )

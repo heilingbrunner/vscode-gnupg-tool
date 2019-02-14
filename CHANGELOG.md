@@ -1,8 +1,13 @@
 # Change Log
 
-## [0.0.5] - 2019-02-09
+## [0.0.5] - 2019-02-14
 
-- Encryption only for enabled, capable [E] recipients
+- Encryption only for enabled, capable [E] and valid recipients
+- Previews
+- Context menus
+- Smartcard details
+- GnuPG version
+- Statusbar item with GnuPG version
 
 ## [0.0.4] - 2019-02-06
 

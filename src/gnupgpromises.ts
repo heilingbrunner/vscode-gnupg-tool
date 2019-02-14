@@ -17,7 +17,7 @@ export function promise_checkVersion(): Promise<Buffer> {
   });
 }
 
-export function promise_listRecipients(): Promise<Buffer> {
+export function promise_listPublicKeys(): Promise<Buffer> {
   return new Promise(function(resolve, reject) {
     var args = ['-k', '--with-colons'];
 
@@ -31,7 +31,21 @@ export function promise_listRecipients(): Promise<Buffer> {
   });
 }
 
-export function promise_readKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>> {
+export function promise_listPrivateKeys(): Promise<Buffer> {
+  return new Promise(function(resolve, reject) {
+    var args = ['-K', '--with-colons'];
+
+    call('', args, (err: string, result: Buffer) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
+
+export function promise_parseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>> {
   //see source: gnupg-2.2.12\doc\DETAILS
 
   return new Promise((resolve, reject) => {
@@ -68,6 +82,7 @@ export function promise_readKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>>
       //cfg :: Configuration data [*]
       switch (record[0]) {
         case 'pub':
+        case 'sec':
           //#region Details pub Record:
 
           //record[0]: Type of record
@@ -239,12 +254,12 @@ export function promise_exec(cmd: string, opts: ExecOptions): Promise<{ stdout: 
   });
 }
 
-export function promise_RecipientsToOptions(
+export function promise_KeysToOptions(
   keys: Map<string, GnuPGKey>
 ): Promise<{ label: string; description: string; detail: string; name: string; email: string; fingerprint: string }[]> {
   return new Promise((resolve, reject) => {
     const arr = Array.from(keys.values())
-      .filter(k => !k.isDisabled && k.canEncrypt)
+      .filter(k => k.isValidToEncrypt)
       .map(k => ({
         label: k.name,
         description: k.email,

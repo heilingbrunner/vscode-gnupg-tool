@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { promise_decrypt, promise_listRecipients, promise_readKeys, promise_RecipientsToOptions, promise_encrypt } from './gnupgpromises';
+import { promise_decrypt, promise_listPublicKeys, promise_parseKeys, promise_KeysToOptions, promise_encrypt } from './gnupgpromises';
 import { getContent } from './utils';
 
 export default class GnuPGProvider implements vscode.TextDocumentContentProvider {
@@ -24,9 +24,9 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         newUri = uri.with({ scheme: 'file', authority:'', path: uri.fsPath.slice(0, -'.asc'.length)});
         return new Promise(async (resolve, reject) => {
           getContent(newUri).then(content => {
-            promise_listRecipients()
-              .then(stdout => promise_readKeys(stdout))
-              .then(keys => promise_RecipientsToOptions(keys))
+            promise_listPublicKeys()
+              .then(stdout => promise_parseKeys(stdout))
+              .then(keys => promise_KeysToOptions(keys))
               .then(options =>
                 vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
               )
