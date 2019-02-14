@@ -1,8 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
-import PreviewEncryptProvider from './previewencryptprovider';
-import PreviewDecryptProvider from './previewdecryptprovider';
 import {
   promise_checkVersion,
   promise_extractVersions,
@@ -14,9 +12,12 @@ import {
   promise_killgpgagent
 } from './gnupgpromises';
 import VirtualDocumentProvider from './virtualdocumentprovider';
+import GnuPGProvider from './gnupgprovider';
+import { getContent, setContent } from './utils';
 
 let statusBarItem: vscode.StatusBarItem;
 
+// extension plumping ...
 export function activate(context: vscode.ExtensionContext) {
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
@@ -24,13 +25,9 @@ export function activate(context: vscode.ExtensionContext) {
     'virtual-document',
     new VirtualDocumentProvider()
   );
-  let previewEncryptProvider = vscode.workspace.registerTextDocumentContentProvider(
-    'gpg-preview-encrypt',
-    new PreviewEncryptProvider()
-  );
-  let previewDecryptProvider = vscode.workspace.registerTextDocumentContentProvider(
-    'gpg-preview-decrypt',
-    new PreviewDecryptProvider()
+  let gnuPGProvider = vscode.workspace.registerTextDocumentContentProvider(
+    'gnupg',
+    new GnuPGProvider()
   );
 
   const commandCheckGnuPG = vscode.commands.registerCommand('extension.CheckGnuPG', () => {
@@ -90,8 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   //Disposables
   context.subscriptions.push(virtualDocumentProvider);
-  context.subscriptions.push(previewEncryptProvider);
-  context.subscriptions.push(previewDecryptProvider);
+  context.subscriptions.push(gnuPGProvider);
   context.subscriptions.push(commandCheckGnuPG);
   context.subscriptions.push(commandListRecipients);
   context.subscriptions.push(commandShowSmartcard);
@@ -183,7 +179,7 @@ function previewEncryptedFile(fileUri: vscode.Uri) {
     if (fileUri.fsPath.match(/\.(asc)$/i)) {
       vscode.window.showInformationMessage('GnuPG: File already encrypted (*.asc).');
     } else {
-      launchEncryptProvider(fileUri);
+      launchGnuPGProviderForEncrypt(fileUri);
     }
   } else {
     vscode.window.showErrorMessage('GnuPG: No file selected ! Please use explorer context menu.');
@@ -224,7 +220,7 @@ function decryptFile(fileUri: vscode.Uri) {
 function previewDecryptedFile(fileUri: vscode.Uri) {
   if (fileUri !== undefined && fileUri.scheme === 'file') {
     if (fileUri.fsPath.match(/\.(asc)$/i)) {
-      launchDecryptProvider(fileUri);
+      launchGnuPGProviderForDecrypt(fileUri);
     } else {
       vscode.window.showInformationMessage('GnuPG: File not encrypted (*.asc).');
     }
@@ -287,59 +283,28 @@ function decryptFileUri(fileUri: vscode.Uri) {
   });
 }
 
-function launchEncryptProvider(fileUri: vscode.Uri) {
+function launchGnuPGProviderForEncrypt(fileUri: vscode.Uri) {
   // check filePath ...
   if (typeof fileUri === 'undefined' || !fs.existsSync(fileUri.fsPath)) {
     return;
   }
 
   // change uri for encryptprovider
-  let newUri = vscode.Uri.file(fileUri.fsPath.concat('.asc')).with({ scheme: 'gpg-preview-encrypt' });
+  let newUri = vscode.Uri.file(fileUri.fsPath.concat('.asc')).with({ scheme: 'gnupg', authority: 'encrypt' });
 
   // go on to content provider ...
   vscode.commands.executeCommand('vscode.open', newUri);
 }
 
-function launchDecryptProvider(fileUri: vscode.Uri) {
+function launchGnuPGProviderForDecrypt(fileUri: vscode.Uri) {
   // check filePath ...
   if (typeof fileUri === 'undefined' || !fs.existsSync(fileUri.fsPath)) {
     return;
   }
 
   // change uri for content provider
-  let newUri = vscode.Uri.file(fileUri.fsPath.concat('.decrypted')).with({ scheme: 'gpg-preview-decrypt' });
+  let newUri = vscode.Uri.file(fileUri.fsPath.concat('.decrypted')).with({ scheme: 'gnupg', authority: 'decrypt' });
 
   // go on to content provider ...
   vscode.commands.executeCommand('vscode.open', newUri);
-}
-
-function getContent(uri: vscode.Uri): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    if (uri.scheme === 'file') {
-      const filepath = uri.fsPath;
-
-      fs.readFile(filepath, (err, buffer) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(buffer);
-        }
-      });
-    } else {
-      resolve(new Buffer('.'));
-    }
-  });
-}
-
-function setContent(uri: vscode.Uri, content: Buffer): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    // fs.writeFileSync(newUri.fsPath, encrypted);
-    fs.writeFile(uri.fsPath, content, err => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(content);
-      }
-    });
-  });
 }
