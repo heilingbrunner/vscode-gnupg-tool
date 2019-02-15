@@ -3,13 +3,15 @@ import * as fs from 'fs';
 
 import {
   promise_checkVersion,
-  promise_extractVersions,
+  promise_BufferToLines,
   promise_listPublicKeys,
   promise_parseKeys,
   promise_KeysToOptions,
   promise_encrypt,
   promise_decrypt,
-  promise_killgpgagent
+  promise_killgpgagent,
+  promise_listPrivateKeys,
+  promise_sign
 } from './gnupgpromises';
 import VirtualDocumentProvider from './virtualdocumentprovider';
 import GnuPGProvider from './gnupgprovider';
@@ -79,6 +81,14 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  const commandSignFile = vscode.commands.registerCommand('extension.SignFile', (fileUri: vscode.Uri) => {
+    signFile(fileUri);
+  });
+
+  const commandVerifyFile = vscode.commands.registerCommand('extension.VerifyFile', (fileUri: vscode.Uri) => {
+    verifyFile(fileUri);
+  });
+
   const commandEndSession = vscode.commands.registerCommand('extension.EndSession', () => {
     endSession();
   });
@@ -99,6 +109,8 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(commandDecryptSelection);
   context.subscriptions.push(commandDecryptFile);
   context.subscriptions.push(commandPreviewDecryptedFile);
+  context.subscriptions.push(commandSignFile);
+  context.subscriptions.push(commandVerifyFile);
   context.subscriptions.push(commandEndSession);
 }
 
@@ -111,16 +123,16 @@ export function deactivate() {
 
 function checkGnuPG() {
   promise_checkVersion()
-    .then(stdout => promise_extractVersions(stdout))
+    .then(stdout => promise_BufferToLines(stdout))
     .then(lines => {
       if (lines.length >= 2) {
         statusBarItem.text = `$(mirror-private) ` + lines[0];
         statusBarItem.show();
       }
     })
-    .catch(() => {
+    .catch(err => {
       statusBarItem.hide();
-      vscode.window.showErrorMessage('GnuPG: gpg not available !');
+      vscode.window.showErrorMessage('GnuPG: gpg not available ! ' + err);
     });
 }
 
@@ -205,7 +217,7 @@ function decryptSelection(editor: vscode.TextEditor) {
             editor.edit(edit => edit.replace(selection, decrypted.toString('utf8')));
           }
         })
-        .catch(() => vscode.window.showErrorMessage('GnuPG decryption failed !'));
+        .catch(err => vscode.window.showErrorMessage('GnuPG decryption failed ! ' + err));
     } else {
       vscode.window.showWarningMessage('No text selected for GnuPG decryption.');
     }
@@ -236,10 +248,34 @@ function previewDecryptedFile(fileUri: vscode.Uri) {
   }
 }
 
+function signFile(fileUri: vscode.Uri) {
+  if (fileUri !== undefined && fileUri.scheme === 'file') {
+    if (!fileUri.fsPath.match(/\.(sig)$/i)) {
+      signFileUri(fileUri);
+    } else {
+      vscode.window.showInformationMessage('GnuPG: File is already a signature (*.sig).');
+    }
+  } else {
+    vscode.window.showErrorMessage('GnuPG: No file selected ! Please use explorer context menu.');
+  }
+}
+
+function verifyFile(fileUri: vscode.Uri) {
+  if (fileUri !== undefined && fileUri.scheme === 'file') {
+    if (fileUri.fsPath.match(/\.(sig)$/i)) {
+      launchGnuPGProviderForVerify(fileUri);
+    } else {
+      vscode.window.showInformationMessage('GnuPG: File is not signature (*.sig).');
+    }
+  } else {
+    vscode.window.showErrorMessage('GnuPG: No file selected ! Please use explorer context menu.');
+  }
+}
+
 function endSession() {
   promise_killgpgagent()
     .then(() => vscode.window.showInformationMessage('GnuPG session ended.'))
-    .catch(() => vscode.window.showErrorMessage('GnuPG end session failed !'));
+    .catch(err => vscode.window.showErrorMessage('GnuPG end session failed ! ' + err));
 }
 
 // Helper .......................................................
@@ -265,7 +301,7 @@ function encryptFileUri(fileUri: vscode.Uri) {
             });
           }
         })
-        .catch(() => vscode.window.showErrorMessage('GnuPG encryption failed !'));
+        .catch(err => vscode.window.showErrorMessage('GnuPG encryption failed ! ' + err));
     }
   });
 }
@@ -285,9 +321,18 @@ function decryptFileUri(fileUri: vscode.Uri) {
             });
           }
         })
-        .catch(() => vscode.window.showErrorMessage('GnuPG decryption failed !'));
+        .catch(err => vscode.window.showErrorMessage('GnuPG decryption failed ! ' + err));
     }
   });
+}
+
+function signFileUri(fileUri: vscode.Uri) {
+  promise_listPrivateKeys()
+    .then(stdout => promise_parseKeys(stdout))
+    .then(keys => promise_KeysToOptions(keys))
+    .then(options => vscode.window.showQuickPick(options, { placeHolder: 'Select signer ...' }))
+    .then(key => promise_sign(fileUri, key))
+    .catch(err => vscode.window.showErrorMessage('GnuPG sign failed ! ' + err));
 }
 
 function launchGnuPGProviderForEncrypt(fileUri: vscode.Uri) {
@@ -297,7 +342,7 @@ function launchGnuPGProviderForEncrypt(fileUri: vscode.Uri) {
   }
 
   // change uri for encryptprovider
-  let newUri = vscode.Uri.file(fileUri.fsPath.concat('.asc')).with({ scheme: 'gnupg', authority: 'encrypt' });
+  let newUri = vscode.Uri.file(fileUri.fsPath.concat(' - encrypted')).with({ scheme: 'gnupg', authority: 'encrypt' });
 
   // go on to content provider ...
   vscode.commands.executeCommand('vscode.open', newUri);
@@ -310,7 +355,20 @@ function launchGnuPGProviderForDecrypt(fileUri: vscode.Uri) {
   }
 
   // change uri for content provider
-  let newUri = vscode.Uri.file(fileUri.fsPath.concat('.decrypted')).with({ scheme: 'gnupg', authority: 'decrypt' });
+  let newUri = vscode.Uri.file(fileUri.fsPath.concat(' - decrypted')).with({ scheme: 'gnupg', authority: 'decrypt' });
+
+  // go on to content provider ...
+  vscode.commands.executeCommand('vscode.open', newUri);
+}
+
+function launchGnuPGProviderForVerify(fileUri: vscode.Uri) {
+  // check filePath ...
+  if (typeof fileUri === 'undefined' || !fs.existsSync(fileUri.fsPath)) {
+    return;
+  }
+
+  // change uri for content provider
+  let newUri = vscode.Uri.file(fileUri.fsPath.concat(' - verified')).with({ scheme: 'gnupg', authority: 'verify' });
 
   // go on to content provider ...
   vscode.commands.executeCommand('vscode.open', newUri);

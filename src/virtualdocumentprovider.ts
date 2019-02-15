@@ -5,13 +5,14 @@ import {
   promise_KeysToText,
   promise_showSmartcard,
   promise_checkVersion,
-  promise_listPrivateKeys
+  promise_listPrivateKeys,
+  promise_verify
 } from './gnupgpromises';
 
 export default class VirtualDocumentProvider implements vscode.TextDocumentContentProvider {
-  public provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
-    //ascii, utf8, utf16le
-    return this.getContent(uri).then(buffer => buffer.toString('ascii'));
+  public async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
+    const buffer = await this.getContent(uri);
+    return buffer.toString('ascii');
   }
 
   getContent(uri: vscode.Uri): Promise<Buffer> {
@@ -24,6 +25,8 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
         return this.showSmartcard();
       case '/GnuPG-Version':
         return this.showVersion();
+      case '/GnuPG-Verification':
+        return this.showVerification(uri);
       default:
         return new Promise((resolve, reject) => resolve(new Buffer('...')));
     }
@@ -76,6 +79,16 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
   showVersion(): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       promise_checkVersion()
+        .then(stdout => resolve(stdout))
+        .catch(err => {
+          resolve(new Buffer('GnuPG not available !\r\n' + err));
+        });
+    });
+  }
+
+  showVerification(uri: vscode.Uri): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+      promise_verify(uri)
         .then(stdout => resolve(stdout))
         .catch(err => {
           resolve(new Buffer('GnuPG not available !\r\n' + err));

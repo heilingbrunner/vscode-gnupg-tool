@@ -1,6 +1,8 @@
-import { call, encrypt, decrypt } from 'gpg';
+import * as vscode from 'vscode';
 import * as child_process from 'child_process';
 import { ExecOptions } from 'child_process';
+
+import { call, encrypt, decrypt } from 'gpg';
 import { GnuPGKey } from './gnupgkey';
 
 export function promise_checkVersion(): Promise<Buffer> {
@@ -8,11 +10,7 @@ export function promise_checkVersion(): Promise<Buffer> {
     var args = ['--version'];
 
     call('', args, (err: string, result: Buffer) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
+      err ? reject(err) : resolve(result);
     });
   });
 }
@@ -22,11 +20,7 @@ export function promise_listPublicKeys(): Promise<Buffer> {
     var args = ['-k', '--with-colons'];
 
     call('', args, (err: string, result: Buffer) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
+      err ? reject(err) : resolve(result);
     });
   });
 }
@@ -36,17 +30,14 @@ export function promise_listPrivateKeys(): Promise<Buffer> {
     var args = ['-K', '--with-colons'];
 
     call('', args, (err: string, result: Buffer) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
+      err ? reject(err) : resolve(result);
     });
   });
 }
 
 export function promise_parseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>> {
   //see source: gnupg-2.2.12\doc\DETAILS
+  //https://github.com/gpg/gnupg/blob/master/doc/DETAILS
 
   return new Promise((resolve, reject) => {
     let lines = stdout
@@ -122,6 +113,20 @@ export function promise_parseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>
             (key.validity = record[1]);
 
           break;
+
+        case 'ssb':
+          //#region Details ssb Record
+
+          //record[4]: sub keyId
+
+          //#endregion
+
+          // User Id: name email
+          if (key !== null) {
+            key.ssbKeyId = record[4];
+          }
+          break;
+
         case 'fpr':
           //#region Details fpr Record
 
@@ -132,6 +137,10 @@ export function promise_parseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>
           // Fingerprint contains keyId
           if (key !== null && record[9].endsWith(key.keyId)) {
             key.fingerprint = record[9];
+          }
+
+          if (key !== null && record[9].endsWith(key.ssbKeyId)) {
+            key.ssbfingerprint = record[9];
           }
           break;
 
@@ -165,38 +174,30 @@ export function promise_parseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>
 }
 
 export function promise_encrypt(
-  selectedText: Buffer,
-  recipients?: { name: string; email: string; fingerprint: string }[]
+  content: Buffer,
+  keys?: { name: string; email: string; fingerprint: string }[]
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--armor'];
 
-    if (recipients !== undefined) {
-      recipients.forEach(recipient => {
-        args = args.concat(['--recipient', recipient.fingerprint]); // + ' <' + recipient.email + '>';
+    if (keys !== undefined) {
+      keys.forEach(recipient => {
+        args = args.concat(['--recipient', recipient.fingerprint]);
       });
     }
 
-    encrypt(selectedText, args, (err: string, result: Buffer) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
+    encrypt(content, args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(result);
     });
   });
 }
 
-export function promise_decrypt(selectedText: Buffer): Promise<Buffer> {
+export function promise_decrypt(content: Buffer): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--decrypt'];
 
-    decrypt(selectedText, args, (err: string, result: Buffer) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
+    decrypt(content, args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(result);
     });
   });
 }
@@ -206,11 +207,7 @@ export function promise_showSmartcard(): Promise<Buffer> {
     var args = ['--card-status'];
 
     call('', args, (err: string, result: Buffer) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
+      err ? reject(err) : resolve(result);
     });
   });
 }
@@ -223,19 +220,13 @@ export function promise_killgpgagent(): Promise<{ stdout: string; stderr: string
   return promise_exec('gpg-connect-agent killagent /bye', {});
 }
 
-export function promise_extractVersions(stdout: Buffer): Promise<string[]> {
+export function promise_BufferToLines(stdout: Buffer): Promise<string[]> {
   return new Promise((resolve, reject) => {
-    let versions = '';
-
     let lines = stdout
       .toString()
       .replace(/\r/g, '')
       .trim()
       .split(/\n/g);
-
-    if (lines.length >= 2) {
-      versions = lines[0] + ', ' + lines[1];
-    }
 
     resolve(lines);
   });
@@ -243,7 +234,7 @@ export function promise_extractVersions(stdout: Buffer): Promise<string[]> {
 
 export function promise_exec(cmd: string, opts: ExecOptions): Promise<{ stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
-    const cp = child_process.exec(cmd, opts, (err, stdout, stderr) =>
+    child_process.exec(cmd, opts, (err, stdout, stderr) =>
       err
         ? reject(err)
         : resolve({
@@ -256,7 +247,17 @@ export function promise_exec(cmd: string, opts: ExecOptions): Promise<{ stdout: 
 
 export function promise_KeysToOptions(
   keys: Map<string, GnuPGKey>
-): Promise<{ label: string; description: string; detail: string; name: string; email: string; fingerprint: string }[]> {
+): Promise<
+  {
+    label: string;
+    description: string;
+    detail: string;
+    name: string;
+    email: string;
+    fingerprint: string;
+    ssbfingerprint: string;
+  }[]
+> {
   return new Promise((resolve, reject) => {
     const arr = Array.from(keys.values())
       .filter(k => k.isValidToEncrypt)
@@ -267,7 +268,8 @@ export function promise_KeysToOptions(
         name: k.name,
         email: k.email,
         validity: k.validity,
-        fingerprint: k.fingerprint
+        fingerprint: k.fingerprint,
+        ssbfingerprint: k.ssbfingerprint
       }));
 
     arr ? resolve(arr) : reject();
@@ -283,5 +285,34 @@ export function promise_KeysToText(keys: Map<string, GnuPGKey>): Promise<string[
     });
 
     recipients.length > 0 ? resolve(recipients) : reject();
+  });
+}
+
+export function promise_sign(
+  uri: vscode.Uri,
+  key?: { name: string; email: string; fingerprint: string; ssbfingerprint: string }
+): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--armor'];
+    args = args.concat(['--output', uri.fsPath + '.sig']);
+    if (key !== undefined) {
+      args = args.concat(['--local-user', key.ssbfingerprint]);
+    }
+    args = args.concat(['--detach-sign']);
+    args = args.concat([uri.fsPath]);
+
+    call('', args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(result);
+    });
+  });
+}
+
+export function promise_verify(uri: vscode.Uri): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    // GnuPG prints (at least some of) this output to stderr, not stdout. Redirect stderr to stdout using 2>&1
+    // call(....) not working, cannot redirect
+
+    let cmd = 'gpg --verify ' + uri.fsPath + ' ' + uri.fsPath.slice(0, -'.sig'.length) + ' 2>&1';
+    child_process.exec(cmd, {}, (err, stdout) => (err ? reject('') : resolve(new Buffer(stdout))));
   });
 }

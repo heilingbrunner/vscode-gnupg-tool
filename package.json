@@ -37,6 +37,8 @@
     "onCommand:extension.DecryptSelection",
     "onCommand:extension.DecryptFile",
     "onCommand:extension.PreviewDecryptedFile",
+    "onCommand:extension.SignFile",
+    "onCommand:extension.VerifyFile",
     "onCommand:extension.EndSession"
   ],
   "contributes": {
@@ -95,6 +97,16 @@
         "command": "extension.PreviewDecryptedFile",
         "title": "Preview Decrypted File",
         "category": "GnuPG"
+      },
+      {
+        "command": "extension.SignFile",
+        "title": "Sign File",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.VerifyFile",
+        "title": "Verify File",
+        "category": "GnuPG"
       }
     ],
     "menus": {
@@ -136,6 +148,14 @@
         {
           "command": "extension.DecryptFile",
           "group": "gnupg2@2"
+        },
+        {
+          "command": "extension.SignFile",
+          "group": "gnupg2@3"
+        },
+        {
+          "command": "extension.VerifyFile",
+          "group": "gnupg2@4"
         }
       ],
       "editor/context": [
