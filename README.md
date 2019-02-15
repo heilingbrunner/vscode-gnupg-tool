@@ -12,10 +12,11 @@
 
 - Check GnuPG availability/version.
 - Encryption for multiple recipients.
-- Encrypt/decrypt text selection or file to text,file or preview
+- Encrypt/decrypt text selection or file to text, file or preview
 - Passphrase/Pin entry __only__ into original GnuPG dialog. __Not through__ Visual Studio Code or something else.
-- End session by killing gpg-agent.
+- End session to reset password cache by killing gpg-agent.
 - Works with smartcards.
+- Sign/verify file.
 
 ## Used References
 
@@ -107,6 +108,21 @@ A new decrypted file (`<filename>.<ext>.decrypted`) will be generated.
 
 The decrypted file will be shown in a virtual document. __This is intended for encrypted files, which only should be temporary opened.__
 
+### Sign File
+
+1. Select file in VSCode explorer
+2. Select `Sign File` from context menu
+3. Select signer from quick pick list
+
+This will generate/overwrite a additional `<filename>.<ext>.sig` file.
+
+### Verify File
+
+1. Select file in VSCode explorer
+2. Select `Verify File` from context menu
+
+This will show the verification result in a virtual document.
+
 ### End Session
 
 1. Select command `GnuPG: End Session`
@@ -136,6 +152,7 @@ The decrypted file will be shown in a virtual document. __This is intended for e
 - Smartcard details
 - GnuPG version
 - Statusbar item with GnuPG version
+- Sign/verify
 
 ## 0.0.4
 
