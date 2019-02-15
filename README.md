@@ -33,8 +33,6 @@
 
 Details will be shown in a virtual document.
 
-![Check GnuPG](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/checkgnupg.gif)
-
 ### List Public Keys
 
 1. Select command `GnuPG: List Public Keys`
