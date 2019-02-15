@@ -245,8 +245,20 @@ export function promise_exec(cmd: string, opts: ExecOptions): Promise<{ stdout: 
   });
 }
 
+export function promise_filterKeysForEncrypt(keys: Map<string, GnuPGKey>): Promise<Array<GnuPGKey>> {
+  return new Promise((resolve, reject) => {
+    resolve(Array.from(keys.values()).filter(k => k.isValidToEncrypt));
+  });
+}
+
+export function promise_filterKeysForSign(keys: Map<string, GnuPGKey>): Promise<Array<GnuPGKey>> {
+  return new Promise((resolve, reject) => {
+    resolve(Array.from(keys.values()).filter(k => k.isValidToSign));
+  });
+}
+
 export function promise_KeysToOptions(
-  keys: Map<string, GnuPGKey>
+  keyarray: Array<GnuPGKey>
 ): Promise<
   {
     label: string;
@@ -259,18 +271,16 @@ export function promise_KeysToOptions(
   }[]
 > {
   return new Promise((resolve, reject) => {
-    const arr = Array.from(keys.values())
-      .filter(k => k.isValidToEncrypt)
-      .map(k => ({
-        label: k.name,
-        description: k.email,
-        detail: k.fingerprint + ', ' + k.validityDescription,
-        name: k.name,
-        email: k.email,
-        validity: k.validity,
-        fingerprint: k.fingerprint,
-        ssbfingerprint: k.ssbfingerprint
-      }));
+    const arr = keyarray.map(k => ({
+      label: k.name,
+      description: k.email,
+      detail: k.fingerprint + ', ' + k.validityDescription,
+      name: k.name,
+      email: k.email,
+      validity: k.validity,
+      fingerprint: k.fingerprint,
+      ssbfingerprint: k.ssbfingerprint
+    }));
 
     arr ? resolve(arr) : reject();
   });

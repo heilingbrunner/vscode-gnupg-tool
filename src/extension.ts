@@ -11,7 +11,9 @@ import {
   promise_decrypt,
   promise_killgpgagent,
   promise_listPrivateKeys,
-  promise_sign
+  promise_sign,
+  promise_filterKeysForEncrypt,
+  promise_filterKeysForSign
 } from './gnupgpromises';
 import VirtualDocumentProvider from './virtualdocumentprovider';
 import GnuPGProvider from './gnupgprovider';
@@ -164,6 +166,7 @@ function encryptSelection(editor: vscode.TextEditor) {
     if (content && content.length > 0) {
       promise_listPublicKeys()
         .then(stdout => promise_parseKeys(stdout))
+        .then(map => promise_filterKeysForEncrypt(map))
         .then(keys => promise_KeysToOptions(keys))
         .then(options =>
           vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
@@ -285,6 +288,7 @@ function encryptFileUri(fileUri: vscode.Uri) {
     if (content && content.length > 0) {
       promise_listPublicKeys()
         .then(stdout => promise_parseKeys(stdout))
+        .then(map => promise_filterKeysForEncrypt(map))
         .then(keys => promise_KeysToOptions(keys))
         .then(options =>
           vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
@@ -329,6 +333,7 @@ function decryptFileUri(fileUri: vscode.Uri) {
 function signFileUri(fileUri: vscode.Uri) {
   promise_listPrivateKeys()
     .then(stdout => promise_parseKeys(stdout))
+    .then(map => promise_filterKeysForSign(map))
     .then(keys => promise_KeysToOptions(keys))
     .then(options => vscode.window.showQuickPick(options, { placeHolder: 'Select signer ...' }))
     .then(key => promise_sign(fileUri, key))

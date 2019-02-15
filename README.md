@@ -142,6 +142,10 @@ This will show the verification result in a virtual document.
 
 ## Release Notes
 
+## 0.0.6
+
+- filter keys for sign and encrypt file
+
 ## 0.0.5
 
 - Encryption only for enabled, capable [E] and valid recipients

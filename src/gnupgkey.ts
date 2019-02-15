@@ -37,6 +37,10 @@ export class GnuPGKey {
     return !this.isDisabled && this.canEncrypt && this.isknown;
   }
 
+  get isValidToSign(): boolean {
+    return !this.isDisabled && this.canSign && this.isknown;
+  }
+
   get userId(): string {
     return this._userId;
   }

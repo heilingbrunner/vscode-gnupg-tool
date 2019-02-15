@@ -1,6 +1,10 @@
 # Change Log
 
-## [0.0.5] - 2019-02-14
+## [0.0.6] - 2019-02-15
+
+- filter keys for sign and encrypt file
+
+## [0.0.5] - 2019-02-15
 
 - Encryption only for enabled, capable [E] and valid recipients
 - Previews
