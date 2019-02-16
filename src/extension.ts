@@ -3,10 +3,10 @@ import * as fs from 'fs';
 
 import {
   promise_checkVersion,
-  promise_BufferToLines,
+  promise_bufferToLines,
   promise_listPublicKeys,
   promise_parseKeys,
-  promise_KeysToOptions,
+  promise_keysToOptions,
   promise_encrypt,
   promise_decrypt,
   promise_killgpgagent,
@@ -127,7 +127,7 @@ export function deactivate() {
 
 function checkGnuPG() {
   promise_checkVersion()
-    .then(stdout => promise_BufferToLines(stdout))
+    .then(stdout => promise_bufferToLines(stdout))
     .then(lines => {
       if (lines.length >= 2) {
         statusBarItem.text = `$(mirror-private) ` + lines[0];
@@ -169,7 +169,7 @@ function encryptSelection(editor: vscode.TextEditor) {
       promise_listPublicKeys()
         .then(stdout => promise_parseKeys(stdout))
         .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-        .then(keys => promise_KeysToOptions(keys))
+        .then(keys => promise_keysToOptions(keys))
         .then(options =>
           vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
         )
@@ -291,7 +291,7 @@ function encryptFileUri(fileUri: vscode.Uri) {
       promise_listPublicKeys()
         .then(stdout => promise_parseKeys(stdout))
         .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-        .then(keys => promise_KeysToOptions(keys))
+        .then(keys => promise_keysToOptions(keys))
         .then(options =>
           vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
         )
@@ -336,7 +336,7 @@ function signFileUri(fileUri: vscode.Uri) {
   promise_listPrivateKeys()
     .then(stdout => promise_parseKeys(stdout))
     .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToSign))
-    .then(keys => promise_KeysToOptions(keys))
+    .then(keys => promise_keysToOptions(keys))
     .then(options => vscode.window.showQuickPick(options, { placeHolder: 'Select signer ...' }))
     .then(key => promise_sign(fileUri, key))
     .catch(err => vscode.window.showErrorMessage('GnuPG sign failed ! ' + err));

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import {
   promise_listPublicKeys,
   promise_parseKeys,
-  promise_KeysToText,
+  promise_keysToText,
   promise_showSmartcard,
   promise_checkVersion,
   promise_listPrivateKeys,
@@ -36,7 +36,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
     return new Promise((resolve, reject) => {
       promise_listPublicKeys()
         .then(stdout => promise_parseKeys(stdout))
-        .then(keys => promise_KeysToText(keys))
+        .then(keys => promise_keysToText(keys))
         .then(recipients => {
           let content = 'GnuPG Public Keys:\r\n';
           content += '\r\n';
@@ -53,7 +53,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
     return new Promise((resolve, reject) => {
       promise_listPrivateKeys()
         .then(stdout => promise_parseKeys(stdout))
-        .then(keys => promise_KeysToText(keys))
+        .then(keys => promise_keysToText(keys))
         .then(recipients => {
           let content = 'GnuPG Private Keys:\r\n';
           content += '\r\n';

@@ -220,7 +220,7 @@ export function promise_killgpgagent(): Promise<{ stdout: string; stderr: string
   return promise_exec('gpg-connect-agent killagent /bye', {});
 }
 
-export function promise_BufferToLines(stdout: Buffer): Promise<string[]> {
+export function promise_bufferToLines(stdout: Buffer): Promise<string[]> {
   return new Promise((resolve, reject) => {
     let lines = stdout
       .toString()
@@ -251,7 +251,7 @@ export function promise_filterKeys(keys: Map<string, GnuPGKey>, condition: (k: G
   });
 }
 
-export function promise_KeysToOptions(
+export function promise_keysToOptions(
   keyarray: Array<GnuPGKey>
 ): Promise<
   {
@@ -280,7 +280,7 @@ export function promise_KeysToOptions(
   });
 }
 
-export function promise_KeysToText(keys: Map<string, GnuPGKey>): Promise<string[]> {
+export function promise_keysToText(keys: Map<string, GnuPGKey>): Promise<string[]> {
   return new Promise((resolve, reject) => {
     let recipients: string[] = [];
 

@@ -3,12 +3,13 @@ import {
   promise_decrypt,
   promise_listPublicKeys,
   promise_parseKeys,
-  promise_KeysToOptions,
+  promise_keysToOptions,
   promise_encrypt,
   promise_verify,
-  promise_filterKeysForEncrypt
+  promise_filterKeys,
 } from './gnupgpromises';
 import { getContent } from './utils';
+import { GnuPGKey } from './gnupgkey';
 
 export default class GnuPGProvider implements vscode.TextDocumentContentProvider {
   public provideTextDocumentContent(uri: vscode.Uri): Thenable<string> {
@@ -33,8 +34,8 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
           getContent(newUri).then(content => {
             promise_listPublicKeys()
               .then(stdout => promise_parseKeys(stdout))
-              .then(map => promise_filterKeysForEncrypt(map))
-              .then(keys => promise_KeysToOptions(keys))
+              .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+              .then(keys => promise_keysToOptions(keys))
               .then(options =>
                 vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
               )
