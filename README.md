@@ -140,6 +140,18 @@ This will show the verification result in a virtual document.
 
 - Refer to [GnuPG binary releases](https://gnupg.org/download/)
 
+## Used GnuPG Commands
+
+- Check GnuPG: `gpg --version` (using [gpg call](https://github.com/drudge/node-gpg))
+- List Public Keys: `gpg -k --with-colons` (using [gpg call](https://github.com/drudge/node-gpg))
+- List Private Keys: `gpg -K --with-colons` (using [gpg call](https://github.com/drudge/node-gpg))
+- Show Smartcard: `gpg --card-status`  (using [gpg call](https://github.com/drudge/node-gpg))
+- Encrypt: `gpg --armor --recipient <fingerprint> --encrypt` from stdin to stdout (using [gpg encrypt](https://github.com/drudge/node-gpg))
+- Decrypt: `gpg --decrypt` from stdin to stdout (using [gpg decrypt](https://github.com/drudge/node-gpg))
+- End session: `gpg-connect-agent killagent /bye`
+- Sign File: `gpg --armor --output <filename>.<ext>.sig --local-user <ssb.fingerprint> --detach-sign <filename>.<ext>` (using [gpg call](https://github.com/drudge/node-gpg))
+- Verify File: `gpg --verify <filename>.<ext>.sig <filename>.<ext> 2>&1` (using `child_process.exec(...)`)
+
 ## Release Notes
 
 ## 0.0.6
