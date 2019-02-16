@@ -19,6 +19,8 @@
   "keywords": [
     "encryption",
     "decryption",
+    "sign",
+    "verify",
     "gnupg",
     "gpg"
   ],
