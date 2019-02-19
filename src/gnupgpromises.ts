@@ -245,9 +245,9 @@ export function promise_exec(cmd: string, opts: ExecOptions): Promise<{ stdout: 
   });
 }
 
-export function promise_filterKeys(keys: Map<string, GnuPGKey>, condition: (k: GnuPGKey) => boolean): Promise<Array<GnuPGKey>> {
+export function promise_filterKeys(keys: Map<string, GnuPGKey>, predicate: (k: GnuPGKey) => boolean): Promise<Array<GnuPGKey>> {
   return new Promise((resolve, reject) => {
-    resolve(Array.from(keys.values()).filter(k => condition(k)));
+    resolve(Array.from(keys.values()).filter(k => predicate(k)));
   });
 }
 
