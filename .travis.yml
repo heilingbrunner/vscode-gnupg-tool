@@ -1,0 +1,27 @@
+# Visual Studio Code Documentation:
+# see https://github.com/Microsoft/vscode-docs/blob/1d7b84b51c92faed1737e499d7fa08d182b1b9f9/docs/extensions/testing-extensions.md
+
+language: node_js
+
+node_js:
+  - "node" 
+
+sudo: false
+
+os:
+  - linux
+
+before_install:
+  - if [ $TRAVIS_OS_NAME == "linux" ]; then
+      export CXX="g++-4.9" CC="gcc-4.9" DISPLAY=:99.0;
+      sh -e /etc/init.d/xvfb start;
+      sleep 3;
+    fi
+  - sudo apt-get install -y gpg
+
+install:
+  - npm install
+  - npm run vscode:prepublish
+
+script:
+  - npm test --silent
