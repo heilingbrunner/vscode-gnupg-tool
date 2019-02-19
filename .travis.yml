@@ -17,7 +17,7 @@ before_install:
       sh -e /etc/init.d/xvfb start;
       sleep 3;
     fi
-  - sudo apt-get install -y gpg
+  - sudo apt-get install -y gnupg2
 
 install:
   - npm install
