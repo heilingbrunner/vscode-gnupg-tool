@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
   let gnuPGProvider = vscode.workspace.registerTextDocumentContentProvider('gnupg', new GnuPGProvider());
 
   const commandCheckGnuPG = vscode.commands.registerCommand('extension.CheckGnuPG', () => {
-    new Promise(() => {showVersion();}).then(() => {checkGnuPG();});
+    showVersion().then(() => {checkGnuPG();});
   });
 
   const commandListPublicKeys = vscode.commands.registerCommand('extension.ListPublicKeys', () => {
@@ -140,7 +140,7 @@ function checkGnuPG() {
     });
 }
 
-function showVersion() {
+function showVersion(): Thenable<{} | undefined> {
   let newUri = vscode.Uri.parse('virtual-document://gnupg/GnuPG-Version');
   return vscode.commands.executeCommand('vscode.open', newUri);
 }
@@ -155,9 +155,9 @@ function listPrivateKeys() {
   vscode.commands.executeCommand('vscode.open', newUri);
 }
 
-function showSmartcard() {
+function showSmartcard(): Thenable<{} | undefined> {
   let newUri = vscode.Uri.parse('virtual-document://gnupg/GnuPG-Smartcard');
-  vscode.commands.executeCommand('vscode.open', newUri);
+  return vscode.commands.executeCommand('vscode.open', newUri);
 }
 
 function encryptSelection(editor: vscode.TextEditor) {
