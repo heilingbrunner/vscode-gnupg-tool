@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
   let gnuPGProvider = vscode.workspace.registerTextDocumentContentProvider('gnupg', new GnuPGProvider());
 
   const commandCheckGnuPG = vscode.commands.registerCommand('extension.CheckGnuPG', () => {
-    showVersion();
+    new Promise(() => {showVersion();}).then(() => {checkGnuPG();});
   });
 
   const commandListPublicKeys = vscode.commands.registerCommand('extension.ListPublicKeys', () => {
@@ -142,7 +142,7 @@ function checkGnuPG() {
 
 function showVersion() {
   let newUri = vscode.Uri.parse('virtual-document://gnupg/GnuPG-Version');
-  vscode.commands.executeCommand('vscode.open', newUri);
+  return vscode.commands.executeCommand('vscode.open', newUri);
 }
 
 function listPublicKeys() {
