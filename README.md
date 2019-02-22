@@ -19,9 +19,15 @@
 - Works with smartcards.
 - Sign/verify file.
 
-![Commad palette](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/command-palette.png)
+The command palette ...
+
+![Command palette](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/command-palette.png)
+
+The explorer context menu ...
 
 ![Explorer context menu](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/explorer-context-menu.png)
+
+The editor context menu ...
 
 ![Editor context menu](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/editor-context-menu.png)
 
