@@ -19,6 +19,12 @@
 - Works with smartcards.
 - Sign/verify file.
 
+![Commad palette](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/command-palette.png)
+
+![Explorer context menu](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/explorer-context-menu.png)
+
+![Editor context menu](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/editor-context-menu.png)
+
 ## Used References
 
 - [VSCode GPG extension](https://marketplace.visualstudio.com/items?itemName=jvalecillos.gpg) by Jose Valecillos
@@ -171,7 +177,7 @@ This will show the verification result in a virtual document.
 
 ## 0.0.4
 
-README.md
+README
 
 ### 0.0.3
 
