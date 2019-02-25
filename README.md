@@ -55,7 +55,7 @@ Details will be shown in a virtual document.
 - fingerprint
 - name
 - email
-- capability D:disabled, S:sign, C:certify, E:encrypt
+- capabilities D: disabled, S: sign, C: certify, E: encrypt
 - validity
 
 ### List Private Keys
@@ -166,6 +166,10 @@ This will show the verification result in a virtual document.
 - Verify File: `gpg --verify <filename>.<ext>.sig <filename>.<ext> 2>&1` (using `child_process.exec(...)`)
 
 ## Release Notes
+
+## 0.0.7
+
+- ShowOpenDialog() instead of several info messages 'GnuPG: No file selected ! Please use explorer context menu.'
 
 ## 0.0.6
 

@@ -194,7 +194,16 @@ function encryptFile(fileUri: vscode.Uri) {
       encryptFileUri(fileUri);
     }
   } else {
-    vscode.window.showErrorMessage('GnuPG: No file selected ! Please use explorer context menu.');
+    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    vscode.window.showOpenDialog(option).then(fileUriSelected => {
+      if (fileUriSelected && fileUriSelected[0] && fileUriSelected[0].scheme === 'file') {
+        if (fileUriSelected[0].fsPath.match(/\.(asc)$/i)) {
+          vscode.window.showInformationMessage('GnuPG: File already encrypted (*.asc).');
+        } else {
+          encryptFileUri(fileUriSelected[0]);
+        }
+      }
+    });
   }
 }
 
@@ -206,7 +215,16 @@ function previewEncryptedFile(fileUri: vscode.Uri) {
       launchGnuPGProviderForEncrypt(fileUri);
     }
   } else {
-    vscode.window.showErrorMessage('GnuPG: No file selected ! Please use explorer context menu.');
+    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    vscode.window.showOpenDialog(option).then(fileUriSelected => {
+      if (fileUriSelected && fileUriSelected[0] && fileUriSelected[0].scheme === 'file') {
+        if (fileUriSelected[0].fsPath.match(/\.(asc)$/i)) {
+          vscode.window.showInformationMessage('GnuPG: File already encrypted (*.asc).');
+        } else {
+          launchGnuPGProviderForEncrypt(fileUriSelected[0]);
+        }
+      }
+    });
   }
 }
 
@@ -237,7 +255,16 @@ function decryptFile(fileUri: vscode.Uri) {
       vscode.window.showInformationMessage('GnuPG: File not encrypted (*.asc).');
     }
   } else {
-    vscode.window.showErrorMessage('GnuPG: No file selected ! Please use explorer context menu.');
+    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    vscode.window.showOpenDialog(option).then(fileUriSelected => {
+      if (fileUriSelected && fileUriSelected[0] && fileUriSelected[0].scheme === 'file') {
+        if (fileUriSelected[0].fsPath.match(/\.(asc)$/i)) {
+          decryptFileUri(fileUriSelected[0]);
+        } else {
+          vscode.window.showInformationMessage('GnuPG: File not encrypted (*.asc).');
+        }
+      }
+    });
   }
 }
 
@@ -249,7 +276,16 @@ function previewDecryptedFile(fileUri: vscode.Uri) {
       vscode.window.showInformationMessage('GnuPG: File not encrypted (*.asc).');
     }
   } else {
-    vscode.window.showErrorMessage('GnuPG: No file selected ! Please use explorer context menu.');
+    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    vscode.window.showOpenDialog(option).then(fileUriSelected => {
+      if (fileUriSelected && fileUriSelected[0] && fileUriSelected[0].scheme === 'file') {
+        if (fileUriSelected[0].fsPath.match(/\.(asc)$/i)) {
+          launchGnuPGProviderForDecrypt(fileUriSelected[0]);
+        } else {
+          vscode.window.showInformationMessage('GnuPG: File not encrypted (*.asc).');
+        }
+      }
+    });
   }
 }
 
@@ -261,7 +297,16 @@ function signFile(fileUri: vscode.Uri) {
       vscode.window.showInformationMessage('GnuPG: File is already a signature (*.sig).');
     }
   } else {
-    vscode.window.showErrorMessage('GnuPG: No file selected ! Please use explorer context menu.');
+    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    vscode.window.showOpenDialog(option).then(fileUriSelected => {
+      if (fileUriSelected && fileUriSelected[0] && fileUriSelected[0].scheme === 'file') {
+        if (!fileUriSelected[0].fsPath.match(/\.(sig)$/i)) {
+          signFileUri(fileUriSelected[0]);
+        } else {
+          vscode.window.showInformationMessage('GnuPG: File is already a signature (*.sig).');
+        }
+      }
+    });
   }
 }
 
@@ -273,7 +318,16 @@ function verifyFile(fileUri: vscode.Uri) {
       vscode.window.showInformationMessage('GnuPG: File is not signature (*.sig).');
     }
   } else {
-    vscode.window.showErrorMessage('GnuPG: No file selected ! Please use explorer context menu.');
+    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    vscode.window.showOpenDialog(option).then(fileUriSelected => {
+      if (fileUriSelected && fileUriSelected[0] && fileUriSelected[0].scheme === 'file') {
+        if (!fileUriSelected[0].fsPath.match(/\.(sig)$/i)) {
+          launchGnuPGProviderForVerify(fileUriSelected[0]);
+        } else {
+          vscode.window.showInformationMessage('GnuPG: File is not signature (*.sig).');
+        }
+      }
+    });
   }
 }
 

@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.7] - 2019-02-25
+
+- ShowOpenDialog() instead of several info messages 'GnuPG: No file selected ! Please use explorer context menu.'
+
 ## [0.0.6] - 2019-02-15
 
 - filter keys for sign and encrypt file
