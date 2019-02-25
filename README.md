@@ -35,6 +35,7 @@ The editor context menu ...
 
 - [VSCode GPG extension](https://marketplace.visualstudio.com/items?itemName=jvalecillos.gpg) by Jose Valecillos
 - [node-gpg](https://github.com/drudge/node-gpg) by Nicholas Penree
+- [GNU Privacy Guard](https://en.wikipedia.org/wiki/GNU_Privacy_Guard)
 - [GnuPG](https://www.gnupg.org/documentation/manuals/gnupg/index.html#SEC_Contents) documentation
 - [gpg](https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=blob_plain;f=doc/DETAILS) details
 
@@ -149,7 +150,11 @@ This will show the verification result in a virtual document.
 - Use pure [__GnuPG__](https://www.gnupg.org/ftp/gcrypt/binary/) installation (`gnupg-w32-<version>_<date>.exe`)
 - or [__Gpg4win__](https://www.gpg4win.de/)
 
-#### OSX/Debian
+#### OSX
+
+- [GPG Suite](https://gpgtools.org/)
+
+#### Debian
 
 - Refer to [GnuPG binary releases](https://gnupg.org/download/)
 
