@@ -37,7 +37,6 @@ The editor context menu ...
 - [node-gpg](https://github.com/drudge/node-gpg) by Nicholas Penree
 - [GNU Privacy Guard](https://en.wikipedia.org/wiki/GNU_Privacy_Guard)
 - [GnuPG](https://www.gnupg.org/documentation/manuals/gnupg/index.html#SEC_Contents) documentation
-- [gpg](https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=blob_plain;f=doc/DETAILS) details
 
 ## Usage
 
