@@ -22,7 +22,8 @@
     "sign",
     "verify",
     "gnupg",
-    "gpg"
+    "gpg",
+    "pgp"
   ],
   "galleryBanner": {
     "color": "#1e1e1e",
