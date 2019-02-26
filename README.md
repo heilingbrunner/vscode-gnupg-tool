@@ -18,6 +18,7 @@
 - End session to reset password cache by killing gpg-agent.
 - Works with smartcards.
 - Sign/verify file.
+- Keys import/export
 
 The command palette ...
 
@@ -39,6 +40,17 @@ The editor context menu ...
 - [GnuPG](https://www.gnupg.org/documentation/manuals/gnupg/index.html#SEC_Contents) documentation
 
 ## Usage
+
+### Used File extensions
+
+#### The `*.asc` Files
+
+- `<filename>.<ext>.asc`: This should be an ascii encrypted file (option: `--armor`) of the `<filename>.<ext>` file.
+- It although can be an ascii encoded key file.
+
+#### The `*.sig` Files
+
+- `<filename>.<ext>.sig`: This should be an ascii encoded signature file corresponding to `<filename>.<ext>`.
 
 ### Check GnuPG
 
@@ -140,6 +152,46 @@ This will show the verification result in a virtual document.
 
 > Mac/OSX: This works on Mac/OSX only if password is __not__ stored in macOS key ring. Check `System settings/GPG Suite`.
 
+### Import Keys
+
+1. Select key file to import
+2. Select command `GnuPG: Import Keys`
+
+or
+
+1. Select command `GnuPG: Import Keys`
+2. Select key file to import
+
+### Export Public Keys
+
+1. Select key file to overwrite
+2. Select command `GnuPG: Export Public Keys`
+
+or
+
+1. Select command `GnuPG: Export Public Keys`
+2. Select key file to create/overwrite
+
+### Export Private Keys
+
+1. Select key file to overwrite
+2. Select command `GnuPG: Export Private Keys`
+
+or
+
+1. Select command `GnuPG: Export Private Keys`
+2. Select key file to create/overwrite
+
+### Export Private Sub Keys
+
+1. Select key file to overwrite
+2. Select command `GnuPG: Export Private Sub Keys`
+
+or
+
+1. Select command `GnuPG: Export Private Sub Keys`
+2. Select key file to create/overwrite
+
 ## Requirements
 
 ### Installation of GnuPG
@@ -168,8 +220,16 @@ This will show the verification result in a virtual document.
 - End session: `gpg-connect-agent killagent /bye`
 - Sign File: `gpg --armor --output <filename>.<ext>.sig --local-user <ssb.fingerprint> --detach-sign <filename>.<ext>` (using [gpg call](https://github.com/drudge/node-gpg))
 - Verify File: `gpg --verify <filename>.<ext>.sig <filename>.<ext> 2>&1` (using `child_process.exec(...)`)
+- Import Keys: `gpg --import <filename>.<ext>`
+- Export Public Keys: `gpg --armor --batch --yes --output <filename>.<ext> --export <fingerprint>`
+- Export Private Keys: `gpg --armor --batch --yes --output <filename>.<ext>--export-secret-keys <fingerprint>`
+- Export Private Sub Keys: `gpg --armor --batch --yes --output <filename>.<ext>--export-secret-subkeys <fingerprint>`
 
 ## Release Notes
+
+## 0.0.8
+
+- import/export of public/private keys
 
 ## 0.0.7
 

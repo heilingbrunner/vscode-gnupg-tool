@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.8] - 2019-02-26
+
+- import/export of public/private keys
+
 ## [0.0.7] - 2019-02-25
 
 - ShowOpenDialog() instead of several info messages 'GnuPG: No file selected ! Please use explorer context menu.'

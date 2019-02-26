@@ -56,8 +56,8 @@ export function promise_parseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>
       //crt :: X.509 certificate
       //crs :: X.509 certificate and private key available
       //sub :: Subkey (secondary key)
-      //sec :: Secret key
-      //ssb :: Secret subkey (secondary key)
+      //sec :: Private key
+      //ssb :: Private subkey (secondary key)
       //uid :: User id
       //uat :: User attribute (same as user id except for field 10).
       //sig :: Signature
@@ -245,7 +245,10 @@ export function promise_exec(cmd: string, opts: ExecOptions): Promise<{ stdout: 
   });
 }
 
-export function promise_filterKeys(keys: Map<string, GnuPGKey>, predicate: (k: GnuPGKey) => boolean): Promise<Array<GnuPGKey>> {
+export function promise_filterKeys(
+  keys: Map<string, GnuPGKey>,
+  predicate: (k: GnuPGKey) => boolean
+): Promise<Array<GnuPGKey>> {
   return new Promise((resolve, reject) => {
     resolve(Array.from(keys.values()).filter(k => predicate(k)));
   });
@@ -318,5 +321,85 @@ export function promise_verify(uri: vscode.Uri): Promise<Buffer> {
 
     let cmd = 'gpg --verify ' + uri.fsPath + ' ' + uri.fsPath.slice(0, -'.sig'.length) + ' 2>&1';
     child_process.exec(cmd, {}, (err, stdout) => (err ? reject('') : resolve(new Buffer(stdout))));
+  });
+}
+
+export function promise_importKeys(uri: vscode.Uri): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--import'];
+    args = args.concat([uri.fsPath]);
+
+    call('', args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(new Buffer('Import suceeded'));
+    });
+  });
+}
+
+export function promise_exportPublicKeys(
+  uri: vscode.Uri,
+  key?: {
+    label: string;
+    description: string;
+    detail: string;
+    name: string;
+    email: string;
+    fingerprint: string;
+    ssbfingerprint: string;
+  }
+): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--armor', '--batch', '--yes', '--output', uri.fsPath];
+    args = args.concat('--export');
+    args = args.concat(key ? key.fingerprint : '');
+
+    call('', args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(new Buffer('Export suceeded'));
+    });
+  });
+}
+
+export function promise_exportPrivateKeys(
+  uri: vscode.Uri,
+  key?: {
+    label: string;
+    description: string;
+    detail: string;
+    name: string;
+    email: string;
+    fingerprint: string;
+    ssbfingerprint: string;
+  }
+): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--armor', '--batch', '--yes', '--output', uri.fsPath];
+    args = args.concat('--export-secret-keys');
+    args = args.concat(key ? key.fingerprint : '');
+
+    call('', args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(new Buffer('Export suceeded'));
+    });
+  });
+}
+
+export function promise_exportPrivateSubKeys(
+  uri: vscode.Uri,
+  key?: {
+    label: string;
+    description: string;
+    detail: string;
+    name: string;
+    email: string;
+    fingerprint: string;
+    ssbfingerprint: string;
+  }
+): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--armor', '--batch', '--yes', '--output', uri.fsPath];
+    args = args.concat('--export-secret-subkeys');
+    args = args.concat(key ? key.fingerprint : '');
+
+    call('', args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(new Buffer('Export suceeded'));
+    });
   });
 }

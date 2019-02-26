@@ -13,6 +13,10 @@ import {
   promise_listPrivateKeys,
   promise_sign,
   promise_filterKeys,
+  promise_importKeys,
+  promise_exportPublicKeys,
+  promise_exportPrivateKeys,
+  promise_exportPrivateSubKeys
   // promise_filterKeysForEncrypt,
   // promise_filterKeysForSign
 } from './gnupgpromises';
@@ -20,6 +24,7 @@ import VirtualDocumentProvider from './virtualdocumentprovider';
 import GnuPGProvider from './gnupgprovider';
 import { getContent, setContent } from './utils';
 import { GnuPGKey } from './gnupgkey';
+import { resolve } from 'dns';
 
 let statusBarItem: vscode.StatusBarItem;
 
@@ -27,95 +32,124 @@ let statusBarItem: vscode.StatusBarItem;
 export function activate(context: vscode.ExtensionContext) {
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
-  let virtualDocumentProvider = vscode.workspace.registerTextDocumentContentProvider(
-    'virtual-document',
-    new VirtualDocumentProvider()
+  context.subscriptions.push(
+    vscode.workspace.registerTextDocumentContentProvider('virtual-document', new VirtualDocumentProvider())
   );
-  let gnuPGProvider = vscode.workspace.registerTextDocumentContentProvider('gnupg', new GnuPGProvider());
 
-  const commandCheckGnuPG = vscode.commands.registerCommand('extension.CheckGnuPG', () => {
-    showVersion().then(() => {checkGnuPG();});
-  });
+  context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('gnupg', new GnuPGProvider()));
 
-  const commandListPublicKeys = vscode.commands.registerCommand('extension.ListPublicKeys', () => {
-    listPublicKeys();
-  });
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.CheckGnuPG', () => {
+      showVersion().then(() => {
+        checkGnuPG();
+      });
+    })
+  );
 
-  const commandListPrivateKeys = vscode.commands.registerCommand('extension.ListPrivateKeys', () => {
-    listPrivateKeys();
-  });
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.ListPublicKeys', () => {
+      listPublicKeys();
+    })
+  );
 
-  const commandShowSmartcard = vscode.commands.registerCommand('extension.ShowSmartcard', () => {
-    showSmartcard();
-  });
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.ListPrivateKeys', () => {
+      listPrivateKeys();
+    })
+  );
 
-  const commandEncryptSelection = vscode.commands.registerCommand('extension.EncryptSelection', () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      encryptSelection(editor);
-    }
-  });
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.ShowSmartcard', () => {
+      showSmartcard();
+    })
+  );
 
-  const commandEncryptFile = vscode.commands.registerCommand('extension.EncryptFile', (fileUri: vscode.Uri) => {
-    encryptFile(fileUri);
-  });
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.EncryptSelection', () => {
+      const editor = vscode.window.activeTextEditor;
+      if (editor) {
+        encryptSelection(editor);
+      }
+    })
+  );
 
-  const commandPreviewEncryptedFile = vscode.commands.registerCommand(
-    'extension.PreviewEncryptedFile',
-    (fileUri: vscode.Uri) => {
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.EncryptFile', (fileUri: vscode.Uri) => {
+      encryptFile(fileUri);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.PreviewEncryptedFile', (fileUri: vscode.Uri) => {
       previewEncryptedFile(fileUri);
-    }
+    })
   );
 
-  const commandDecryptSelection = vscode.commands.registerCommand('extension.DecryptSelection', () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      decryptSelection(editor);
-    }
-  });
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.DecryptSelection', () => {
+      const editor = vscode.window.activeTextEditor;
+      if (editor) {
+        decryptSelection(editor);
+      }
+    })
+  );
 
-  const commandDecryptFile = vscode.commands.registerCommand('extension.DecryptFile', (fileUri: vscode.Uri) => {
-    decryptFile(fileUri);
-  });
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.DecryptFile', (fileUri: vscode.Uri) => {
+      decryptFile(fileUri);
+    })
+  );
 
-  const commandPreviewDecryptedFile = vscode.commands.registerCommand(
-    'extension.PreviewDecryptedFile',
-    (fileUri: vscode.Uri) => {
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.PreviewDecryptedFile', (fileUri: vscode.Uri) => {
       previewDecryptedFile(fileUri);
-    }
+    })
   );
 
-  const commandSignFile = vscode.commands.registerCommand('extension.SignFile', (fileUri: vscode.Uri) => {
-    signFile(fileUri);
-  });
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.SignFile', (fileUri: vscode.Uri) => {
+      signFile(fileUri);
+    })
+  );
 
-  const commandVerifyFile = vscode.commands.registerCommand('extension.VerifyFile', (fileUri: vscode.Uri) => {
-    verifyFile(fileUri);
-  });
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.VerifyFile', (fileUri: vscode.Uri) => {
+      verifyFile(fileUri);
+    })
+  );
 
-  const commandEndSession = vscode.commands.registerCommand('extension.EndSession', () => {
-    endSession();
-  });
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.EndSession', () => {
+      endSession();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.ImportKeys', (fileUri: vscode.Uri) => {
+      importKeys(fileUri);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.ExportPublicKeys', (fileUri: vscode.Uri) => {
+      exportPublicKeys(fileUri);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.ExportPrivateKeys', (fileUri: vscode.Uri) => {
+      exportPrivateKeys(fileUri);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.ExportPrivateSubKeys', (fileUri: vscode.Uri) => {
+      exportPrivateSubKeys(fileUri);
+    })
+  );
 
   // Update statusBarItem on activate
   checkGnuPG();
-
-  //Disposables
-  context.subscriptions.push(virtualDocumentProvider);
-  context.subscriptions.push(gnuPGProvider);
-  context.subscriptions.push(commandCheckGnuPG);
-  context.subscriptions.push(commandListPublicKeys);
-  context.subscriptions.push(commandListPrivateKeys);
-  context.subscriptions.push(commandShowSmartcard);
-  context.subscriptions.push(commandEncryptSelection);
-  context.subscriptions.push(commandEncryptFile);
-  context.subscriptions.push(commandPreviewEncryptedFile);
-  context.subscriptions.push(commandDecryptSelection);
-  context.subscriptions.push(commandDecryptFile);
-  context.subscriptions.push(commandPreviewDecryptedFile);
-  context.subscriptions.push(commandSignFile);
-  context.subscriptions.push(commandVerifyFile);
-  context.subscriptions.push(commandEndSession);
 }
 
 // this method is called when your extension is deactivated
@@ -335,6 +369,128 @@ function endSession() {
   promise_killgpgagent()
     .then(() => vscode.window.showInformationMessage('GnuPG session ended.'))
     .catch(err => vscode.window.showErrorMessage('GnuPG end session failed ! ' + err));
+}
+
+function importKeys(fileUri: vscode.Uri) {
+  if (fileUri !== undefined && fileUri.scheme === 'file') {
+    promise_importKeys(fileUri)
+      .then(result => {
+        let txt = result.toString();
+        vscode.window.showInformationMessage('GnuPG ' + txt);
+      })
+      .catch(err => vscode.window.showErrorMessage('GnuPG import keys failed ! ' + err));
+  } else {
+    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    vscode.window.showOpenDialog(option).then(fileUriSelected => {
+      if (fileUriSelected && fileUriSelected[0] && fileUriSelected[0].scheme === 'file') {
+        promise_importKeys(fileUriSelected[0])
+          .then(result => {
+            let txt = result.toString();
+            vscode.window.showInformationMessage('GnuPG ' + txt);
+          })
+          .catch(err => vscode.window.showErrorMessage('GnuPG import keys failed ! ' + err));
+      }
+    });
+  }
+}
+
+function exportPublicKeys(fileUri: vscode.Uri) {
+  promise_listPublicKeys()
+    .then(stdout => promise_parseKeys(stdout))
+    .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+    .then(keys => promise_keysToQuickPickItems(keys))
+    .then(quickpickitems =>
+      vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select key to export ...', canPickMany: false })
+    )
+    .then(user => {
+      if (fileUri !== undefined && fileUri.scheme === 'file') {
+        promise_exportPublicKeys(fileUri, user)
+              .then(result => {
+                let txt = result.toString();
+                vscode.window.showInformationMessage(txt);
+              })
+              .catch(err => vscode.window.showErrorMessage('GnuPG export keys failed ! ' + err));
+      } else {
+        const option: vscode.OpenDialogOptions = { canSelectMany: false };
+        vscode.window.showSaveDialog(option).then(fileUriSelected => {
+          if (fileUriSelected && fileUriSelected.scheme === 'file') {
+            promise_exportPublicKeys(fileUriSelected, user)
+              .then(result => {
+                let txt = result.toString();
+                vscode.window.showInformationMessage(txt);
+              })
+              .catch(err => vscode.window.showErrorMessage('GnuPG export keys failed ! ' + err));
+          } else {
+          }
+        });
+      }
+    });
+}
+
+function exportPrivateKeys(fileUri: vscode.Uri) {
+  promise_listPublicKeys()
+      .then(stdout => promise_parseKeys(stdout))
+      .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+      .then(keys => promise_keysToQuickPickItems(keys))
+      .then(quickpickitems =>
+        vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select key to export ...', canPickMany: false })
+      )
+      .then(user => {
+        if (fileUri !== undefined && fileUri.scheme === 'file') {
+          promise_exportPrivateKeys(fileUri, user)
+              .then(result => {
+                let txt = result.toString();
+                vscode.window.showInformationMessage(txt);
+              })
+              .catch(err => vscode.window.showErrorMessage('GnuPG export keys failed ! ' + err));
+        } else {
+          const option: vscode.OpenDialogOptions = { canSelectMany: false };
+        vscode.window.showSaveDialog(option).then(fileUriSelected => {
+          if (fileUriSelected && fileUriSelected.scheme === 'file') {
+            promise_exportPrivateKeys(fileUriSelected, user)
+              .then(result => {
+                let txt = result.toString();
+                vscode.window.showInformationMessage(txt);
+              })
+              .catch(err => vscode.window.showErrorMessage('GnuPG export keys failed ! ' + err));
+          } else {
+          }
+        });
+        }
+      });
+}
+
+function exportPrivateSubKeys(fileUri: vscode.Uri) {
+  promise_listPublicKeys()
+      .then(stdout => promise_parseKeys(stdout))
+      .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+      .then(keys => promise_keysToQuickPickItems(keys))
+      .then(quickpickitems =>
+        vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select key to export ...', canPickMany: false })
+      )
+      .then(user => {
+        if (fileUri !== undefined && fileUri.scheme === 'file') {
+          promise_exportPrivateSubKeys(fileUri, user)
+              .then(result => {
+                let txt = result.toString();
+                vscode.window.showInformationMessage(txt);
+              })
+              .catch(err => vscode.window.showErrorMessage('GnuPG export keys failed ! ' + err));
+        } else {
+          const option: vscode.OpenDialogOptions = { canSelectMany: false };
+        vscode.window.showSaveDialog(option).then(fileUriSelected => {
+          if (fileUriSelected && fileUriSelected.scheme === 'file') {
+            promise_exportPrivateSubKeys(fileUriSelected, user)
+              .then(result => {
+                let txt = result.toString();
+                vscode.window.showInformationMessage(txt);
+              })
+              .catch(err => vscode.window.showErrorMessage('GnuPG export keys failed ! ' + err));
+          } else {
+          }
+        });
+        }
+      });
 }
 
 // Helper .......................................................
