@@ -6,7 +6,7 @@ import {
   promise_bufferToLines,
   promise_listPublicKeys,
   promise_parseKeys,
-  promise_keysToOptions,
+  promise_keysToQuickPickItems,
   promise_encrypt,
   promise_decrypt,
   promise_killgpgagent,
@@ -169,9 +169,9 @@ function encryptSelection(editor: vscode.TextEditor) {
       promise_listPublicKeys()
         .then(stdout => promise_parseKeys(stdout))
         .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-        .then(keys => promise_keysToOptions(keys))
-        .then(options =>
-          vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
+        .then(keys => promise_keysToQuickPickItems(keys))
+        .then(quickpickitems =>
+          vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
         )
         .then(recipients => promise_encrypt(content, recipients))
         .then(encrypted => {
@@ -345,9 +345,9 @@ function encryptFileUri(fileUri: vscode.Uri) {
       promise_listPublicKeys()
         .then(stdout => promise_parseKeys(stdout))
         .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-        .then(keys => promise_keysToOptions(keys))
-        .then(options =>
-          vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
+        .then(keys => promise_keysToQuickPickItems(keys))
+        .then(quickpickitems =>
+          vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
         )
         .then(recipients => promise_encrypt(content, recipients))
         .then(encrypted => {
@@ -390,8 +390,8 @@ function signFileUri(fileUri: vscode.Uri) {
   promise_listPrivateKeys()
     .then(stdout => promise_parseKeys(stdout))
     .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToSign))
-    .then(keys => promise_keysToOptions(keys))
-    .then(options => vscode.window.showQuickPick(options, { placeHolder: 'Select signer ...' }))
+    .then(keys => promise_keysToQuickPickItems(keys))
+    .then(quickpickitems => vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select signer ...' }))
     .then(key => promise_sign(fileUri, key))
     .catch(err => vscode.window.showErrorMessage('GnuPG sign failed ! ' + err));
 }

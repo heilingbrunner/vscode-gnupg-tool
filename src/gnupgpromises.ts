@@ -251,7 +251,7 @@ export function promise_filterKeys(keys: Map<string, GnuPGKey>, predicate: (k: G
   });
 }
 
-export function promise_keysToOptions(
+export function promise_keysToQuickPickItems(
   keyarray: Array<GnuPGKey>
 ): Promise<
   {

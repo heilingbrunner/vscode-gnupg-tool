@@ -3,7 +3,7 @@ import {
   promise_decrypt,
   promise_listPublicKeys,
   promise_parseKeys,
-  promise_keysToOptions,
+  promise_keysToQuickPickItems,
   promise_encrypt,
   promise_verify,
   promise_filterKeys,
@@ -35,9 +35,9 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
             promise_listPublicKeys()
               .then(stdout => promise_parseKeys(stdout))
               .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-              .then(keys => promise_keysToOptions(keys))
-              .then(options =>
-                vscode.window.showQuickPick(options, { placeHolder: 'Select recipients ...', canPickMany: true })
+              .then(keys => promise_keysToQuickPickItems(keys))
+              .then(quickpickitems =>
+                vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
               )
               .then(recipients => promise_encrypt(content, recipients))
               .then(encrypted => {
