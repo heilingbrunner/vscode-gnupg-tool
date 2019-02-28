@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
 import {
-  promise_listPublicKeys,
-  promise_parseKeys,
-  promise_keysToText,
-  promise_showSmartcard,
-  promise_checkVersion,
-  promise_listPrivateKeys,
-  promise_verify
+  promiseListPublicKeys,
+  promiseParseKeys,
+  promiseKeysToText,
+  promiseShowSmartcard,
+  promiseCheckVersion,
+  promiseListPrivateKeys,
+  promiseVerify
 } from './gnupgpromises';
 
 export default class VirtualDocumentProvider implements vscode.TextDocumentContentProvider {
@@ -34,9 +34,9 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
 
   listPublicKeys(): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-      promise_listPublicKeys()
-        .then(stdout => promise_parseKeys(stdout))
-        .then(keys => promise_keysToText(keys))
+      promiseListPublicKeys()
+        .then(stdout => promiseParseKeys(stdout))
+        .then(keys => promiseKeysToText(keys))
         .then(recipients => {
           let content = 'GnuPG Public Keys:\r\n';
           content += '\r\n';
@@ -51,9 +51,9 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
 
   listPrivateKeys(): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-      promise_listPrivateKeys()
-        .then(stdout => promise_parseKeys(stdout))
-        .then(keys => promise_keysToText(keys))
+      promiseListPrivateKeys()
+        .then(stdout => promiseParseKeys(stdout))
+        .then(keys => promiseKeysToText(keys))
         .then(recipients => {
           let content = 'GnuPG Private Keys:\r\n';
           content += '\r\n';
@@ -68,7 +68,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
 
   showSmartcard(): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-      promise_showSmartcard()
+      promiseShowSmartcard()
         .then(stdout => resolve(stdout))
         .catch(err => {
           resolve(new Buffer('GnuPG show smartcard failed !\r\n' + err));
@@ -78,7 +78,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
 
   showVersion(): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-      promise_checkVersion()
+      promiseCheckVersion()
         .then(stdout => resolve(stdout))
         .catch(err => {
           resolve(new Buffer('GnuPG not available !\r\n' + err));
@@ -88,7 +88,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
 
   showVerification(uri: vscode.Uri): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-      promise_verify(uri)
+      promiseVerify(uri)
         .then(stdout => resolve(stdout))
         .catch(err => {
           resolve(new Buffer('GnuPG not available !\r\n' + err));

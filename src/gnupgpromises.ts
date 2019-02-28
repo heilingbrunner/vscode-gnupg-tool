@@ -5,7 +5,7 @@ import { ExecOptions } from 'child_process';
 import { call, encrypt, decrypt } from 'gpg';
 import { GnuPGKey } from './gnupgkey';
 
-export function promise_checkVersion(): Promise<Buffer> {
+export function promiseCheckVersion(): Promise<Buffer> {
   return new Promise(function(resolve, reject) {
     var args = ['--version'];
 
@@ -15,7 +15,7 @@ export function promise_checkVersion(): Promise<Buffer> {
   });
 }
 
-export function promise_listPublicKeys(): Promise<Buffer> {
+export function promiseListPublicKeys(): Promise<Buffer> {
   return new Promise(function(resolve, reject) {
     var args = ['-k', '--with-colons'];
 
@@ -25,7 +25,7 @@ export function promise_listPublicKeys(): Promise<Buffer> {
   });
 }
 
-export function promise_listPrivateKeys(): Promise<Buffer> {
+export function promiseListPrivateKeys(): Promise<Buffer> {
   return new Promise(function(resolve, reject) {
     var args = ['-K', '--with-colons'];
 
@@ -35,7 +35,7 @@ export function promise_listPrivateKeys(): Promise<Buffer> {
   });
 }
 
-export function promise_parseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>> {
+export function promiseParseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>> {
   //see source: gnupg-2.2.12\doc\DETAILS
   //https://github.com/gpg/gnupg/blob/master/doc/DETAILS
 
@@ -173,7 +173,7 @@ export function promise_parseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>
   });
 }
 
-export function promise_encryptBuffer(
+export function promiseEncryptAsymBuffer(
   content: Buffer,
   keys?: { name: string; email: string; fingerprint: string }[]
 ): Promise<Buffer> {
@@ -192,7 +192,7 @@ export function promise_encryptBuffer(
   });
 }
 
-export function promise_encryptUri(
+export function promiseEncryptAsymUri(
   uri: vscode.Uri,
   keys?: { name: string; email: string; fingerprint: string }[]
 ): Promise<Buffer> {
@@ -214,30 +214,7 @@ export function promise_encryptUri(
   });
 }
 
-export function promise_decryptBuffer(content: Buffer): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = ['--decrypt'];
-
-    decrypt(content, args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
-    });
-  });
-}
-
-export function promise_decryptUri(uri: vscode.Uri): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = ['--batch', '--yes'];
-
-    args = args.concat(['--output', uri.fsPath + '.decrypted']);
-    args = args.concat(['--decrypt', uri.fsPath]);
-
-    call('', args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
-    });
-  });
-}
-
-export function promise_symmetricBuffer(
+export function promiseEncryptSymBuffer(
   content: Buffer
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -249,7 +226,7 @@ export function promise_symmetricBuffer(
   });
 }
 
-export function promise_symmetricUri(
+export function promiseEncryptSymUri(
   uri: vscode.Uri
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -264,7 +241,30 @@ export function promise_symmetricUri(
   });
 }
 
-export function promise_showSmartcard(): Promise<Buffer> {
+export function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--decrypt'];
+
+    decrypt(content, args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(result);
+    });
+  });
+}
+
+export function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--batch', '--yes'];
+
+    args = args.concat(['--output', uri.fsPath + '.decrypted']);
+    args = args.concat(['--decrypt', uri.fsPath]);
+
+    call('', args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(result);
+    });
+  });
+}
+
+export function promiseShowSmartcard(): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     var args = ['--card-status'];
 
@@ -274,15 +274,15 @@ export function promise_showSmartcard(): Promise<Buffer> {
   });
 }
 
-export function promise_killgpgagent(): Promise<{ stdout: string; stderr: string }> {
+export function promiseKillGpgAgent(): Promise<{ stdout: string; stderr: string }> {
   //https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html
   //https://www.gnupg.org/documentation/manuals/gnupg/Controlling-gpg_002dconnect_002dagent.html#Controlling-gpg_002dconnect_002dagent
   //gpgconf --kill gpg-agent: works on Windows
   //gpg-connect-agent killagent /bye
-  return promise_exec('gpg-connect-agent killagent /bye', {});
+  return promiseExec('gpg-connect-agent killagent /bye', {});
 }
 
-export function promise_bufferToLines(stdout: Buffer): Promise<string[]> {
+export function promiseBufferToLines(stdout: Buffer): Promise<string[]> {
   return new Promise((resolve, reject) => {
     let lines = stdout
       .toString()
@@ -294,7 +294,7 @@ export function promise_bufferToLines(stdout: Buffer): Promise<string[]> {
   });
 }
 
-export function promise_exec(cmd: string, opts: ExecOptions): Promise<{ stdout: string; stderr: string }> {
+export function promiseExec(cmd: string, opts: ExecOptions): Promise<{ stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
     child_process.exec(cmd, opts, (err, stdout, stderr) =>
       err
@@ -307,7 +307,7 @@ export function promise_exec(cmd: string, opts: ExecOptions): Promise<{ stdout: 
   });
 }
 
-export function promise_filterKeys(
+export function promiseFilterKeys(
   keys: Map<string, GnuPGKey>,
   predicate: (k: GnuPGKey) => boolean
 ): Promise<Array<GnuPGKey>> {
@@ -316,7 +316,7 @@ export function promise_filterKeys(
   });
 }
 
-export function promise_keysToQuickPickItems(
+export function promiseKeysToQuickPickItems(
   keyarray: Array<GnuPGKey>
 ): Promise<
   {
@@ -345,7 +345,7 @@ export function promise_keysToQuickPickItems(
   });
 }
 
-export function promise_keysToText(keys: Map<string, GnuPGKey>): Promise<string[]> {
+export function promiseKeysToText(keys: Map<string, GnuPGKey>): Promise<string[]> {
   return new Promise((resolve, reject) => {
     let recipients: string[] = [];
 
@@ -357,7 +357,7 @@ export function promise_keysToText(keys: Map<string, GnuPGKey>): Promise<string[
   });
 }
 
-export function promise_sign(
+export function promiseSign(
   uri: vscode.Uri,
   key?: { name: string; email: string; fingerprint: string; ssbfingerprint: string }
 ): Promise<Buffer> {
@@ -376,7 +376,7 @@ export function promise_sign(
   });
 }
 
-export function promise_verify(uri: vscode.Uri): Promise<Buffer> {
+export function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     // GnuPG prints (at least some of) this output to stderr, not stdout. Redirect stderr to stdout using 2>&1
     // call(....) not working, cannot redirect
@@ -386,7 +386,7 @@ export function promise_verify(uri: vscode.Uri): Promise<Buffer> {
   });
 }
 
-export function promise_importKeys(uri: vscode.Uri): Promise<Buffer> {
+export function promiseImportKeys(uri: vscode.Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--import'];
     args = args.concat([uri.fsPath]);
@@ -397,7 +397,7 @@ export function promise_importKeys(uri: vscode.Uri): Promise<Buffer> {
   });
 }
 
-export function promise_exportPublicKeys(
+export function promiseExportPublicKeys(
   uri: vscode.Uri,
   key?: {
     label: string;
@@ -420,7 +420,7 @@ export function promise_exportPublicKeys(
   });
 }
 
-export function promise_exportPrivateKeys(
+export function promiseExportPrivateKeys(
   uri: vscode.Uri,
   key?: {
     label: string;
@@ -443,7 +443,7 @@ export function promise_exportPrivateKeys(
   });
 }
 
-export function promise_exportPrivateSubKeys(
+export function promiseExportPrivateSubKeys(
   uri: vscode.Uri,
   key?: {
     label: string;

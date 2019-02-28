@@ -6,7 +6,7 @@
   },
   "displayName": "GnuPG-Tool",
   "description": "GnuPG tool",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "JHeilingbrunner",
   "license": "MIT",
   "icon": "images/vscode-gnupg-tool-logo.png",
@@ -80,32 +80,32 @@
       },
       {
         "command": "extension.EncryptSelection",
-        "title": "Encrypt Selection",
+        "title": "Encrypt Selection w/ Recipients",
         "category": "GnuPG"
       },
       {
         "command": "extension.EncryptFile",
-        "title": "Encrypt File",
+        "title": "Encrypt File w/ Recipients",
         "category": "GnuPG"
       },
       {
         "command": "extension.PreviewEncryptedFile",
-        "title": "Preview Encrypted File",
+        "title": "Preview Encrypted File w/ Recipients",
         "category": "GnuPG"
       },
       {
         "command": "extension.EncryptSelectionWithPassphrase",
-        "title": "Encrypt Selection with Passphrase",
+        "title": "Encrypt Selection w/ Passphrase",
         "category": "GnuPG"
       },
       {
         "command": "extension.EncryptFileWithPassphrase",
-        "title": "Encrypt File with Passphrase",
+        "title": "Encrypt File w/ Passphrase",
         "category": "GnuPG"
       },
       {
         "command": "extension.PreviewEncryptedFileWithPassphrase",
-        "title": "Preview Encrypted File with Passphrase",
+        "title": "Preview Encrypted File w/ Passphrase",
         "category": "GnuPG"
       },
       {
@@ -184,8 +184,13 @@
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.PreviewDecryptedFile",
+          "command": "extension.PreviewEncryptedFileWithPassphrase",
           "group": "gnupg1@2",
+          "when": "resourceExtname != .asc && resourceExtname != .sig"
+        },
+        {
+          "command": "extension.PreviewDecryptedFile",
+          "group": "gnupg1@3",
           "when": "resourceExtname == .asc"
         },
         {
@@ -194,8 +199,13 @@
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.DecryptFile",
+          "command": "extension.EncryptFileWithPassphrase",
           "group": "gnupg2@2",
+          "when": "resourceExtname != .asc && resourceExtname != .sig"
+        },
+        {
+          "command": "extension.DecryptFile",
+          "group": "gnupg2@3",
           "when": "resourceExtname == .asc"
         },
         {
@@ -236,9 +246,14 @@
           "group": "gnupg@1"
         },
         {
-          "command": "extension.DecryptSelection",
+          "command": "extension.EncryptSelectionWithPassphrase",
           "when": "editorHasSelection",
           "group": "gnupg@2"
+        },
+        {
+          "command": "extension.DecryptSelection",
+          "when": "editorHasSelection",
+          "group": "gnupg@3"
         }
       ],
       "editor/title": [
@@ -248,8 +263,13 @@
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.PreviewDecryptedFile",
+          "command": "extension.PreviewEncryptedFileWithPassphrase",
           "group": "gnupg1@2",
+          "when": "resourceExtname != .asc && resourceExtname != .sig"
+        },
+        {
+          "command": "extension.PreviewDecryptedFile",
+          "group": "gnupg1@3",
           "when": "resourceExtname == .asc"
         },
         {
@@ -258,8 +278,13 @@
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.DecryptFile",
+          "command": "extension.EncryptFileWithPassphrase",
           "group": "gnupg2@2",
+          "when": "resourceExtname != .asc && resourceExtname != .sig"
+        },
+        {
+          "command": "extension.DecryptFile",
+          "group": "gnupg2@3",
           "when": "resourceExtname == .asc"
         },
         {

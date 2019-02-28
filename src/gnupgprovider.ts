@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
 import {
-  promise_decryptBuffer,
-  promise_listPublicKeys,
-  promise_parseKeys,
-  promise_keysToQuickPickItems,
-  promise_encryptBuffer,
-  promise_verify,
-  promise_filterKeys,
-  promise_symmetricBuffer,
+  promiseDecryptBuffer,
+  promiseListPublicKeys,
+  promiseParseKeys,
+  promiseKeysToQuickPickItems,
+  promiseEncryptAsymBuffer,
+  promiseVerify,
+  promiseFilterKeys,
+  promiseEncryptSymBuffer,
 } from './gnupgpromises';
 import { getContent } from './utils';
 import { GnuPGKey } from './gnupgkey';
@@ -21,7 +21,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         return new Promise(async resolve => {
           getContent(newUri)
             .then(content => {
-              return promise_decryptBuffer(content);
+              return promiseDecryptBuffer(content);
             })
             .then(decrypted => {
               return resolve(decrypted.toString('utf8'));
@@ -33,14 +33,14 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         newUri = uri.with({ scheme: 'file', authority: '', path: uri.fsPath.slice(0, -' - encrypted'.length) });
         return new Promise(async resolve => {
           getContent(newUri).then(content => {
-            promise_listPublicKeys()
-              .then(stdout => promise_parseKeys(stdout))
-              .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-              .then(keys => promise_keysToQuickPickItems(keys))
+            promiseListPublicKeys()
+              .then(stdout => promiseParseKeys(stdout))
+              .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+              .then(keys => promiseKeysToQuickPickItems(keys))
               .then(quickpickitems =>
                 vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
               )
-              .then(recipients => promise_encryptBuffer(content, recipients))
+              .then(recipients => promiseEncryptAsymBuffer(content, recipients))
               .then(encrypted => {
                 resolve(encrypted.toString('utf8'));
               })
@@ -52,7 +52,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         newUri = uri.with({ scheme: 'file', authority: '', path: uri.fsPath.slice(0, -' - encrypted'.length) });
         return new Promise(async resolve => {
           getContent(newUri).then(content => {
-            promise_symmetricBuffer(content)
+            promiseEncryptSymBuffer(content)
                 .then(encrypted => {
                   resolve(encrypted.toString('utf8'));
                 })
@@ -63,7 +63,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
       case 'verify':
         newUri = uri.with({ scheme: 'file', authority: '', path: uri.fsPath.slice(0, -' - verified'.length) });
         return new Promise(async resolve => {
-          promise_verify(newUri)
+          promiseVerify(newUri)
             .then(verification => {
               return resolve('GnuPG verification:\r\n' + verification.toString('utf8'));
             })
