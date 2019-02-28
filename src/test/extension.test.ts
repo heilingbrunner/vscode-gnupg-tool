@@ -13,7 +13,7 @@ import { promiseCheckVersion } from '../gnupgpromises';
 
 // Defines a Mocha test suite to group tests of similar kind together
 suite('Extension Tests', function() {
-  test('promise_checkVersion', () => {
+  test('promiseCheckVersion', () => {
     return promiseCheckVersion().then(buff => {
       let version = '';
       version = buff.toString();

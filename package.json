@@ -32,14 +32,14 @@
   "activationEvents": [
     "onCommand:extension.CheckGnuPG",
     "onCommand:extension.ListPublicKeys",
-    "onCommand:extension.ListPrivateKeys",
+    "onCommand:extension.ListSecretKeys",
     "onCommand:extension.ShowSmartcard",
     "onCommand:extension.EncryptSelection",
     "onCommand:extension.EncryptFile",
     "onCommand:extension.PreviewEncryptedFile",
-    "onCommand:extension.EncryptSelectionWithPassphrase",
-    "onCommand:extension.EncryptFileWithPassphrase",
-    "onCommand:extension.PreviewEncryptedFileWithPassphrase",
+    "onCommand:extension.EncryptSelectionSymm",
+    "onCommand:extension.EncryptFileSymm",
+    "onCommand:extension.PreviewEncryptedFileSymm",
     "onCommand:extension.DecryptSelection",
     "onCommand:extension.DecryptFile",
     "onCommand:extension.PreviewDecryptedFile",
@@ -48,8 +48,8 @@
     "onCommand:extension.EndSession",
     "onCommand:extension.ImportKeys",
     "onCommand:extension.ExportPublicKeys",
-    "onCommand:extension.ExportPrivateKeys",
-    "onCommand:extension.ExportPrivateSubKeys"
+    "onCommand:extension.ExportSecretKeys",
+    "onCommand:extension.ExportSecretSubKeys"
   ],
   "contributes": {
     "commands": [
@@ -64,8 +64,8 @@
         "category": "GnuPG"
       },
       {
-        "command": "extension.ListPrivateKeys",
-        "title": "List Private Keys",
+        "command": "extension.ListSecretKeys",
+        "title": "List Secret Keys",
         "category": "GnuPG"
       },
       {
@@ -79,32 +79,32 @@
         "category": "GnuPG"
       },
       {
-        "command": "extension.EncryptSelection",
+        "command": "extension.EncryptSelectionAsym",
         "title": "Encrypt Selection w/ Recipients",
         "category": "GnuPG"
       },
       {
-        "command": "extension.EncryptFile",
+        "command": "extension.EncryptFileAsym",
         "title": "Encrypt File w/ Recipients",
         "category": "GnuPG"
       },
       {
-        "command": "extension.PreviewEncryptedFile",
+        "command": "extension.PreviewEncryptAsym",
         "title": "Preview Encrypted File w/ Recipients",
         "category": "GnuPG"
       },
       {
-        "command": "extension.EncryptSelectionWithPassphrase",
+        "command": "extension.EncryptSelectionSymm",
         "title": "Encrypt Selection w/ Passphrase",
         "category": "GnuPG"
       },
       {
-        "command": "extension.EncryptFileWithPassphrase",
+        "command": "extension.EncryptFileSymm",
         "title": "Encrypt File w/ Passphrase",
         "category": "GnuPG"
       },
       {
-        "command": "extension.PreviewEncryptedFileWithPassphrase",
+        "command": "extension.PreviewEncryptSymm",
         "title": "Preview Encrypted File w/ Passphrase",
         "category": "GnuPG"
       },
@@ -144,13 +144,13 @@
         "category": "GnuPG"
       },
       {
-        "command": "extension.ExportPrivateKeys",
-        "title": "Export Private Keys",
+        "command": "extension.ExportSecretKeys",
+        "title": "Export Secret Keys",
         "category": "GnuPG"
       },
       {
-        "command": "extension.ExportPrivateSubKeys",
-        "title": "Export Private Sub Keys",
+        "command": "extension.ExportSecretSubKeys",
+        "title": "Export Secret Sub Keys",
         "category": "GnuPG"
       }
     ],
@@ -165,7 +165,7 @@
           "group": "GnuPG"
         },
         {
-          "command": "extension.ListPrivateKeys",
+          "command": "extension.ListSecretKeys",
           "group": "GnuPG"
         },
         {
@@ -179,27 +179,27 @@
       ],
       "explorer/context": [
         {
-          "command": "extension.PreviewEncryptedFile",
+          "command": "extension.PreviewEncryptAsym",
           "group": "gnupg1@1",
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.PreviewEncryptedFileWithPassphrase",
+          "command": "extension.PreviewEncryptSymm",
           "group": "gnupg1@2",
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.PreviewDecryptedFile",
+          "command": "extension.PreviewDecryptFile",
           "group": "gnupg1@3",
           "when": "resourceExtname == .asc"
         },
         {
-          "command": "extension.EncryptFile",
+          "command": "extension.EncryptFileAsym",
           "group": "gnupg2@1",
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.EncryptFileWithPassphrase",
+          "command": "extension.EncryptFileSymm",
           "group": "gnupg2@2",
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },
@@ -229,24 +229,24 @@
           "when": "resourceExtname == .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.ExportPrivateKeys",
+          "command": "extension.ExportSecretKeys",
           "group": "gnupg3@3",
           "when": "resourceExtname == .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.ExportPrivateSubKeys",
+          "command": "extension.ExportSecretSubKeys",
           "group": "gnupg3@4",
           "when": "resourceExtname == .asc && resourceExtname != .sig"
         }
       ],
       "editor/context": [
         {
-          "command": "extension.EncryptSelection",
+          "command": "extension.EncryptSelectionAsym",
           "when": "editorHasSelection",
           "group": "gnupg@1"
         },
         {
-          "command": "extension.EncryptSelectionWithPassphrase",
+          "command": "extension.EncryptSelectionSymm",
           "when": "editorHasSelection",
           "group": "gnupg@2"
         },
@@ -258,27 +258,27 @@
       ],
       "editor/title": [
         {
-          "command": "extension.PreviewEncryptedFile",
+          "command": "extension.PreviewEncryptAsym",
           "group": "gnupg1@1",
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.PreviewEncryptedFileWithPassphrase",
+          "command": "extension.PreviewEncryptSymm",
           "group": "gnupg1@2",
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.PreviewDecryptedFile",
+          "command": "extension.PreviewDecryptFile",
           "group": "gnupg1@3",
           "when": "resourceExtname == .asc"
         },
         {
-          "command": "extension.EncryptFile",
+          "command": "extension.EncryptFileAsym",
           "group": "gnupg2@1",
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },
         {
-          "command": "extension.EncryptFileWithPassphrase",
+          "command": "extension.EncryptFileSymm",
           "group": "gnupg2@2",
           "when": "resourceExtname != .asc && resourceExtname != .sig"
         },

@@ -70,9 +70,9 @@ Details will be shown in a virtual document.
 - capabilities D: disabled, S: sign, C: certify, E: encrypt
 - validity
 
-### List Private Keys
+### List Secret Keys
 
-1. Select command `GnuPG: List Private Keys`
+1. Select command `GnuPG: List Secret Keys`
 
 Details will be shown in a virtual document.
 
@@ -172,24 +172,24 @@ or
 1. Select command `GnuPG: Export Public Keys`
 2. Select key file to create/overwrite
 
-### Export Private Keys
+### Export Secret Keys
 
 1. Select key file to overwrite
-2. Select command `GnuPG: Export Private Keys`
+2. Select command `GnuPG: Export Secret Keys`
 
 or
 
-1. Select command `GnuPG: Export Private Keys`
+1. Select command `GnuPG: Export Secret Keys`
 2. Select key file to create/overwrite
 
-### Export Private Sub Keys
+### Export Secret Sub Keys
 
 1. Select key file to overwrite
-2. Select command `GnuPG: Export Private Sub Keys`
+2. Select command `GnuPG: Export Secret Sub Keys`
 
 or
 
-1. Select command `GnuPG: Export Private Sub Keys`
+1. Select command `GnuPG: Export Secret Sub Keys`
 2. Select key file to create/overwrite
 
 ## Requirements
@@ -213,7 +213,7 @@ or
 
 - Check GnuPG: `gpg --version` (using [gpg call](https://github.com/drudge/node-gpg))
 - List Public Keys: `gpg -k --with-colons` (using [gpg call](https://github.com/drudge/node-gpg))
-- List Private Keys: `gpg -K --with-colons` (using [gpg call](https://github.com/drudge/node-gpg))
+- List Secret Keys: `gpg -K --with-colons` (using [gpg call](https://github.com/drudge/node-gpg))
 - Show Smartcard: `gpg --card-status`  (using [gpg call](https://github.com/drudge/node-gpg))
 - Encrypt: `gpg --armor --recipient <fingerprint> --encrypt` from stdin to stdout (using [gpg encrypt](https://github.com/drudge/node-gpg))
 - Decrypt: `gpg --decrypt` from stdin to stdout (using [gpg decrypt](https://github.com/drudge/node-gpg))
@@ -222,8 +222,8 @@ or
 - Verify File: `gpg --verify <filename>.<ext>.sig <filename>.<ext> 2>&1` (using `child_process.exec(...)`)
 - Import Keys: `gpg --import <filename>.<ext>`
 - Export Public Keys: `gpg --armor --batch --yes --output <filename>.<ext> --export <fingerprint>`
-- Export Private Keys: `gpg --armor --batch --yes --output <filename>.<ext>--export-secret-keys <fingerprint>`
-- Export Private Sub Keys: `gpg --armor --batch --yes --output <filename>.<ext>--export-secret-subkeys <fingerprint>`
+- Export Secret Keys: `gpg --armor --batch --yes --output <filename>.<ext>--export-secret-keys <fingerprint>`
+- Export Secret Sub Keys: `gpg --armor --batch --yes --output <filename>.<ext>--export-secret-subkeys <fingerprint>`
 
 ## Release Notes
 

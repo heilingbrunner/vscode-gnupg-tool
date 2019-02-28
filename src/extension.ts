@@ -53,7 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.ListPrivateKeys', () => {
+    vscode.commands.registerCommand('extension.ListSecretKeys', () => {
       listPrivateKeys();
     })
   );
@@ -65,7 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.EncryptSelection', () => {
+    vscode.commands.registerCommand('extension.EncryptSelectionAsym', () => {
       const editor = vscode.window.activeTextEditor;
       if (editor) {
         encryptAsymSelection(editor);
@@ -74,13 +74,13 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.EncryptFile', (uri: vscode.Uri) => {
+    vscode.commands.registerCommand('extension.EncryptFileAsym', (uri: vscode.Uri) => {
       encryptAsymFile(uri);
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.PreviewEncryptedFile', (uri: vscode.Uri) => {
+    vscode.commands.registerCommand('extension.PreviewEncryptAsym', (uri: vscode.Uri) => {
       previewEncryptAsymFile(uri);
     })
   );
@@ -88,7 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.EncryptSelectionWithPassphrase', () => {
+    vscode.commands.registerCommand('extension.EncryptSelectionSymm', () => {
       const editor = vscode.window.activeTextEditor;
       if (editor) {
         encryptSymmSelection(editor);
@@ -97,13 +97,13 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.EncryptFileWithPassphrase', (uri: vscode.Uri) => {
+    vscode.commands.registerCommand('extension.EncryptFileSymm', (uri: vscode.Uri) => {
       encryptSymmFile(uri);
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.PreviewEncryptedFileWithPassphrase', (uri: vscode.Uri) => {
+    vscode.commands.registerCommand('extension.PreviewEncryptSymm', (uri: vscode.Uri) => {
       previewEncryptSymmFile(uri);
     })
   );
@@ -129,7 +129,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.PreviewDecryptedFile', (uri: vscode.Uri) => {
+    vscode.commands.registerCommand('extension.PreviewDecrypt', (uri: vscode.Uri) => {
       previewDecryptedFile(uri);
     })
   );
@@ -165,13 +165,13 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.ExportPrivateKeys', (uri: vscode.Uri) => {
+    vscode.commands.registerCommand('extension.ExportSecretKeys', (uri: vscode.Uri) => {
       exportPrivateKeys(uri);
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.ExportPrivateSubKeys', (uri: vscode.Uri) => {
+    vscode.commands.registerCommand('extension.ExportSecretSubKeys', (uri: vscode.Uri) => {
       exportPrivateSubKeys(uri);
     })
   );
