@@ -218,10 +218,12 @@ export function promiseEncryptSymBuffer(
   content: Buffer
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    let args = ['--batch', '--yes', '--armor'];
+    let args = ['--armor', '--symmetric'];
 
     call('', args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+      err 
+      ? reject(err) 
+      : resolve(result);
     });
   });
 }
