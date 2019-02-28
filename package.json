@@ -37,6 +37,9 @@
     "onCommand:extension.EncryptSelection",
     "onCommand:extension.EncryptFile",
     "onCommand:extension.PreviewEncryptedFile",
+    "onCommand:extension.EncryptSelectionWithPassphrase",
+    "onCommand:extension.EncryptFileWithPassphrase",
+    "onCommand:extension.PreviewEncryptedFileWithPassphrase",
     "onCommand:extension.DecryptSelection",
     "onCommand:extension.DecryptFile",
     "onCommand:extension.PreviewDecryptedFile",
@@ -88,6 +91,21 @@
       {
         "command": "extension.PreviewEncryptedFile",
         "title": "Preview Encrypted File",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.EncryptSelectionWithPassphrase",
+        "title": "Encrypt Selection with Passphrase",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.EncryptFileWithPassphrase",
+        "title": "Encrypt File with Passphrase",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.PreviewEncryptedFileWithPassphrase",
+        "title": "Preview Encrypted File with Passphrase",
         "category": "GnuPG"
       },
       {

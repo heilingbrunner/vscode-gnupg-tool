@@ -7,8 +7,8 @@ import {
   promise_listPublicKeys,
   promise_parseKeys,
   promise_keysToQuickPickItems,
-  promise_encrypt,
-  promise_decrypt,
+  promise_encryptBuffer,
+  promise_decryptBuffer,
   promise_killgpgagent,
   promise_listPrivateKeys,
   promise_sign,
@@ -16,9 +16,9 @@ import {
   promise_importKeys,
   promise_exportPublicKeys,
   promise_exportPrivateKeys,
-  promise_exportPrivateSubKeys
-  // promise_filterKeysForEncrypt,
-  // promise_filterKeysForSign
+  promise_exportPrivateSubKeys,
+  promise_symmetricBuffer,
+  promise_symmetricUri
 } from './gnupgpromises';
 import VirtualDocumentProvider from './virtualdocumentprovider';
 import GnuPGProvider from './gnupgprovider';
@@ -84,6 +84,34 @@ export function activate(context: vscode.ExtensionContext) {
       previewEncryptedFile(fileUri);
     })
   );
+
+
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.EncryptSelectionWithPassphrase', () => {
+      const editor = vscode.window.activeTextEditor;
+      if (editor) {
+        symmetricSelection(editor);
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.EncryptFileWithPassphrase', (fileUri: vscode.Uri) => {
+      symmetricFile(fileUri);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.PreviewEncryptedFileWithPassphrase', (fileUri: vscode.Uri) => {
+      previewsymmetricedFile(fileUri);
+    })
+  );
+
+
+
+
+
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DecryptSelection', () => {
@@ -207,7 +235,7 @@ function encryptSelection(editor: vscode.TextEditor) {
         .then(quickpickitems =>
           vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
         )
-        .then(recipients => promise_encrypt(content, recipients))
+        .then(recipients => promise_encryptBuffer(content, recipients))
         .then(encrypted => {
           if (encrypted !== undefined) {
             editor.edit(edit => edit.replace(selection, encrypted.toString('utf8')));
@@ -262,13 +290,81 @@ function previewEncryptedFile(fileUri: vscode.Uri) {
   }
 }
 
+function symmetricSelection(editor: vscode.TextEditor) {
+  if (editor) {
+    const selection = editor.selection;
+    const content = new Buffer(editor.document.getText(selection));
+
+    if (content && content.length > 0) {
+      promise_listPublicKeys()
+        .then(stdout => promise_parseKeys(stdout))
+        .then(map => promise_filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+        .then(keys => promise_keysToQuickPickItems(keys))
+        .then(quickpickitems =>
+          vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
+        )
+        .then(recipients => promise_symmetricBuffer(content))
+        .then(encrypted => {
+          if (encrypted !== undefined) {
+            editor.edit(edit => edit.replace(selection, encrypted.toString('utf8')));
+          }
+        })
+        .catch(err => vscode.window.showErrorMessage('GnuPG encryption failed ! ' + err));
+    } else {
+      vscode.window.showWarningMessage('No text selected for GnuPG encryption.');
+    }
+  }
+}
+
+function symmetricFile(fileUri: vscode.Uri) {
+  if (fileUri !== undefined && fileUri.scheme === 'file') {
+    if (fileUri.fsPath.match(/\.(asc)$/i)) {
+      vscode.window.showInformationMessage('GnuPG: File already encrypted (*.asc).');
+    } else {
+      symmetricFileUri(fileUri);
+    }
+  } else {
+    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    vscode.window.showOpenDialog(option).then(fileUriSelected => {
+      if (fileUriSelected && fileUriSelected[0] && fileUriSelected[0].scheme === 'file') {
+        if (fileUriSelected[0].fsPath.match(/\.(asc)$/i)) {
+          vscode.window.showInformationMessage('GnuPG: File already encrypted (*.asc).');
+        } else {
+          symmetricFileUri(fileUriSelected[0]);
+        }
+      }
+    });
+  }
+}
+
+function previewsymmetricedFile(fileUri: vscode.Uri) {
+  if (fileUri !== undefined && fileUri.scheme === 'file') {
+    if (fileUri.fsPath.match(/\.(asc)$/i)) {
+      vscode.window.showInformationMessage('GnuPG: File already encrypted (*.asc).');
+    } else {
+      launchGnuPGProviderForSymmetric(fileUri);
+    }
+  } else {
+    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    vscode.window.showOpenDialog(option).then(fileUriSelected => {
+      if (fileUriSelected && fileUriSelected[0] && fileUriSelected[0].scheme === 'file') {
+        if (fileUriSelected[0].fsPath.match(/\.(asc)$/i)) {
+          vscode.window.showInformationMessage('GnuPG: File already encrypted (*.asc).');
+        } else {
+          launchGnuPGProviderForSymmetric(fileUriSelected[0]);
+        }
+      }
+    });
+  }
+}
+
 function decryptSelection(editor: vscode.TextEditor) {
   if (editor) {
     const selection = editor.selection;
     const content = new Buffer(editor.document.getText(selection));
 
     if (content && content.length > 0) {
-      promise_decrypt(content)
+      promise_decryptBuffer(content)
         .then(decrypted => {
           if (decrypted !== undefined) {
             editor.edit(edit => edit.replace(selection, decrypted.toString('utf8')));
@@ -505,7 +601,7 @@ function encryptFileUri(fileUri: vscode.Uri) {
         .then(quickpickitems =>
           vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
         )
-        .then(recipients => promise_encrypt(content, recipients))
+        .then(recipients => promise_encryptBuffer(content, recipients))
         .then(encrypted => {
           if (encrypted !== undefined) {
             //save new document
@@ -522,10 +618,18 @@ function encryptFileUri(fileUri: vscode.Uri) {
   });
 }
 
+function symmetricFileUri(fileUri: vscode.Uri) {
+  promise_symmetricUri(fileUri)
+  .then(result => {
+    
+  })
+  .catch(err => vscode.window.showErrorMessage('GnuPG encryption failed ! ' + err));
+}
+
 function decryptFileUri(fileUri: vscode.Uri) {
   getContent(fileUri).then(content => {
     if (content && content.length > 0) {
-      promise_decrypt(content)
+      promise_decryptBuffer(content)
         .then(decrypted => {
           if (decrypted !== undefined) {
             //save new document
@@ -560,6 +664,19 @@ function launchGnuPGProviderForEncrypt(fileUri: vscode.Uri) {
 
   // change uri for encryptprovider
   let newUri = vscode.Uri.file(fileUri.fsPath.concat(' - encrypted')).with({ scheme: 'gnupg', authority: 'encrypt' });
+
+  // go on to content provider ...
+  vscode.commands.executeCommand('vscode.open', newUri);
+}
+
+function launchGnuPGProviderForSymmetric(fileUri: vscode.Uri) {
+  // check filePath ...
+  if (typeof fileUri === 'undefined' || !fs.existsSync(fileUri.fsPath)) {
+    return;
+  }
+
+  // change uri for encryptprovider
+  let newUri = vscode.Uri.file(fileUri.fsPath.concat(' - encrypted')).with({ scheme: 'gnupg', authority: 'symmetric' });
 
   // go on to content provider ...
   vscode.commands.executeCommand('vscode.open', newUri);

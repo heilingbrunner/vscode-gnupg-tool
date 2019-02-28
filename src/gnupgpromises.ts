@@ -173,7 +173,7 @@ export function promise_parseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>
   });
 }
 
-export function promise_encrypt(
+export function promise_encryptBuffer(
   content: Buffer,
   keys?: { name: string; email: string; fingerprint: string }[]
 ): Promise<Buffer> {
@@ -192,11 +192,73 @@ export function promise_encrypt(
   });
 }
 
-export function promise_decrypt(content: Buffer): Promise<Buffer> {
+export function promise_encryptUri(
+  uri: vscode.Uri,
+  keys?: { name: string; email: string; fingerprint: string }[]
+): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--armor', '--batch', '--yes'];
+
+    if (keys !== undefined) {
+      keys.forEach(recipient => {
+        args = args.concat(['--recipient', recipient.fingerprint]);
+      });
+    }
+    
+    args = args.concat(['--output', uri.fsPath + '.asc']);
+    args = args.concat(['--encrypt', uri.fsPath]);
+
+    call('', args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(result);
+    });
+  });
+}
+
+export function promise_decryptBuffer(content: Buffer): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--decrypt'];
 
     decrypt(content, args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(result);
+    });
+  });
+}
+
+export function promise_decryptUri(uri: vscode.Uri): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--batch', '--yes'];
+
+    args = args.concat(['--output', uri.fsPath + '.decrypted']);
+    args = args.concat(['--decrypt', uri.fsPath]);
+
+    call('', args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(result);
+    });
+  });
+}
+
+export function promise_symmetricBuffer(
+  content: Buffer
+): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--batch', '--yes', '--armor'];
+
+    call('', args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(result);
+    });
+  });
+}
+
+export function promise_symmetricUri(
+  uri: vscode.Uri
+): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--batch', '--yes', '--armor'];
+
+    args = args.concat(['--output', uri.fsPath + '.asc']);
+    args = args.concat(['--symmetric', uri.fsPath]);
+
+    call('', args, (err: string, result: Buffer) => {
       err ? reject(err) : resolve(result);
     });
   });
