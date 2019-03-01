@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as child_process from 'child_process';
 import { ExecOptions } from 'child_process';
 
-import { call, encrypt, decrypt } from 'gpg';
+import { call, encrypt, decrypt, callStreaming, decryptToFile } from 'gpg';
 import { GnuPGKey } from './gnupgkey';
 
 export function promiseCheckVersion(): Promise<Buffer> {
@@ -192,6 +192,16 @@ export function promiseEncryptAsymBuffer(
   });
 }
 
+export function promiseEncryptSymBuffer(content: Buffer): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--armor', '--symmetric'];
+
+    call(content, args, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(result);
+    });
+  });
+}
+
 export function promiseEncryptAsymUri(
   uri: vscode.Uri,
   keys?: { name: string; email: string; fingerprint: string }[]
@@ -204,40 +214,20 @@ export function promiseEncryptAsymUri(
         args = args.concat(['--recipient', recipient.fingerprint]);
       });
     }
-    
-    args = args.concat(['--output', uri.fsPath + '.asc']);
-    args = args.concat(['--encrypt', uri.fsPath]);
 
-    call('', args, (err: string, result: Buffer) => {
+    args = args.concat(['--encrypt', uri.fsPath]);
+    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err: string, result: Buffer) => {
       err ? reject(err) : resolve(result);
     });
   });
 }
 
-export function promiseEncryptSymBuffer(
-  content: Buffer
-): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = ['--armor', '--symmetric'];
-
-    call(content, args, (err: string, result: Buffer) => {
-      err 
-      ? reject(err) 
-      : resolve(result);
-    });
-  });
-}
-
-export function promiseEncryptSymUri(
-  uri: vscode.Uri
-): Promise<Buffer> {
+export function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--batch', '--yes', '--armor'];
 
-    args = args.concat(['--output', uri.fsPath + '.asc']);
     args = args.concat(['--symmetric', uri.fsPath]);
-
-    call('', args, (err: string, result: Buffer) => {
+    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err: string, result: Buffer) => {
       err ? reject(err) : resolve(result);
     });
   });
@@ -248,28 +238,22 @@ export function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
     let args = ['--decrypt'];
 
     decrypt(content, args, (err: string, result: Buffer) => {
-      err 
-      ? reject(err) 
-      : resolve(result);
+      err ? reject(err) : resolve(result);
     });
   });
 }
 
 export function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    let args = ['--batch', '--yes'];
-
-    if(uri.fsPath.match(/.*\.(asc|gpg)$/i)) {
-      args = args.concat(['--output', uri.fsPath.slice(0,-'.asc'.length)]);
+    let dest = '';
+    if (uri.fsPath.match(/.*\.(asc|gpg)$/i)) {
+      dest = uri.fsPath.slice(0, -'.asc'.length);
     } else {
-      args = args.concat(['--output', uri.fsPath + '.decrypted']);
+      dest = uri.fsPath + '.decrypted';
     }
-    args = args.concat(['--decrypt', uri.fsPath]);
 
-    call('', args, (err: string, result: Buffer) => {
-      err 
-      ? reject(err) 
-      : resolve(result);
+    decryptToFile({ source: uri.fsPath, dest: dest }, (err: string, result: Buffer) => {
+      err ? reject(err) : resolve(result);
     });
   });
 }
