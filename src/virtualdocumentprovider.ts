@@ -5,7 +5,7 @@ import {
   promiseKeysToText,
   promiseShowSmartcard,
   promiseCheckVersion,
-  promiseListPrivateKeys,
+  promiseListSecretKeys,
   promiseVerify
 } from './gnupgpromises';
 
@@ -51,7 +51,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
 
   listPrivateKeys(): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-      promiseListPrivateKeys()
+      promiseListSecretKeys()
         .then(stdout => promiseParseKeys(stdout))
         .then(keys => promiseKeysToText(keys))
         .then(recipients => {

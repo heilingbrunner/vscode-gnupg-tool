@@ -25,7 +25,7 @@ export function promiseListPublicKeys(): Promise<Buffer> {
   });
 }
 
-export function promiseListPrivateKeys(): Promise<Buffer> {
+export function promiseListSecretKeys(): Promise<Buffer> {
   return new Promise(function(resolve, reject) {
     var args = ['-K', '--with-colons'];
 
@@ -220,7 +220,7 @@ export function promiseEncryptSymBuffer(
   return new Promise((resolve, reject) => {
     let args = ['--armor', '--symmetric'];
 
-    call('', args, (err: string, result: Buffer) => {
+    call(content, args, (err: string, result: Buffer) => {
       err 
       ? reject(err) 
       : resolve(result);
@@ -248,7 +248,9 @@ export function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
     let args = ['--decrypt'];
 
     decrypt(content, args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+      err 
+      ? reject(err) 
+      : resolve(result);
     });
   });
 }
@@ -257,11 +259,17 @@ export function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--batch', '--yes'];
 
-    args = args.concat(['--output', uri.fsPath + '.decrypted']);
+    if(uri.fsPath.match(/.*\.(asc|gpg)$/i)) {
+      args = args.concat(['--output', uri.fsPath.slice(0,-'.asc'.length)]);
+    } else {
+      args = args.concat(['--output', uri.fsPath + '.decrypted']);
+    }
     args = args.concat(['--decrypt', uri.fsPath]);
 
     call('', args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+      err 
+      ? reject(err) 
+      : resolve(result);
     });
   });
 }
@@ -422,7 +430,7 @@ export function promiseExportPublicKeys(
   });
 }
 
-export function promiseExportPrivateKeys(
+export function promiseExportSecretKeys(
   uri: vscode.Uri,
   key?: {
     label: string;
@@ -445,7 +453,7 @@ export function promiseExportPrivateKeys(
   });
 }
 
-export function promiseExportPrivateSubKeys(
+export function promiseExportSecretSubKeys(
   uri: vscode.Uri,
   key?: {
     label: string;

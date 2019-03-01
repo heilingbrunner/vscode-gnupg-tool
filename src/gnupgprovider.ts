@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
 import {
+  promiseEncryptAsymBuffer,
+  promiseEncryptSymBuffer,
   promiseDecryptBuffer,
   promiseListPublicKeys,
+  promiseFilterKeys,
   promiseParseKeys,
   promiseKeysToQuickPickItems,
-  promiseEncryptAsymBuffer,
-  promiseVerify,
-  promiseFilterKeys,
-  promiseEncryptSymBuffer,
+  promiseVerify
 } from './gnupgpromises';
 import { getContent } from './utils';
 import { GnuPGKey } from './gnupgkey';
@@ -29,7 +29,8 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
             .catch(err => resolve('GnuPG decryption failed !\r\n' + err));
         });
 
-      case 'encrypt':
+      case 'asymmetric':
+        // uri.fsPath.slice(...) see launchGnuPGProviderEncryptAsym !!!
         newUri = uri.with({ scheme: 'file', authority: '', path: uri.fsPath.slice(0, -' - encrypted'.length) });
         return new Promise(async resolve => {
           getContent(newUri).then(content => {
@@ -49,14 +50,15 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         });
 
       case 'symmetric':
+        // uri.fsPath.slice(...) see launchGnuPGProviderEncryptSymm !!!
         newUri = uri.with({ scheme: 'file', authority: '', path: uri.fsPath.slice(0, -' - encrypted'.length) });
         return new Promise(async resolve => {
           getContent(newUri).then(content => {
             promiseEncryptSymBuffer(content)
-                .then(encrypted => {
-                  resolve(encrypted.toString('utf8'));
-                })
-                .catch(err => resolve('GnuPG encryption failed !\r\n' + err));
+              .then(encrypted => {
+                resolve(encrypted.toString('utf8'));
+              })
+              .catch(err => resolve('GnuPG encryption failed !\r\n' + err));
           });
         });
 
