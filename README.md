@@ -18,7 +18,7 @@
 - End session to reset password cache by killing gpg-agent.
 - Works with smartcards.
 - Sign/verify file.
-- Keys import/export
+- Keys import/export.
 
 The command palette ...
 
@@ -54,7 +54,7 @@ The editor context menu ...
 
 ## Requirements
 
-### Installation of GnuPG
+### GnuPG
 
 #### Windows
 
@@ -75,7 +75,9 @@ The editor context menu ...
 - List Public Keys: `gpg -k --with-colons` (using [gpg call](https://github.com/drudge/node-gpg))
 - List Secret Keys: `gpg -K --with-colons` (using [gpg call](https://github.com/drudge/node-gpg))
 - Show Smartcard: `gpg --card-status`  (using [gpg call](https://github.com/drudge/node-gpg))
-- Encrypt: `gpg --armor --recipient <fingerprint> --encrypt` from stdin to stdout (using [gpg encrypt](https://github.com/drudge/node-gpg))
+- Encrypt text selection: `gpg --armor --recipient <fingerprint> --encrypt` from stdin to stdout (using [gpg encrypt](https://github.com/drudge/node-gpg))
+- Encrypt file for recipients: `gpg --armor --batch --yes --recipient <fingerprint> --output <filename>.<ext>.asc --encrypt <filename>.<ext>`
+- Encrypt file with passphrase: `gpg --armor --batch --yes --output <filename>.<ext>.asc --symmetric <filename>.<ext>`
 - Decrypt: `gpg --decrypt` from stdin to stdout (using [gpg decrypt](https://github.com/drudge/node-gpg))
 - End session: `gpg-connect-agent killagent /bye`
 - Sign File: `gpg --armor --output <filename>.<ext>.sig --local-user <ssb.fingerprint> --detach-sign <filename>.<ext>` (using [gpg call](https://github.com/drudge/node-gpg))
@@ -86,6 +88,10 @@ The editor context menu ...
 - Export Secret Sub Keys: `gpg --armor --batch --yes --output <filename>.<ext>--export-secret-subkeys <fingerprint>`
 
 ## Release Notes
+
+## 0.0.9
+
+- encryption with passphrase
 
 ## 0.0.8
 
