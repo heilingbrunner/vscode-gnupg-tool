@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.9] - 2019-03-01
+
+- encryption with passphrase
+
 ## [0.0.8] - 2019-02-26
 
 - import/export of public/private keys
