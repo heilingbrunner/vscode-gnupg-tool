@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.10] - 2019-03-03
+
+- using better npm.gpg ...stream/...ToFile functions
+
 ## [0.0.9] - 2019-03-01
 
 - encryption with passphrase

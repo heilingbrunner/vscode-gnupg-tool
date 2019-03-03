@@ -89,6 +89,10 @@ The editor context menu ...
 
 ## Release Notes
 
+## 0.0.10
+
+- using better npm.gpg ...stream/...ToFile functions
+
 ## 0.0.9
 
 - encryption with passphrase
