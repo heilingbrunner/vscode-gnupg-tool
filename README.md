@@ -89,6 +89,10 @@ The editor context menu ...
 
 ## Release Notes
 
+## 1.0.0
+
+- verify using npm.gpg.call(...)
+
 ## 0.0.10
 
 - using better npm.gpg ...stream/...ToFile functions

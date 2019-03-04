@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.0] - 2019-03-04
+
+- verify using npm.gpg.call(...)
+
 ## [0.0.10] - 2019-03-03
 
 - using better npm.gpg ...stream/...ToFile functions
