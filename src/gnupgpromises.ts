@@ -9,8 +9,8 @@ export function promiseCheckVersion(): Promise<Buffer> {
   return new Promise(function(resolve, reject) {
     var args = ['--version'];
 
-    call('', args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+    call('', args, (err: string, stdout: Buffer) => {
+      err ? reject(err) : resolve(stdout);
     });
   });
 }
@@ -19,8 +19,8 @@ export function promiseListPublicKeys(): Promise<Buffer> {
   return new Promise(function(resolve, reject) {
     var args = ['-k', '--with-colons'];
 
-    call('', args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+    call('', args, (err: string, stdout: Buffer) => {
+      err ? reject(err) : resolve(stdout);
     });
   });
 }
@@ -29,8 +29,8 @@ export function promiseListSecretKeys(): Promise<Buffer> {
   return new Promise(function(resolve, reject) {
     var args = ['-K', '--with-colons'];
 
-    call('', args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+    call('', args, (err: string, stdout: Buffer) => {
+      err ? reject(err) : resolve(stdout);
     });
   });
 }
@@ -186,8 +186,8 @@ export function promiseEncryptAsymBuffer(
       });
     }
 
-    encrypt(content, args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+    encrypt(content, args, (err: string, stdout: Buffer) => {
+      err ? reject(err) : resolve(stdout);
     });
   });
 }
@@ -196,8 +196,8 @@ export function promiseEncryptSymBuffer(content: Buffer): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--armor', '--symmetric'];
 
-    call(content, args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+    call(content, args, (err: string, stdout: Buffer) => {
+      err ? reject(err) : resolve(stdout);
     });
   });
 }
@@ -216,8 +216,8 @@ export function promiseEncryptAsymUri(
     }
 
     args = args.concat(['--encrypt', uri.fsPath]);
-    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err: string, stdout: Buffer) => {
+      err ? reject(err) : resolve(stdout);
     });
   });
 }
@@ -227,8 +227,8 @@ export function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
     let args = ['--batch', '--yes', '--armor'];
 
     args = args.concat(['--symmetric', uri.fsPath]);
-    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err: string, stdout: Buffer) => {
+      err ? reject(err) : resolve(stdout);
     });
   });
 }
@@ -237,8 +237,8 @@ export function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--decrypt'];
 
-    decrypt(content, args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+    decrypt(content, args, (err: string, stdout: Buffer) => {
+      err ? reject(err) : resolve(stdout);
     });
   });
 }
@@ -252,8 +252,8 @@ export function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
       dest = uri.fsPath + '.decrypted';
     }
 
-    decryptToFile({ source: uri.fsPath, dest: dest }, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+    decryptToFile({ source: uri.fsPath, dest: dest }, (err: string, stdout: Buffer) => {
+      err ? reject(err) : resolve(stdout);
     });
   });
 }
@@ -262,8 +262,8 @@ export function promiseShowSmartcard(): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     var args = ['--card-status'];
 
-    call('', args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+    call('', args, (err: string, stdout: Buffer) => {
+      err ? reject(err) : resolve(stdout);
     });
   });
 }
@@ -364,19 +364,20 @@ export function promiseSign(
     args = args.concat(['--detach-sign']);
     args = args.concat([uri.fsPath]);
 
-    call('', args, (err: string, result: Buffer) => {
-      err ? reject(err) : resolve(result);
+    call('', args, (err: string, stdout: Buffer) => {
+      err ? reject(err) : resolve(stdout);
     });
   });
 }
 
 export function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    // GnuPG prints (at least some of) this output to stderr, not stdout. Redirect stderr to stdout using 2>&1
-    // call(....) not working, cannot redirect
-
-    let cmd = 'gpg --verify ' + uri.fsPath + ' ' + uri.fsPath.slice(0, -'.sig'.length) + ' 2>&1';
-    child_process.exec(cmd, {}, (err, stdout) => (err ? reject('') : resolve(new Buffer(stdout))));
+    // GnuPG prints (at least some of) this output to stderr, not stdout.
+    let args = ['--verify', uri.fsPath , uri.fsPath.slice(0, -'.sig'.length)];
+    
+    call('', args, (err: string, stdout: Buffer, stderr: Buffer) => {
+      err ? reject(err) : resolve(stderr);
+    });
   });
 }
 
@@ -385,7 +386,7 @@ export function promiseImportKeys(uri: vscode.Uri): Promise<Buffer> {
     let args = ['--import'];
     args = args.concat([uri.fsPath]);
 
-    call('', args, (err: string, result: Buffer) => {
+    call('', args, (err: string, stdout: Buffer) => {
       err ? reject(err) : resolve(new Buffer('Import suceeded'));
     });
   });
@@ -408,7 +409,7 @@ export function promiseExportPublicKeys(
     args = args.concat('--export');
     args = args.concat(key ? key.fingerprint : '');
 
-    call('', args, (err: string, result: Buffer) => {
+    call('', args, (err: string, stdout: Buffer) => {
       err ? reject(err) : resolve(new Buffer('Export suceeded'));
     });
   });
@@ -431,7 +432,7 @@ export function promiseExportSecretKeys(
     args = args.concat('--export-secret-keys');
     args = args.concat(key ? key.fingerprint : '');
 
-    call('', args, (err: string, result: Buffer) => {
+    call('', args, (err: string, stdout: Buffer) => {
       err ? reject(err) : resolve(new Buffer('Export suceeded'));
     });
   });
@@ -454,7 +455,7 @@ export function promiseExportSecretSubKeys(
     args = args.concat('--export-secret-subkeys');
     args = args.concat(key ? key.fingerprint : '');
 
-    call('', args, (err: string, result: Buffer) => {
+    call('', args, (err: string, stdout: Buffer) => {
       err ? reject(err) : resolve(new Buffer('Export suceeded'));
     });
   });
