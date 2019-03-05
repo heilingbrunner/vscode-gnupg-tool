@@ -235,9 +235,7 @@ export function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
 
 export function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    let args = ['--decrypt'];
-
-    decrypt(content, args, (err: string, stdout: Buffer) => {
+    decrypt(content, undefined, (err: string, stdout: Buffer) => {
       err ? reject(err) : resolve(stdout);
     });
   });
