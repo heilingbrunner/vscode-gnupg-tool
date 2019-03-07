@@ -229,7 +229,13 @@ function encryptAsymSelection(editor: vscode.TextEditor) {
         .then(quickpickitems =>
           vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
         )
-        .then(recipients => promiseEncryptAsymBuffer(content, recipients))
+        .then(recipients => {
+          if(recipients && recipients.length> 0) {
+            return promiseEncryptAsymBuffer(content, recipients);
+          } else {
+            return new Promise<Buffer>((resolve,reject) =>{ reject('No recipients selected for encryption.');});
+          }
+        })
         .then(encrypted => {
           if (encrypted !== undefined) {
             editor.edit(edit => edit.replace(selection, encrypted.toString('utf8')));
@@ -591,7 +597,13 @@ function encryptAsymUri(uri: vscode.Uri) {
     .then(quickpickitems =>
       vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
     )
-    .then(recipients => promiseEncryptAsymUri(uri, recipients))
+    .then(recipients => {
+      if(recipients && recipients.length > 0){
+        return promiseEncryptAsymUri(uri, recipients);
+      } else {
+        return new Promise<Buffer>((resolve,reject) =>{ reject('No recipients selected for encryption.');});
+      }
+    })
     .then(() => vscode.window.showInformationMessage('GnuPG: File encrypted successfully.'))
     .catch(err => vscode.window.showErrorMessage('GnuPG encryption failed ! ' + err));
 }

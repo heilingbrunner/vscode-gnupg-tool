@@ -7,9 +7,9 @@ export class GnuPGKey {
   fingerprint = '';
   validity = '';
 
-  private _userId = '';
-  private _name = '';
-  private _email = '';
+  private _userId: string[] = [];
+  // private _name = '';
+  // private _email = '';
 
   get isDisabled(): boolean {
     return this.capabilities.match(/d/i) !== null;
@@ -39,17 +39,50 @@ export class GnuPGKey {
     return !this.isDisabled && this.canSign && this.isknown;
   }
 
-  get userId(): string {
-    return this._userId;
-  }
-  set userId(userId: string) {
-    this._userId = userId;
+  // get userId(): string {
+  //   return this._userId;
+  // }
+  // set userId(userId: string) {
+  //   this._userId = userId;
 
-    const match = this.userId.match(/(.*)\s*<(.*)>/);
-    if (match && match.length === 3) {
-      this._name = match[1].trim();
-      this._email = match[2].trim();
+  //   const match = this.userId.match(/(.*)\s*<(.*)>/);
+  //   if (match && match.length === 3) {
+  //     this._name = match[1].trim();
+  //     this._email = match[2].trim();
+  //   }
+  // }
+
+  // get name(): string {
+  //   return this._name;
+  // }
+
+  // get email(): string {
+  //   return this._email;
+  // }
+
+  addUserId(userId: string) {
+    this._userId.push(userId);
+  }
+
+  getUserIds(rn?: Boolean): string{
+    let uids = '';
+    if(this._userId.length > 0){
+      this._userId.forEach(uid => {
+        (rn && rn === false) ? uids += uid + ', ': uids += uid + ',\r\n';
+      });
+      // cut off last ', '
+      uids = uids.slice(0,-2);
     }
+    return uids;
+  }
+
+  static getUserDetails(userId: string): {name: string; email: string}{
+    const match = userId.match(/(.*)\s*<(.*)>/);
+    if (match && match.length === 3) {
+      return { name:match[1].trim(), email: match[2].trim()};
+    }
+
+    return { name: '?', email: '?'};
   }
 
   get validityDescription(): string {
@@ -101,15 +134,7 @@ export class GnuPGKey {
     return desc;
   }
 
-  get name(): string {
-    return this._name;
-  }
-
-  get email(): string {
-    return this._email;
-  }
-
   toString() {
-    return this.keyId + ': ' + this.name + ' <' + this.email + '>, [' + (this.isDisabled?'D':(this.canSign?'S':'') + (this.canCertify?'C':'') + (this.canEncrypt?'E':'')) + '], ' + this.validityDescription;
+    return this.keyId + ': ' + this.getUserIds() + ', [' + (this.isDisabled?'D':(this.canSign?'S':'') + (this.canCertify?'C':'') + (this.canEncrypt?'E':'')) + '], ' + this.validityDescription;
   }
 }

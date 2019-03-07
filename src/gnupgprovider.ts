@@ -41,7 +41,13 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
               .then(quickpickitems =>
                 vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
               )
-              .then(recipients => promiseEncryptAsymBuffer(content, recipients))
+              .then(recipients => {
+                if(recipients && recipients.length > 0){
+                  return promiseEncryptAsymBuffer(content, recipients);
+                } else {
+                  return new Promise<Buffer>((resolve,reject) =>{ reject('No recipients selected for encryption.');});
+                }
+              })
               .then(encrypted => {
                 resolve(encrypted.toString('utf8'));
               })

@@ -136,7 +136,7 @@ export function promiseParseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>>
 
           // User Id: name email
           if (key !== null) {
-            key.userId = record[9];
+            key.addUserId(record[9]);
           }
           break;
       }
@@ -156,10 +156,7 @@ export function promiseParseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>>
   });
 }
 
-export function promiseEncryptAsymBuffer(
-  content: Buffer,
-  keys?: { name: string; email: string; fingerprint: string }[]
-): Promise<Buffer> {
+export function promiseEncryptAsymBuffer(content: Buffer, keys?: { fingerprint: string }[]): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--armor'];
 
@@ -180,15 +177,16 @@ export function promiseEncryptSymBuffer(content: Buffer): Promise<Buffer> {
     let args = ['--armor', '--symmetric'];
 
     call(content, args, (err: string, stdout: Buffer) => {
-      err ? reject(err) : resolve(stdout);
+      err
+        ? reject(err)
+        : stdout === undefined
+        ? reject(new Buffer('Content or passphrase undefined'))
+        : resolve(stdout);
     });
   });
 }
 
-export function promiseEncryptAsymUri(
-  uri: vscode.Uri,
-  keys?: { name: string; email: string; fingerprint: string }[]
-): Promise<Buffer> {
+export function promiseEncryptAsymUri(uri: vscode.Uri, keys?: { fingerprint: string }[]): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--armor', '--batch', '--yes'];
 
@@ -210,7 +208,7 @@ export function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
     let args = ['--batch', '--yes', '--armor'];
 
     args = args.concat(['--symmetric', uri.fsPath]);
-    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err: string, stdout: Buffer) => {
+    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err: string, stdout: Buffer, stderr: Buffer) => {
       err ? reject(err) : resolve(stdout);
     });
   });
@@ -298,18 +296,14 @@ export function promiseKeysToQuickPickItems(
     label: string;
     description: string;
     detail: string;
-    name: string;
-    email: string;
     fingerprint: string;
   }[]
 > {
   return new Promise((resolve, reject) => {
     const arr = keyarray.map(k => ({
-      label: k.name,
-      description: k.email,
+      label: k.getUserIds(true),
+      description: k.validityDescription,
       detail: k.fingerprint + ', ' + k.validityDescription,
-      name: k.name,
-      email: k.email,
       validity: k.validity,
       fingerprint: k.fingerprint
     }));
@@ -330,10 +324,7 @@ export function promiseKeysToText(keys: Map<string, GnuPGKey>): Promise<string[]
   });
 }
 
-export function promiseSign(
-  uri: vscode.Uri,
-  key?: { name: string; email: string; fingerprint: string }
-): Promise<Buffer> {
+export function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let args = ['--armor', '--batch', '--yes'];
     args = args.concat(['--output', uri.fsPath + '.sig']);
@@ -377,9 +368,7 @@ export function promiseExportPublicKeys(
     label: string;
     description: string;
     detail: string;
-    name: string;
-    email: string;
-    fingerprint: string
+    fingerprint: string;
   }
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -399,9 +388,7 @@ export function promiseExportSecretKeys(
     label: string;
     description: string;
     detail: string;
-    name: string;
-    email: string;
-    fingerprint: string
+    fingerprint: string;
   }
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -421,9 +408,7 @@ export function promiseExportSecretSubKeys(
     label: string;
     description: string;
     detail: string;
-    name: string;
-    email: string;
-    fingerprint: string
+    fingerprint: string;
   }
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
