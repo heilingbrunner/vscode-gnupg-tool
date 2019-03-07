@@ -24,10 +24,4 @@ suite('Extension Tests', function() {
     let keys = buff.toString();
     assert.notEqual(keys, '', 'No list');
   });
-
-  test('promiseListSecretKeys', async () => {
-    const buff = await promiseListSecretKeys();
-    let keys = buff.toString();
-    assert.notEqual(keys, '', 'No list');
-  });
 });
