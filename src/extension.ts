@@ -230,10 +230,12 @@ function encryptAsymSelection(editor: vscode.TextEditor) {
           vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
         )
         .then(recipients => {
-          if(recipients && recipients.length> 0) {
+          if (recipients && recipients.length > 0) {
             return promiseEncryptAsymBuffer(content, recipients);
           } else {
-            return new Promise<Buffer>((resolve,reject) =>{ reject('No recipients selected for encryption.');});
+            return new Promise<Buffer>((resolve, reject) => {
+              reject('No recipients selected for encryption.');
+            });
           }
         })
         .then(encrypted => {
@@ -598,10 +600,12 @@ function encryptAsymUri(uri: vscode.Uri) {
       vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
     )
     .then(recipients => {
-      if(recipients && recipients.length > 0){
+      if (recipients && recipients.length > 0) {
         return promiseEncryptAsymUri(uri, recipients);
       } else {
-        return new Promise<Buffer>((resolve,reject) =>{ reject('No recipients selected for encryption.');});
+        return new Promise<Buffer>((resolve, reject) => {
+          reject('No recipients selected for encryption.');
+        });
       }
     })
     .then(() => vscode.window.showInformationMessage('GnuPG: File encrypted successfully.'))
@@ -610,14 +614,14 @@ function encryptAsymUri(uri: vscode.Uri) {
 
 function encryptSymmUri(uri: vscode.Uri) {
   promiseEncryptSymUri(uri)
-  .then(() => vscode.window.showInformationMessage('GnuPG: File encrypted successfully.'))
-  .catch(err => vscode.window.showErrorMessage('GnuPG encryption failed ! ' + err));
+    .then(() => vscode.window.showInformationMessage('GnuPG: File encrypted successfully.'))
+    .catch(err => vscode.window.showErrorMessage('GnuPG encryption failed ! ' + err));
 }
 
 function decryptUri(uri: vscode.Uri) {
   promiseDecryptUri(uri)
-  .then(() => vscode.window.showInformationMessage('GnuPG: File decrypted successfully.'))
-  .catch(err => vscode.window.showErrorMessage('GnuPG decryption failed ! ' + err));
+    .then(() => vscode.window.showInformationMessage('GnuPG: File decrypted successfully.'))
+    .catch(err => vscode.window.showErrorMessage('GnuPG decryption failed ! ' + err));
 }
 
 function signUri(uri: vscode.Uri) {
