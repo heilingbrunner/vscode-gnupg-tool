@@ -7,18 +7,18 @@
 ![Installs](https://vsmarketplacebadge.apphb.com/installs-short/JHeilingbrunner.vscode-gnupg-tool.svg)
 ![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/JHeilingbrunner.vscode-gnupg-tool.svg)
 
-![Decrypt-Selection](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/decryptselection.gif)
-
 ## Features
 
-- Check GnuPG availability/version.
-- Encryption for multiple recipients or with simple passphrase
-- Encrypt/decrypt text selection or file to text, file or preview
-- Passphrase/Pin entry __only__ into original GnuPG dialog. __Not through__ Visual Studio Code or something else.
-- End session to reset password cache by killing gpg-agent.
-- Works with smartcards.
-- Sign/verify file.
-- Keys import/export.
+- __Check__ GnuPG availability/version.
+- Encryption for multiple __recipients__ or with simple __passphrase__
+- __Encrypt__/__decrypt__ text or file to text, file or preview
+- Passphrase/Pin entry __only__ into original GnuPG __Pinentry__ dialog. Not through Visual Studio Code or something else.
+- End session to reset password cache by __killing gpg-agent__.
+- Works with __smartcards__.
+- __Sign__/__verify__ file.
+- Keys __import__/__export__.
+
+![Decrypt-Selection](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/decryptselection.gif)
 
 The command palette ...
 
