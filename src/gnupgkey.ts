@@ -2,11 +2,9 @@ import { QuickPickItem } from 'vscode';
 
 export class GnuPGKey {
   keyId = '';
-  ssbKeyId = '';
   expiration = '';
   capabilities = '';
   fingerprint = '';
-  ssbfingerprint = '';
   validity = '';
 
   private _userId = '';

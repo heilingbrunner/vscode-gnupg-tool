@@ -114,19 +114,6 @@ export function promiseParseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>>
 
           break;
 
-        case 'ssb':
-          //#region Details ssb Record
-
-          //record[4]: sub keyId
-
-          //#endregion
-
-          // User Id: name email
-          if (key !== null) {
-            key.ssbKeyId = record[4];
-          }
-          break;
-
         case 'fpr':
           //#region Details fpr Record
 
@@ -137,10 +124,6 @@ export function promiseParseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>>
           // Fingerprint contains keyId
           if (key !== null && record[9].endsWith(key.keyId)) {
             key.fingerprint = record[9];
-          }
-
-          if (key !== null && record[9].endsWith(key.ssbKeyId)) {
-            key.ssbfingerprint = record[9];
           }
           break;
 
@@ -318,7 +301,6 @@ export function promiseKeysToQuickPickItems(
     name: string;
     email: string;
     fingerprint: string;
-    ssbfingerprint: string;
   }[]
 > {
   return new Promise((resolve, reject) => {
@@ -329,8 +311,7 @@ export function promiseKeysToQuickPickItems(
       name: k.name,
       email: k.email,
       validity: k.validity,
-      fingerprint: k.fingerprint,
-      ssbfingerprint: k.ssbfingerprint
+      fingerprint: k.fingerprint
     }));
 
     arr ? resolve(arr) : reject();
@@ -351,13 +332,13 @@ export function promiseKeysToText(keys: Map<string, GnuPGKey>): Promise<string[]
 
 export function promiseSign(
   uri: vscode.Uri,
-  key?: { name: string; email: string; fingerprint: string; ssbfingerprint: string }
+  key?: { name: string; email: string; fingerprint: string }
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    let args = ['--armor'];
+    let args = ['--armor', '--batch', '--yes'];
     args = args.concat(['--output', uri.fsPath + '.sig']);
     if (key !== undefined) {
-      args = args.concat(['--local-user', key.ssbfingerprint]);
+      args = args.concat(['--local-user', key.fingerprint]);
     }
     args = args.concat(['--detach-sign']);
     args = args.concat([uri.fsPath]);
@@ -371,8 +352,8 @@ export function promiseSign(
 export function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     // GnuPG prints (at least some of) this output to stderr, not stdout.
-    let args = ['--verify', uri.fsPath , uri.fsPath.slice(0, -'.sig'.length)];
-    
+    let args = ['--verify', uri.fsPath, uri.fsPath.slice(0, -'.sig'.length)];
+
     call('', args, (err: string, stdout: Buffer, stderr: Buffer) => {
       err ? reject(err) : resolve(stderr);
     });
@@ -385,7 +366,7 @@ export function promiseImportKeys(uri: vscode.Uri): Promise<Buffer> {
     args = args.concat([uri.fsPath]);
 
     call('', args, (err: string, stdout: Buffer) => {
-      err ? reject(err) : resolve(new Buffer('Import suceeded'));
+      err ? reject(err) : resolve(new Buffer('Key import successfully'));
     });
   });
 }
@@ -398,8 +379,7 @@ export function promiseExportPublicKeys(
     detail: string;
     name: string;
     email: string;
-    fingerprint: string;
-    ssbfingerprint: string;
+    fingerprint: string
   }
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -408,7 +388,7 @@ export function promiseExportPublicKeys(
     args = args.concat(key ? key.fingerprint : '');
 
     call('', args, (err: string, stdout: Buffer) => {
-      err ? reject(err) : resolve(new Buffer('Export suceeded'));
+      err ? reject(err) : resolve(new Buffer('Key export successfully'));
     });
   });
 }
@@ -421,8 +401,7 @@ export function promiseExportSecretKeys(
     detail: string;
     name: string;
     email: string;
-    fingerprint: string;
-    ssbfingerprint: string;
+    fingerprint: string
   }
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -431,7 +410,7 @@ export function promiseExportSecretKeys(
     args = args.concat(key ? key.fingerprint : '');
 
     call('', args, (err: string, stdout: Buffer) => {
-      err ? reject(err) : resolve(new Buffer('Export suceeded'));
+      err ? reject(err) : resolve(new Buffer('Key export successfully'));
     });
   });
 }
@@ -444,8 +423,7 @@ export function promiseExportSecretSubKeys(
     detail: string;
     name: string;
     email: string;
-    fingerprint: string;
-    ssbfingerprint: string;
+    fingerprint: string
   }
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -454,7 +432,7 @@ export function promiseExportSecretSubKeys(
     args = args.concat(key ? key.fingerprint : '');
 
     call('', args, (err: string, stdout: Buffer) => {
-      err ? reject(err) : resolve(new Buffer('Export suceeded'));
+      err ? reject(err) : resolve(new Buffer('Key export successfully'));
     });
   });
 }

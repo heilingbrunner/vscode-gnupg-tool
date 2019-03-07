@@ -455,8 +455,8 @@ function verifyFile(uri: vscode.Uri) {
 
 function endSession() {
   promiseKillGpgAgent()
-    .then(() => vscode.window.showInformationMessage('GnuPG session ended.'))
-    .catch(err => vscode.window.showErrorMessage('GnuPG end session failed ! ' + err));
+    .then(() => vscode.window.showInformationMessage('GnuPG: Session ended successfully.'))
+    .catch(err => vscode.window.showErrorMessage('GnuPG: End session failed ! ' + err));
 }
 
 function importKeys(uri: vscode.Uri) {
@@ -464,9 +464,9 @@ function importKeys(uri: vscode.Uri) {
     promiseImportKeys(uri)
       .then(result => {
         let txt = result.toString();
-        vscode.window.showInformationMessage('GnuPG ' + txt);
+        vscode.window.showInformationMessage('GnuPG: ' + txt);
       })
-      .catch(err => vscode.window.showErrorMessage('GnuPG import keys failed ! ' + err));
+      .catch(err => vscode.window.showErrorMessage('GnuPG: Key import failed ! ' + err));
   } else {
     const option: vscode.OpenDialogOptions = { canSelectMany: false };
     vscode.window.showOpenDialog(option).then(uriSelected => {
@@ -474,9 +474,9 @@ function importKeys(uri: vscode.Uri) {
         promiseImportKeys(uriSelected[0])
           .then(result => {
             let txt = result.toString();
-            vscode.window.showInformationMessage('GnuPG ' + txt);
+            vscode.window.showInformationMessage('GnuPG: ' + txt);
           })
-          .catch(err => vscode.window.showErrorMessage('GnuPG import keys failed ! ' + err));
+          .catch(err => vscode.window.showErrorMessage('GnuPG: Key import failed ! ' + err));
       }
     });
   }
@@ -592,19 +592,19 @@ function encryptAsymUri(uri: vscode.Uri) {
       vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select recipients ...', canPickMany: true })
     )
     .then(recipients => promiseEncryptAsymUri(uri, recipients))
-    .then(() => vscode.window.showInformationMessage('GnuPG: File encrypted.'))
+    .then(() => vscode.window.showInformationMessage('GnuPG: File encrypted successfully.'))
     .catch(err => vscode.window.showErrorMessage('GnuPG encryption failed ! ' + err));
 }
 
 function encryptSymmUri(uri: vscode.Uri) {
   promiseEncryptSymUri(uri)
-  .then(() => vscode.window.showInformationMessage('GnuPG: File encrypted.'))
+  .then(() => vscode.window.showInformationMessage('GnuPG: File encrypted successfully.'))
   .catch(err => vscode.window.showErrorMessage('GnuPG encryption failed ! ' + err));
 }
 
 function decryptUri(uri: vscode.Uri) {
   promiseDecryptUri(uri)
-  .then(() => vscode.window.showInformationMessage('GnuPG: File decrypted.'))
+  .then(() => vscode.window.showInformationMessage('GnuPG: File decrypted successfully.'))
   .catch(err => vscode.window.showErrorMessage('GnuPG decryption failed ! ' + err));
 }
 
@@ -615,7 +615,7 @@ function signUri(uri: vscode.Uri) {
     .then(keys => promiseKeysToQuickPickItems(keys))
     .then(quickpickitems => vscode.window.showQuickPick(quickpickitems, { placeHolder: 'Select signer ...' }))
     .then(key => promiseSign(uri, key))
-    .then(() => vscode.window.showInformationMessage('GnuPG: File signed.'))
+    .then(() => vscode.window.showInformationMessage('GnuPG: File signed successfully.'))
     .catch(err => vscode.window.showErrorMessage('GnuPG sign failed ! ' + err));
 }
 
