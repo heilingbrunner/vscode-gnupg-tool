@@ -6,7 +6,7 @@
   },
   "displayName": "GnuPG-Tool",
   "description": "GnuPG tool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "JHeilingbrunner",
   "license": "MIT",
   "icon": "images/vscode-gnupg-tool-logo.png",

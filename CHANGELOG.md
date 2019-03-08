@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.1] - 2019-03-08
+
+- better error handling
+- display multi userids
+
 ## [1.0.0] - 2019-03-04
 
 - verify using npm.gpg.call(...)

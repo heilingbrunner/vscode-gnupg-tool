@@ -89,6 +89,11 @@ The editor context menu ...
 
 ## Release Notes
 
+## 1.0.1
+
+- better error handling
+- display multi userids
+
 ## 1.0.0
 
 - verify using npm.gpg.call(...)
