@@ -1,0 +1,11 @@
+.vscode/
+.vscodetest/
+src/
+out/
+typings/
+images/
+tsconfig.json
+tslint.json
+HOW-TO-VSIX.md
+
+!images/vscode-gnupg-tool-logo.png
