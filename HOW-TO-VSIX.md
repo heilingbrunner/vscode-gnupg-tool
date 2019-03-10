@@ -1,14 +1,9 @@
 # How to create & minimize VSIX package
 
+## Minimize VSIX
+
+- use .vscodeignore to exclude files and folders
+  
 ## Create VSIX
 
 - run `vsce package` in root folder
-
-## Minimize VSIX
-
-- rename `*.vsix` to `*.zip`
-- open zip file with explorer
-- delete directories `./src`, `./typings`, `./.vscode`
-- delete HOW-TO-VSIX.md
-- delete unused images. Leave `vscode-gnupg-tool-logo.png` in `./images` folder.
-- rename `*.zip` to `*.vsix` back again
