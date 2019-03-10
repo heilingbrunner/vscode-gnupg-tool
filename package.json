@@ -53,6 +53,25 @@
     "onCommand:extension.ExportSecretSubKeys"
   ],
   "contributes": {
+    "languages": [
+      {
+        "id": "asc",
+        "aliases": [
+          "asc"
+        ],
+        "extensions": [
+          "asc"
+        ],
+        "configuration": "./asc.language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "asc",
+        "scopeName": "source.asc",
+        "path": "./syntaxes/asc.tmLanguage.json"
+      }
+    ],
     "commands": [
       {
         "command": "extension.CheckGnuPG",

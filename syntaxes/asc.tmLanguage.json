@@ -1,0 +1,36 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "asc",
+    "fileTypes": ["asc"],
+    "patterns": [
+        {
+            "include": "#armor-begin"
+        },
+        {
+            "include": "#armor-end"
+        },
+        {
+            "include": "#invalid"
+        }
+    ],
+    "repository": {
+        "armor-begin": {
+            "patterns": [{
+                "comment": "BEGIN",
+                "match": "-{5}BEGIN (PGP MESSAGE|PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK|PGP MESSAGE, PART \\d+(|/\\d+)|PGP SIGNATURE)-{5}",
+                "name": "keyword.other.control.begin.asc"
+            }]
+        },
+        "armor-end": {
+            "patterns": [{
+                "comment": "END",
+                "match": "-{5}END (PGP MESSAGE|PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK|PGP MESSAGE, PART \\d+(|/\\d+)|PGP SIGNATURE)-{5}",
+                "name": "keyword.other.control.end.asc"
+            }]
+        },
+        "invalid": {
+            "patterns": []
+        }
+    },
+    "scopeName": "source.asc"
+}
