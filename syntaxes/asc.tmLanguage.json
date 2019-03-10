@@ -2,34 +2,38 @@
     "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
     "name": "asc",
     "fileTypes": ["asc"],
-    "patterns": [
-        {
-            "include": "#armor-begin"
+    "patterns": [{
+            "include": "#armor-data"
         },
         {
-            "include": "#armor-end"
-        },
-        {
-            "include": "#invalid"
+            "include": "#armor-block"
         }
     ],
     "repository": {
-        "armor-begin": {
+        "armor-data": {
             "patterns": [{
-                "comment": "BEGIN",
-                "match": "-{5}BEGIN (PGP MESSAGE|PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK|PGP MESSAGE, PART \\d+(|/\\d+)|PGP SIGNATURE)-{5}",
-                "name": "keyword.other.control.begin.asc"
+                "match": "\\\\.",
+                "name": "keyword.letter"
             }]
         },
-        "armor-end": {
+        "armor-block": {
+            "comment": "BEGIN/END",
+            "name": "constant.character.asc",
+            "begin": "-{5}BEGIN (PGP MESSAGE|PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK|PGP MESSAGE, PART \\d+(|/\\d+)|PGP SIGNATURE)-{5}$",
+            "end": "-{5}END \\1-{5}",
+            "beginCaptures": {
+                "0": {
+                    "name": "punctuation.paren.open.asc"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.paren.close.asc"
+                }
+            },
             "patterns": [{
-                "comment": "END",
-                "match": "-{5}END (PGP MESSAGE|PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK|PGP MESSAGE, PART \\d+(|/\\d+)|PGP SIGNATURE)-{5}",
-                "name": "keyword.other.control.end.asc"
+                "include": "#armor-data"
             }]
-        },
-        "invalid": {
-            "patterns": []
         }
     },
     "scopeName": "source.asc"
