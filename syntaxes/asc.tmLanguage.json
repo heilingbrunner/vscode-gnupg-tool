@@ -9,20 +9,10 @@
   ],
   "repository": {
     "armor-block": {
-      "comment": "BLOCK BEGIN/END",
-      "name": "constant.character.asc",
+      "comment": "BEGIN/END PGP",
+      "name": "constant.character.block.asc",
       "begin": "-{5}BEGIN (PGP MESSAGE|PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK|PGP MESSAGE, PART \\d+(|/\\d+)|PGP SIGNATURE)-{5}$",
       "end": "-{5}END \\1-{5}",
-      "beginCaptures": {
-        "0": {
-          "name": "punctuation.paren.open.asc"
-        }
-      },
-      "endCaptures": {
-        "0": {
-          "name": "punctuation.paren.close.asc"
-        }
-      },
       "patterns": []
     }
   },
