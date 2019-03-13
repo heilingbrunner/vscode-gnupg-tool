@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.2] - 2019-03-13
+
+- a little bit syntax highlighting for *.asc file
+  
 ## [1.0.1] - 2019-03-08
 
 - better error handling
