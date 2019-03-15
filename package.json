@@ -5,7 +5,7 @@
     "url": "https://github.com/heilingbrunner/vscode-gnupg-tool.git"
   },
   "displayName": "GnuPG-Tool",
-  "description": "GnuPG tool",
+  "description": "Tool for a simple usage of GnuPG",
   "version": "1.0.1",
   "publisher": "JHeilingbrunner",
   "license": "MIT",
