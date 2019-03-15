@@ -24,13 +24,14 @@ import {
 } from './gnupgpromises';
 import VirtualDocumentProvider from './virtualdocumentprovider';
 import GnuPGProvider from './gnupgprovider';
-import { getContent, setContent } from './utils';
 import { GnuPGKey } from './gnupgkey';
 
 let statusBarItem: vscode.StatusBarItem;
 
+
 // extension plumping ...
 export function activate(context: vscode.ExtensionContext) {
+
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
   context.subscriptions.push(
