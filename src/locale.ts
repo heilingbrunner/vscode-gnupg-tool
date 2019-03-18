@@ -1,7 +1,10 @@
 import en from './locale/en';
 import de from './locale/de';
+import es from './locale/es';
+import fr from './locale/fr';
+import zh_CN from './locale/zh-CN';
 
-export interface ILocale{
+export interface ILocale {
   Decrypted: string;
   Encrypted: string;
   GnuPGDecryptionFailed: string;
@@ -49,6 +52,18 @@ export function locale(): ILocale {
 
     case 'de':
       curr = de;
+      break;
+
+    case 'es':
+      curr = es;
+      break;
+
+    case 'fr':
+      curr = fr;
+      break;
+
+    case 'zh-CN':
+      curr = zh_CN;
       break;
 
     default:
