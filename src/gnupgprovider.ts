@@ -11,7 +11,7 @@ import {
 } from './gnupgpromises';
 import { getContent } from './utils';
 import { GnuPGKey } from './gnupgkey';
-import { locale } from './locale';
+import { i18n } from './i18n';
 
 export default class GnuPGProvider implements vscode.TextDocumentContentProvider {
   public provideTextDocumentContent(uri: vscode.Uri): Thenable<string> {
@@ -21,7 +21,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         newUri = uri.with({
           scheme: 'file',
           authority: '',
-          path: uri.fsPath.slice(0, -(' - ' + locale().Decrypted).length)
+          path: uri.fsPath.slice(0, -(' - ' + i18n().Decrypted).length)
         });
         return new Promise(async resolve => {
           getContent(newUri)
@@ -31,7 +31,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
             .then(decrypted => {
               return resolve(decrypted.toString('utf8'));
             })
-            .catch(err => resolve(locale().GnuPGDecryptionFailed + '\r\n' + err));
+            .catch(err => resolve(i18n().GnuPGDecryptionFailed + '\r\n' + err));
         });
 
       case 'asymmetric':
@@ -39,7 +39,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         newUri = uri.with({
           scheme: 'file',
           authority: '',
-          path: uri.fsPath.slice(0, -(' - ' + locale().Encrypted).length)
+          path: uri.fsPath.slice(0, -(' - ' + i18n().Encrypted).length)
         });
         return new Promise(async resolve => {
           getContent(newUri).then(content => {
@@ -49,7 +49,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
               .then(keys => promiseKeysToQuickPickItems(keys))
               .then(quickpickitems =>
                 vscode.window.showQuickPick(quickpickitems, {
-                  placeHolder: locale().SelectRecipients,
+                  placeHolder: i18n().SelectRecipients,
                   canPickMany: true
                 })
               )
@@ -58,14 +58,14 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
                   return promiseEncryptAsymBuffer(content, recipients);
                 } else {
                   return new Promise<Buffer>((resolve, reject) => {
-                    reject(locale().GnuPGNoRecipientsSelectedForEncryption);
+                    reject(i18n().GnuPGNoRecipientsSelectedForEncryption);
                   });
                 }
               })
               .then(encrypted => {
                 resolve(encrypted.toString('utf8'));
               })
-              .catch(err => resolve(locale().GnuPGEncryptionFailed + '\r\n' + err));
+              .catch(err => resolve(i18n().GnuPGEncryptionFailed + '\r\n' + err));
           });
         });
 
@@ -74,7 +74,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         newUri = uri.with({
           scheme: 'file',
           authority: '',
-          path: uri.fsPath.slice(0, -(' - ' + locale().Encrypted).length)
+          path: uri.fsPath.slice(0, -(' - ' + i18n().Encrypted).length)
         });
         return new Promise(async resolve => {
           getContent(newUri).then(content => {
@@ -82,7 +82,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
               .then(encrypted => {
                 resolve(encrypted.toString('utf8'));
               })
-              .catch(err => resolve(locale().GnuPGEncryptionFailed + '\r\n' + err));
+              .catch(err => resolve(i18n().GnuPGEncryptionFailed + '\r\n' + err));
           });
         });
 
@@ -90,14 +90,14 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         newUri = uri.with({
           scheme: 'file',
           authority: '',
-          path: uri.fsPath.slice(0, -(' - ' + locale().Verified).length)
+          path: uri.fsPath.slice(0, -(' - ' + i18n().Verified).length)
         });
         return new Promise(async resolve => {
           promiseVerify(newUri)
             .then(verification => {
-              return resolve(locale().GnuPGVerfication + ':\r\n' + verification.toString('utf8'));
+              return resolve(i18n().GnuPGVerfication + ':\r\n' + verification.toString('utf8'));
             })
-            .catch(err => resolve(locale().GnuPGVerficationFailed + '\r\n' + err));
+            .catch(err => resolve(i18n().GnuPGVerficationFailed + '\r\n' + err));
         });
 
       default:

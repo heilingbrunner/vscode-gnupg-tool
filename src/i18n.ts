@@ -1,10 +1,10 @@
-import en from './locale/en';
-import de from './locale/de';
-import es from './locale/es';
-import fr from './locale/fr';
-import zh_CN from './locale/zh-CN';
+import en from './i18n/en';
+import de from './i18n/de';
+import es from './i18n/es';
+import fr from './i18n/fr';
+import zh_CN from './i18n/zh-CN';
 
-export interface ILocale {
+export interface Ii18n {
   Decrypted: string;
   Encrypted: string;
   GnuPGDecryptionFailed: string;
@@ -35,9 +35,9 @@ export interface ILocale {
   Verified: string;
 }
 
-export function locale(): ILocale {
+export function i18n(): Ii18n {
 
-  let curr: ILocale;
+  let curr: Ii18n;
   let config: { locale: string } = { locale: 'en' };
 
   if (process.env.VSCODE_NLS_CONFIG) {

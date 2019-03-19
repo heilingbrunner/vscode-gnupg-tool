@@ -1,6 +1,6 @@
-import { ILocale } from "../locale";
+import { Ii18n } from "../i18n";
 
-const translation: ILocale = {
+const translation: Ii18n = {
   Decrypted: 'entschlüsselt',
   Encrypted: 'verschlüsselt',
   GnuPGDecryptionFailed: 'GnuPG: Entschlüsselung fehlgeschlagen !',
