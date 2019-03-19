@@ -1,0 +1,22 @@
+{
+  "command.CheckGnuPG.title": "Compruebe GnuPG",
+  "command.ListPublicKeys.title": "Lista de claves públicas",
+  "command.ListSecretKeys.title": "Lista de claves secretas",
+  "command.ShowSmartcard.title": "Mostrar Smartcard",
+  "command.EndSession.title": "Finalizar sesión",
+  "command.EncryptSelectionAsym.title": "Cifrar selección con destinatarios",
+  "command.EncryptSelectionSymm.title": "Cifrar selección con frase de paso",
+  "command.EncryptFileAsym.title": "Cifrar fichero con destinatarios",
+  "command.EncryptFileSymm.title": "Cifrar archivo con frase de contraseña",
+  "command.PreviewEncryptAsym.title": "Vista previa Cifrar archivo con destinatarios",
+  "command.PreviewEncryptSymm.title": "Vista previa Cifrar archivo con frase de contraseña",
+  "command.DecryptSelection.title": "Descifrar la selección",
+  "command.DecryptFile.title": "Descifrar archivo",
+  "command.PreviewDecrypt.title": "Vista previa del archivo descifrado",
+  "command.SignFile.title": "Archivo de firmas",
+  "command.VerifyFile.title": "Verificar archivo",
+  "command.ImportKeys.title": "Claves de importación",
+  "command.ExportPublicKeys.title": "Exportar claves públicas",
+  "command.ExportSecretKeys.title": "Claves secretas de exportación",
+  "command.ExportSecretSubKeys.title": "Claves secundarias secretas de exportación"
+}

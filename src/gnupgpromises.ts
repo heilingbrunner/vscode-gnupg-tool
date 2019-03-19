@@ -4,6 +4,7 @@ import { ExecOptions } from 'child_process';
 
 import { call, encrypt, decrypt, callStreaming, decryptToFile } from 'gpg';
 import { GnuPGKey } from './gnupgkey';
+import { locale } from './locale';
 
 export function promiseCheckVersion(): Promise<Buffer> {
   return new Promise(function(resolve, reject) {
@@ -357,7 +358,7 @@ export function promiseImportKeys(uri: vscode.Uri): Promise<Buffer> {
     args = args.concat([uri.fsPath]);
 
     call('', args, (err: { stack: string }, stdout: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(new Buffer('Key import successfully'));
+      err ? reject(getLastGnuPGError(err)) : resolve(new Buffer(locale().GnuPGKeyImportSuccessfully));
     });
   });
 }
@@ -377,7 +378,7 @@ export function promiseExportPublicKeys(
     args = args.concat(key ? key.fingerprint : '');
 
     call('', args, (err: { stack: string }, stdout: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(new Buffer('Key export successfully'));
+      err ? reject(getLastGnuPGError(err)) : resolve(new Buffer(locale().GnuPGKeyExportSuccessfully));
     });
   });
 }
@@ -397,7 +398,7 @@ export function promiseExportSecretKeys(
     args = args.concat(key ? key.fingerprint : '');
 
     call('', args, (err: { stack: string }, stdout: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(new Buffer('Key export successfully'));
+      err ? reject(getLastGnuPGError(err)) : resolve(new Buffer(locale().GnuPGKeyExportSuccessfully));
     });
   });
 }
@@ -417,7 +418,7 @@ export function promiseExportSecretSubKeys(
     args = args.concat(key ? key.fingerprint : '');
 
     call('', args, (err: { stack: string }, stdout: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(new Buffer('Key export successfully'));
+      err ? reject(getLastGnuPGError(err)) : resolve(new Buffer(locale().GnuPGKeyExportSuccessfully));
     });
   });
 }

@@ -5,8 +5,8 @@
     "url": "https://github.com/heilingbrunner/vscode-gnupg-tool.git"
   },
   "displayName": "GnuPG-Tool",
-  "description": "GnuPG tool",
-  "version": "1.0.2",
+  "description": "Tool for a simple usage of GnuPG",
+  "version": "1.0.3",
   "publisher": "JHeilingbrunner",
   "license": "MIT",
   "icon": "images/vscode-gnupg-tool-logo.png",
@@ -75,102 +75,102 @@
     "commands": [
       {
         "command": "extension.CheckGnuPG",
-        "title": "Check GnuPG",
+        "title": "%command.CheckGnuPG.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.ListPublicKeys",
-        "title": "List Public Keys",
+        "title": "%command.ListPublicKeys.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.ListSecretKeys",
-        "title": "List Secret Keys",
+        "title": "%command.ListSecretKeys.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.ShowSmartcard",
-        "title": "Show Smartcard",
+        "title": "%command.ShowSmartcard.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.EndSession",
-        "title": "End Session",
+        "title": "%command.EndSession.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.EncryptSelectionAsym",
-        "title": "Encrypt Selection w/ Recipients",
+        "title": "%command.EncryptSelectionAsym.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.EncryptSelectionSymm",
-        "title": "Encrypt Selection w/ Passphrase",
+        "title": "%command.EncryptSelectionSymm.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.EncryptFileAsym",
-        "title": "Encrypt File w/ Recipients",
+        "title": "%command.EncryptFileAsym.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.EncryptFileSymm",
-        "title": "Encrypt File w/ Passphrase",
+        "title": "%command.EncryptFileSymm.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.PreviewEncryptAsym",
-        "title": "Preview Encrypted File w/ Recipients",
+        "title": "%command.PreviewEncryptAsym.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.PreviewEncryptSymm",
-        "title": "Preview Encrypted File w/ Passphrase",
+        "title": "%command.PreviewEncryptSymm.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.DecryptSelection",
-        "title": "Decrypt Selection",
+        "title": "%command.DecryptSelection.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.DecryptFile",
-        "title": "Decrypt File",
+        "title": "%command.DecryptFile.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.PreviewDecrypt",
-        "title": "Preview Decrypted File",
+        "title": "%command.PreviewDecrypt.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.SignFile",
-        "title": "Sign File",
+        "title": "%command.SignFile.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.VerifyFile",
-        "title": "Verify File",
+        "title": "%command.VerifyFile.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.ImportKeys",
-        "title": "Import Keys",
+        "title": "%command.ImportKeys.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.ExportPublicKeys",
-        "title": "Export Public Keys",
+        "title": "%command.ExportPublicKeys.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.ExportSecretKeys",
-        "title": "Export Secret Keys",
+        "title": "%command.ExportSecretKeys.title%",
         "category": "GnuPG"
       },
       {
         "command": "extension.ExportSecretSubKeys",
-        "title": "Export Secret Sub Keys",
+        "title": "%command.ExportSecretSubKeys.title%",
         "category": "GnuPG"
       }
     ],

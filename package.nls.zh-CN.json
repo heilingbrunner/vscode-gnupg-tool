@@ -1,0 +1,22 @@
+{
+  "command.CheckGnuPG.title": "检查 GnuPG",
+  "command.ListPublicKeys.title": "列出公钥",
+  "command.ListSecretKeys.title": "列出密钥",
+  "command.ShowSmartcard.title": "显示 Smartcard",
+  "command.EndSession.title": "结束会议",
+  "command.EncryptSelectionAsym.title": "使用收件人加密选择",
+  "command.EncryptSelectionSymm.title": "使用密码短语加密选择",
+  "command.EncryptFileAsym.title": "使用收件人加密文件",
+  "command.EncryptFileSymm.title": "使用密码短语加密文件",
+  "command.PreviewEncryptAsym.title": "使用收件人预览加密文件",
+  "command.PreviewEncryptSymm.title": "使用密码短语预览加密文件",
+  "command.DecryptSelection.title": "解密选择",
+  "command.DecryptFile.title": "解密文件",
+  "command.PreviewDecrypt.title": "预览解密文件",
+  "command.SignFile.title": "签名文件",
+  "command.VerifyFile.title": "验证文件",
+  "command.ImportKeys.title": "导入密钥",
+  "command.ExportPublicKeys.title": "导出公钥",
+  "command.ExportSecretKeys.title": "导出密钥",
+  "command.ExportSecretSubKeys.title": "导出秘密子密钥"
+}
