@@ -22,7 +22,7 @@ const translation: ILocale = {
   GnuPGNoRecipientsSelectedForEncryption: 'GnuPG: No recipients selected for encryption.',
   GnuPGNoTextSelectedForDecryption: 'GnuPG: No text selected for decryption.',
   GnuPGNoTextSelectedForEncryption: 'GnuPG: No text selected for encryption.',
-  GnuPGSignFailed: 'GnuPG: Sign failed !',
+  GnuPGSignFailed: 'GnuPG: Signing failed !',
   GnuPGVerfication: 'GnuPG: Verification',
   GnuPGVerficationFailed: 'GnuPG: Verification failed !',
   SelectKeyToExport: 'Select key to export ...',
