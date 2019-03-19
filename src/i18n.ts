@@ -2,6 +2,7 @@ import en from './i18n/en';
 import de from './i18n/de';
 import es from './i18n/es';
 import fr from './i18n/fr';
+import ru from './i18n/ru';
 import zh_CN from './i18n/zh-CN';
 
 export interface Ii18n {
@@ -60,6 +61,10 @@ export function i18n(): Ii18n {
 
     case 'fr':
       curr = fr;
+      break;
+
+    case 'ru':
+      curr = ru;
       break;
 
     case 'zh-CN':

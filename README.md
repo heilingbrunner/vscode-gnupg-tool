@@ -18,6 +18,17 @@
 - __Sign__/__verify__ file.
 - Keys __import__/__export__.
 
+## Supported locales
+
+The extension is available in multiple languages (Google Translator):
+
+- `de`
+- `en`
+- `es`
+- `fr`
+- `ru`
+- `zh-CN`
+
 ![Decrypt-Selection](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/decryptselection.gif)
 
 The command palette ...
