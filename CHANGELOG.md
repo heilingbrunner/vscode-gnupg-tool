@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.4] - 2019-03-19
+
+- support for `ru` language
+
 ## [1.0.3] - 2019-03-19
 
 - support for several languages (en,de,es,fr,zh-CN)
