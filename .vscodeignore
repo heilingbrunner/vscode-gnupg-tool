@@ -9,5 +9,6 @@ images/
 **/tsconfig.json
 **/tslint.json
 HOW-TO-VSIX.md
+webpack.config.json
 
 !images/vscode-gnupg-tool-logo.png
