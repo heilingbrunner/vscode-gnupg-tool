@@ -259,6 +259,11 @@
           "when": "resourceExtname == .gpg && resourceExtname != .sig"
         },
         {
+          "command": "extension.ImportKeys",
+          "group": "gnupg3@1",
+          "when": "resourceExtname == .key && resourceExtname != .sig"
+        },
+        {
           "command": "extension.ExportPublicKeys",
           "group": "gnupg3@2",
           "when": "resourceExtname == .asc && resourceExtname != .sig"
