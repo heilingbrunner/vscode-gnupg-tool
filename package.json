@@ -6,7 +6,7 @@
   },
   "displayName": "GnuPG-Tool",
   "description": "Tool for a simple usage of GnuPG",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "publisher": "JHeilingbrunner",
   "license": "MIT",
   "icon": "images/vscode-gnupg-tool-logo.png",
@@ -251,32 +251,47 @@
         {
           "command": "extension.ImportKeys",
           "group": "gnupg3@1",
-          "when": "resourceExtname == .asc && resourceExtname != .sig"
+          "when": "resourceExtname == .asc"
         },
         {
           "command": "extension.ImportKeys",
           "group": "gnupg3@1",
-          "when": "resourceExtname == .gpg && resourceExtname != .sig"
+          "when": "resourceExtname == .gpg"
         },
         {
           "command": "extension.ImportKeys",
           "group": "gnupg3@1",
-          "when": "resourceExtname == .key && resourceExtname != .sig"
+          "when": "resourceExtname == .key"
         },
         {
           "command": "extension.ExportPublicKeys",
           "group": "gnupg3@2",
-          "when": "resourceExtname == .asc && resourceExtname != .sig"
+          "when": "resourceExtname == .asc"
+        },
+        {
+          "command": "extension.ExportPublicKeys",
+          "group": "gnupg3@2",
+          "when": "resourceExtname == .key"
         },
         {
           "command": "extension.ExportSecretKeys",
           "group": "gnupg3@3",
-          "when": "resourceExtname == .asc && resourceExtname != .sig"
+          "when": "resourceExtname == .asc"
+        },
+        {
+          "command": "extension.ExportSecretKeys",
+          "group": "gnupg3@3",
+          "when": "resourceExtname == .key"
         },
         {
           "command": "extension.ExportSecretSubKeys",
           "group": "gnupg3@4",
-          "when": "resourceExtname == .asc && resourceExtname != .sig"
+          "when": "resourceExtname == .asc"
+        },
+        {
+          "command": "extension.ExportSecretSubKeys",
+          "group": "gnupg3@4",
+          "when": "resourceExtname == .key"
         }
       ],
       "editor/context": [

@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.5] - 2019-03-25
+
+- `*.key` extension for key files
+
 ## [1.0.4] - 2019-03-19
 
 - support for `ru` language
