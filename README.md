@@ -63,6 +63,10 @@ The editor context menu ...
 
 - `<filename>.<ext>.sig`: This should be an ascii encoded signature file corresponding to `<filename>.<ext>`.
 
+#### The `*.key` Files
+
+- `<filename>.key`: This should be an ascii encrypted key (option: `--armor`)
+
 ## Requirements
 
 ### GnuPG
