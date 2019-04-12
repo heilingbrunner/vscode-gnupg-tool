@@ -50,7 +50,11 @@
     "onCommand:extension.ImportKeys",
     "onCommand:extension.ExportPublicKeys",
     "onCommand:extension.ExportSecretKeys",
-    "onCommand:extension.ExportSecretSubKeys"
+    "onCommand:extension.ExportSecretSubKeys",
+    "workspaceContains:**/*.asc",
+    "workspaceContains:**/*.gpg",
+    "workspaceContains:**/*.sig",
+    "workspaceContains:**/*.key"
   ],
   "contributes": {
     "languages": [
