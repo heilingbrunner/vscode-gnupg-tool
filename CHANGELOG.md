@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.7] - 2019-04-12
+
+- devDependencies update
+
 ## [1.0.6] - 2019-04-12
 
 - new command groups `Environment ...`, `Encrypt ...`, `Decrypt ...` and `Trust ...`
