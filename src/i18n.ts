@@ -6,6 +6,32 @@ import ru from './i18n/ru';
 import zh_CN from './i18n/zh-CN';
 
 export interface Ii18n {
+  CommandEnvironment: string;
+  CommandEncrypt: string;
+  CommandDecrypt: string;
+  CommandTrust: string;
+
+  CommandCheckGnuPG: string;
+  CommandListPublicKeys: string;
+  CommandListSecretKeys: string;
+  CommandShowSmartcard: string;
+  CommandEndSession: string;
+  CommandEncryptSelectionAsym: string;
+  CommandEncryptSelectionSymm: string;
+  CommandEncryptFileAsym: string;
+  CommandEncryptFileSymm: string;
+  CommandEncryptPreviewAsym: string;
+  CommandEncryptPreviewSymm: string;
+  CommandDecryptSelection: string;
+  CommandDecryptFile: string;
+  CommandDecryptPreview: string;
+  CommandSignFile: string;
+  CommandVerifyFile: string;
+  CommandImportKeys: string;
+  CommandExportPublicKeys: string;
+  CommandExportSecretKeys: string;
+  CommandExportSecretSubKeys: string;
+
   Decrypted: string;
   Encrypted: string;
   GnuPGDecryptionFailed: string;
@@ -37,7 +63,6 @@ export interface Ii18n {
 }
 
 export function i18n(): Ii18n {
-
   let curr: Ii18n;
   let config: { locale: string } = { locale: 'en' };
 

@@ -6,7 +6,7 @@
   },
   "displayName": "GnuPG-Tool",
   "description": "Tool for a simple usage of GnuPG",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "publisher": "JHeilingbrunner",
   "license": "MIT",
   "icon": "images/vscode-gnupg-tool-logo.png",
@@ -31,6 +31,10 @@
     "theme": "dark"
   },
   "activationEvents": [
+    "onCommand:extension.Evironment",
+    "onCommand:extension.Encrypt",
+    "onCommand:extension.Decrypt",
+    "onCommand:extension.Trust",
     "onCommand:extension.CheckGnuPG",
     "onCommand:extension.ListPublicKeys",
     "onCommand:extension.ListSecretKeys",
@@ -39,11 +43,11 @@
     "onCommand:extension.EncryptSelectionSymm",
     "onCommand:extension.EncryptFileAsym",
     "onCommand:extension.EncryptFileSymm",
-    "onCommand:extension.PreviewEncryptAsym",
-    "onCommand:extension.PreviewEncryptSymm",
+    "onCommand:extension.EncryptPreviewAsym",
+    "onCommand:extension.EncryptPreviewSymm",
     "onCommand:extension.DecryptSelection",
     "onCommand:extension.DecryptFile",
-    "onCommand:extension.PreviewDecrypt",
+    "onCommand:extension.DecryptPreview",
     "onCommand:extension.SignFile",
     "onCommand:extension.VerifyFile",
     "onCommand:extension.EndSession",
@@ -77,6 +81,26 @@
       }
     ],
     "commands": [
+      {
+        "command": "extension.Environment",
+        "title": "%command.Environment.title%",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.Encrypt",
+        "title": "%command.Encrypt.title%",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.Decrypt",
+        "title": "%command.Decrypt.title%",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.Trust",
+        "title": "%command.Trust.title%",
+        "category": "GnuPG"
+      },
       {
         "command": "extension.CheckGnuPG",
         "title": "%command.CheckGnuPG.title%",
@@ -123,13 +147,13 @@
         "category": "GnuPG"
       },
       {
-        "command": "extension.PreviewEncryptAsym",
-        "title": "%command.PreviewEncryptAsym.title%",
+        "command": "extension.EncryptPreviewAsym",
+        "title": "%command.EncryptPreviewAsym.title%",
         "category": "GnuPG"
       },
       {
-        "command": "extension.PreviewEncryptSymm",
-        "title": "%command.PreviewEncryptSymm.title%",
+        "command": "extension.EncryptPreviewSymm",
+        "title": "%command.EncryptPreviewSymm.title%",
         "category": "GnuPG"
       },
       {
@@ -143,8 +167,8 @@
         "category": "GnuPG"
       },
       {
-        "command": "extension.PreviewDecrypt",
-        "title": "%command.PreviewDecrypt.title%",
+        "command": "extension.DecryptPreview",
+        "title": "%command.DecryptPreview.title%",
         "category": "GnuPG"
       },
       {
@@ -203,22 +227,22 @@
       ],
       "explorer/context": [
         {
-          "command": "extension.PreviewEncryptAsym",
+          "command": "extension.EncryptPreviewAsym",
           "group": "gnupg1@1",
           "when": "resourceExtname != .asc && resourceExtname != .gpg && resourceExtname != .sig"
         },
         {
-          "command": "extension.PreviewEncryptSymm",
+          "command": "extension.EncryptPreviewSymm",
           "group": "gnupg1@2",
           "when": "resourceExtname != .asc && resourceExtname != .gpg && resourceExtname != .sig"
         },
         {
-          "command": "extension.PreviewDecrypt",
+          "command": "extension.DecryptPreview",
           "group": "gnupg1@3",
           "when": "resourceExtname == .asc"
         },
         {
-          "command": "extension.PreviewDecrypt",
+          "command": "extension.DecryptPreview",
           "group": "gnupg1@3",
           "when": "resourceExtname == .gpg"
         },
@@ -266,36 +290,6 @@
           "command": "extension.ImportKeys",
           "group": "gnupg3@1",
           "when": "resourceExtname == .key"
-        },
-        {
-          "command": "extension.ExportPublicKeys",
-          "group": "gnupg3@2",
-          "when": "resourceExtname == .asc"
-        },
-        {
-          "command": "extension.ExportPublicKeys",
-          "group": "gnupg3@2",
-          "when": "resourceExtname == .key"
-        },
-        {
-          "command": "extension.ExportSecretKeys",
-          "group": "gnupg3@3",
-          "when": "resourceExtname == .asc"
-        },
-        {
-          "command": "extension.ExportSecretKeys",
-          "group": "gnupg3@3",
-          "when": "resourceExtname == .key"
-        },
-        {
-          "command": "extension.ExportSecretSubKeys",
-          "group": "gnupg3@4",
-          "when": "resourceExtname == .asc"
-        },
-        {
-          "command": "extension.ExportSecretSubKeys",
-          "group": "gnupg3@4",
-          "when": "resourceExtname == .key"
         }
       ],
       "editor/context": [
@@ -317,17 +311,17 @@
       ],
       "editor/title": [
         {
-          "command": "extension.PreviewEncryptAsym",
+          "command": "extension.EncryptPreviewAsym",
           "group": "gnupg1@1",
           "when": "resourceExtname != .asc && resourceExtname != .gpg && resourceExtname != .sig"
         },
         {
-          "command": "extension.PreviewDecrypt",
+          "command": "extension.DecryptPreview",
           "group": "gnupg1@3",
           "when": "resourceExtname == .asc"
         },
         {
-          "command": "extension.PreviewDecrypt",
+          "command": "extension.DecryptPreview",
           "group": "gnupg1@3",
           "when": "resourceExtname == .gpg"
         },

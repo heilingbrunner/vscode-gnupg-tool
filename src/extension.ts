@@ -26,6 +26,7 @@ import VirtualDocumentProvider from './virtualdocumentprovider';
 import GnuPGProvider from './gnupgprovider';
 import { GnuPGKey } from './gnupgkey';
 import { i18n } from './i18n';
+import { getWorkspaceUri } from './utils';
 
 let statusBarItem: vscode.StatusBarItem;
 
@@ -38,6 +39,166 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('gnupg', new GnuPGProvider()));
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.Environment', (uri: vscode.Uri) => {
+      let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
+
+      commands.push({ label: i18n().CommandCheckGnuPG, tag: 'CommandCheckGnuPG' });
+      commands.push({ label: i18n().CommandShowSmartcard, tag: 'CommandShowSmartcard' });
+      commands.push({ label: i18n().CommandListPublicKeys, tag: 'CommandListPublicKeys' });
+      commands.push({ label: i18n().CommandListSecretKeys, tag: 'CommandListSecretKeys' });
+      commands.push({ label: i18n().CommandImportKeys, tag: 'CommandImportKeys' });
+      commands.push({ label: i18n().CommandExportPublicKeys, tag: 'CommandExportPublicKeys' });
+      commands.push({ label: i18n().CommandExportSecretKeys, tag: 'CommandExportSecretKeys' });
+      commands.push({ label: i18n().CommandExportSecretSubKeys, tag: 'CommandExportSecretSubKeys' });
+      commands.push({ label: i18n().CommandEndSession, tag: 'CommandEndSession' });
+
+      vscode.window.showQuickPick(commands).then(selectedCommand => {
+        if (!selectedCommand) {
+          return;
+        }
+
+        const editor = vscode.window.activeTextEditor;
+
+        switch (selectedCommand.tag) {
+          case 'CommandCheckGnuPG':
+            showVersion().then(() => {
+              checkGnuPG();
+            });
+            break;
+          case 'CommandListPublicKeys':
+            listPublicKeys();
+            break;
+          case 'CommandListSecretKeys':
+            listPrivateKeys();
+            break;
+          case 'CommandShowSmartcard':
+            showSmartcard();
+            break;
+          case 'CommandImportKeys':
+            importKeys(uri);
+            break;
+          case 'CommandExportPublicKeys':
+            exportPublicKeys(uri);
+            break;
+          case 'CommandExportSecretKeys':
+            exportPrivateKeys(uri);
+            break;
+          case 'CommandExportSecretSubKeys':
+            exportPrivateSubKeys(uri);
+            break;
+          case 'CommandEndSession':
+            endSession();
+            break;
+        }
+      });
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.Encrypt', (uri: vscode.Uri) => {
+      let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
+
+      commands.push({ label: i18n().CommandEncryptSelectionAsym, tag: 'CommandEncryptSelectionAsym' });
+      commands.push({ label: i18n().CommandEncryptSelectionSymm, tag: 'CommandEncryptSelectionSymm' });
+      commands.push({ label: i18n().CommandEncryptFileAsym, tag: 'CommandEncryptFileAsym' });
+      commands.push({ label: i18n().CommandEncryptFileSymm, tag: 'CommandEncryptFileSymm' });
+      commands.push({ label: i18n().CommandEncryptPreviewAsym, tag: 'CommandEncryptPreviewAsym' });
+      commands.push({ label: i18n().CommandEncryptPreviewSymm, tag: 'CommandEncryptPreviewSymm' });
+
+      vscode.window.showQuickPick(commands).then(selectedCommand => {
+        if (!selectedCommand) {
+          return;
+        }
+
+        const editor = vscode.window.activeTextEditor;
+
+        switch (selectedCommand.tag) {
+          case 'CommandEncryptSelectionAsym':
+            if (editor) {
+              encryptAsymSelection(editor);
+            }
+            break;
+          case 'CommandEncryptSelectionSymm':
+            if (editor) {
+              encryptSymmSelection(editor);
+            }
+            break;
+          case 'CommandEncryptFileAsym':
+            encryptAsymFile(uri);
+            break;
+          case 'CommandEncryptFileSymm':
+            encryptSymmFile(uri);
+            break;
+          case 'CommandEncryptPreviewAsym':
+            encryptPreviewAsym(uri);
+            break;
+          case 'CommandEncryptPreviewSymm':
+            encryptPreviewSymm(uri);
+            break;
+        }
+      });
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.Decrypt', (uri: vscode.Uri) => {
+      let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
+
+      commands.push({ label: i18n().CommandDecryptSelection, tag: 'CommandDecryptSelection' });
+      commands.push({ label: i18n().CommandDecryptFile, tag: 'CommandDecryptFile' });
+      commands.push({ label: i18n().CommandDecryptPreview, tag: 'CommandDecryptPreview' });
+
+      vscode.window.showQuickPick(commands).then(selectedCommand => {
+        if (!selectedCommand) {
+          return;
+        }
+
+        const editor = vscode.window.activeTextEditor;
+
+        switch (selectedCommand.tag) {
+          case 'CommandDecryptSelection':
+            if (editor) {
+              decryptSelection(editor);
+            }
+            break;
+          case 'CommandDecryptFile':
+            decryptFile(uri);
+            break;
+          case 'CommandDecryptPreview':
+            decryptPreview(uri);
+            break;
+        }
+      });
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.Trust', (uri: vscode.Uri) => {
+      let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
+
+      commands.push({ label: i18n().CommandSignFile, tag: 'CommandSignFile' });
+      commands.push({ label: i18n().CommandVerifyFile, tag: 'CommandVerifyFile' });
+
+      vscode.window.showQuickPick(commands).then(selectedCommand => {
+        if (!selectedCommand) {
+          return;
+        }
+
+        const editor = vscode.window.activeTextEditor;
+
+        switch (selectedCommand.tag) {
+          case 'CommandSignFile':
+            signFile(uri);
+            break;
+          case 'CommandVerifyFile':
+            verifyFile(uri);
+            break;
+        }
+      });
+    })
+  );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.CheckGnuPG', () => {
@@ -96,14 +257,14 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.PreviewEncryptAsym', (uri: vscode.Uri) => {
-      previewEncryptAsym(uri);
+    vscode.commands.registerCommand('extension.EncryptPreviewAsym', (uri: vscode.Uri) => {
+      encryptPreviewAsym(uri);
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.PreviewEncryptSymm', (uri: vscode.Uri) => {
-      previewEncryptSymm(uri);
+    vscode.commands.registerCommand('extension.EncryptPreviewSymm', (uri: vscode.Uri) => {
+      encryptPreviewSymm(uri);
     })
   );
 
@@ -123,8 +284,8 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.PreviewDecrypt', (uri: vscode.Uri) => {
-      previewDecrypt(uri);
+    vscode.commands.registerCommand('extension.DecryptPreview', (uri: vscode.Uri) => {
+      decryptPreview(uri);
     })
   );
 
@@ -277,7 +438,7 @@ function encryptAsymFile(uri: vscode.Uri) {
       encryptAsymUri(uri);
     }
   } else {
-    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
     vscode.window.showOpenDialog(option).then(uriSelected => {
       if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
         if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
@@ -298,7 +459,7 @@ function encryptSymmFile(uri: vscode.Uri) {
       encryptSymmUri(uri);
     }
   } else {
-    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
     vscode.window.showOpenDialog(option).then(uriSelected => {
       if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
         if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
@@ -311,7 +472,7 @@ function encryptSymmFile(uri: vscode.Uri) {
   }
 }
 
-function previewEncryptAsym(uri: vscode.Uri) {
+function encryptPreviewAsym(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc)$/i)) {
       vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
@@ -319,7 +480,7 @@ function previewEncryptAsym(uri: vscode.Uri) {
       launchGnuPGProviderEncryptAsym(uri);
     }
   } else {
-    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
     vscode.window.showOpenDialog(option).then(uriSelected => {
       if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
         if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
@@ -332,7 +493,7 @@ function previewEncryptAsym(uri: vscode.Uri) {
   }
 }
 
-function previewEncryptSymm(uri: vscode.Uri) {
+function encryptPreviewSymm(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc)$/i)) {
       vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
@@ -340,7 +501,7 @@ function previewEncryptSymm(uri: vscode.Uri) {
       launchGnuPGProviderEncryptSymm(uri);
     }
   } else {
-    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
     vscode.window.showOpenDialog(option).then(uriSelected => {
       if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
         if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
@@ -385,7 +546,7 @@ function decryptFile(uri: vscode.Uri) {
       vscode.window.showInformationMessage(i18n().GnuPGFileNotEncrypted);
     }
   } else {
-    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
     vscode.window.showOpenDialog(option).then(uriSelected => {
       if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
         if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
@@ -398,7 +559,7 @@ function decryptFile(uri: vscode.Uri) {
   }
 }
 
-function previewDecrypt(uri: vscode.Uri) {
+function decryptPreview(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc|gpg)$/i)) {
       launchGnuPGProviderForDecrypt(uri);
@@ -406,7 +567,7 @@ function previewDecrypt(uri: vscode.Uri) {
       vscode.window.showInformationMessage(i18n().GnuPGFileNotEncrypted);
     }
   } else {
-    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
     vscode.window.showOpenDialog(option).then(uriSelected => {
       if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
         if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
@@ -427,7 +588,7 @@ function signFile(uri: vscode.Uri) {
       vscode.window.showInformationMessage(i18n().GnuPGFileIsAlreadyASignature);
     }
   } else {
-    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
     vscode.window.showOpenDialog(option).then(uriSelected => {
       if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
         if (!uriSelected[0].fsPath.match(/\.(sig)$/i)) {
@@ -448,7 +609,7 @@ function verifyFile(uri: vscode.Uri) {
       vscode.window.showInformationMessage(i18n().GnuPGFileIsNotASignature);
     }
   } else {
-    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
     vscode.window.showOpenDialog(option).then(uriSelected => {
       if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
         if (!uriSelected[0].fsPath.match(/\.(sig)$/i)) {
@@ -476,7 +637,7 @@ function importKeys(uri: vscode.Uri) {
       })
       .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyImportFailed + ' ' + err));
   } else {
-    const option: vscode.OpenDialogOptions = { canSelectMany: false };
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
     vscode.window.showOpenDialog(option).then(uriSelected => {
       if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
         promiseImportKeys(uriSelected[0])
@@ -507,7 +668,7 @@ function exportPublicKeys(uri: vscode.Uri) {
           })
           .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
       } else {
-        const option: vscode.OpenDialogOptions = { canSelectMany: false };
+        const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
         vscode.window.showSaveDialog(option).then(uriSelected => {
           if (uriSelected && uriSelected.scheme === 'file') {
             promiseExportPublicKeys(uriSelected, user)
@@ -540,7 +701,7 @@ function exportPrivateKeys(uri: vscode.Uri) {
           })
           .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
       } else {
-        const option: vscode.OpenDialogOptions = { canSelectMany: false };
+        const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
         vscode.window.showSaveDialog(option).then(uriSelected => {
           if (uriSelected && uriSelected.scheme === 'file') {
             promiseExportSecretKeys(uriSelected, user)
@@ -573,7 +734,7 @@ function exportPrivateSubKeys(uri: vscode.Uri) {
           })
           .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
       } else {
-        const option: vscode.OpenDialogOptions = { canSelectMany: false };
+        const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
         vscode.window.showSaveDialog(option).then(uriSelected => {
           if (uriSelected && uriSelected.scheme === 'file') {
             promiseExportSecretSubKeys(uriSelected, user)

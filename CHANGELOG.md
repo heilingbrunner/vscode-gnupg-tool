@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.6] - 2019-04-12
+
+- new command groups `Environment ...`, `Encrypt ...`, `Decrypt ...` and `Trust ...`
+- default folder for showOpenDialog() set to workspace folder
+
 ## [1.0.5] - 2019-03-25
 
 - `*.key` extension for key files

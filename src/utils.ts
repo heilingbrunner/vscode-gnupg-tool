@@ -31,3 +31,11 @@ export function setContent(uri: vscode.Uri, content: Buffer): Promise<Buffer> {
     });
   });
 }
+
+export function getWorkspaceUri(): vscode.Uri | undefined {
+  let uri: vscode.Uri | undefined;
+  if (vscode.workspace) {
+    uri = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : undefined;
+  }
+  return uri;
+}
