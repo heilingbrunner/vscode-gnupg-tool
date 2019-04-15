@@ -71,6 +71,16 @@
           "asc"
         ],
         "configuration": "./asc.language-configuration.json"
+      },
+      {
+        "id": "sig",
+        "aliases": [
+          "sig"
+        ],
+        "extensions": [
+          "sig"
+        ],
+        "configuration": "./sig.language-configuration.json"
       }
     ],
     "grammars": [
@@ -78,6 +88,11 @@
         "language": "asc",
         "scopeName": "source.asc",
         "path": "./syntaxes/asc.tmLanguage.json"
+      },
+      {
+        "language": "sig",
+        "scopeName": "source.sig",
+        "path": "./syntaxes/sig.tmLanguage.json"
       }
     ],
     "commands": [
@@ -275,6 +290,16 @@
           "command": "extension.VerifyFile",
           "group": "gnupg2@4",
           "when": "resourceExtname == .sig"
+        },
+        {
+          "command": "extension.VerifyFile",
+          "group": "gnupg2@4",
+          "when": "resourceExtname == .asc"
+        },
+        {
+          "command": "extension.VerifyFile",
+          "group": "gnupg2@4",
+          "when": "resourceExtname == .gpg"
         },
         {
           "command": "extension.ImportKeys",
