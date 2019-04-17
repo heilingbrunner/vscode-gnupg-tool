@@ -68,9 +68,9 @@
           "asc"
         ],
         "extensions": [
-          "asc"
+          ".asc"
         ],
-        "configuration": "./asc.language-configuration.json"
+        "configuration": "./language-configuration.asc.json"
       },
       {
         "id": "sig",
@@ -78,21 +78,36 @@
           "sig"
         ],
         "extensions": [
-          "sig"
+          ".sig"
         ],
-        "configuration": "./sig.language-configuration.json"
+        "configuration": "./language-configuration.sig.json"
+      },
+      {
+        "id": "key",
+        "aliases": [
+          "key"
+        ],
+        "extensions": [
+          ".key"
+        ],
+        "configuration": "./language-configuration.key.json"
       }
     ],
     "grammars": [
       {
         "language": "asc",
         "scopeName": "source.asc",
-        "path": "./syntaxes/asc.tmLanguage.json"
+        "path": "./syntaxes/tmLanguage.asc.json"
       },
       {
         "language": "sig",
         "scopeName": "source.sig",
-        "path": "./syntaxes/sig.tmLanguage.json"
+        "path": "./syntaxes/tmLanguage.sig.json"
+      },
+      {
+        "language": "key",
+        "scopeName": "source.key",
+        "path": "./syntaxes/tmLanguage.key.json"
       }
     ],
     "commands": [
