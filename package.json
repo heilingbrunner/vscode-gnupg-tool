@@ -70,7 +70,7 @@
         "extensions": [
           ".asc"
         ],
-        "configuration": "./asc.language-configuration.json"
+        "configuration": "./language-configurations/asc.language-configuration.json"
       },
       {
         "id": "sig",
@@ -80,7 +80,7 @@
         "extensions": [
           ".sig"
         ],
-        "configuration": "./sig.language-configuration.json"
+        "configuration": "./language-configurations/sig.language-configuration.json"
       },
       {
         "id": "key",
@@ -90,7 +90,7 @@
         "extensions": [
           ".key"
         ],
-        "configuration": "./key.language-configuration.json"
+        "configuration": "./language-configurations/key.language-configuration.json"
       }
     ],
     "grammars": [
