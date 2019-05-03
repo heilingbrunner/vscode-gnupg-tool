@@ -4,6 +4,7 @@ const translation: Ii18n = {
   CommandEnvironment: 'Umgebung ...',
   CommandEncrypt: 'Verschlüsseln ...',
   CommandDecrypt: 'Entschlüsseln ...',
+  
   CommandTrust: 'Vertrauen ...',
   CommandCheckGnuPG: 'GnuPG überprüfen',
   CommandListPublicKeys: 'Öffentliche Schlüssel auflisten',
@@ -28,6 +29,7 @@ const translation: Ii18n = {
   Decrypted: 'entschlüsselt',
   Encrypted: 'verschlüsselt',
   GnuPGDecryptionFailed: 'GnuPG: Entschlüsselung fehlgeschlagen!',
+  GnuPGEditPublicKeyFailed: 'Edit public key failed',
   GnuPGEncryptionFailed: 'GnuPG: Verschlüsselung fehlgeschlagen!',
   GnuPGEndSessionFailed: 'GnuPG: Beenden der Sitzung fehlgeschlagen!',
   GnuPGEndSessionSuccessfully: 'GnuPG: Sitzung erfolgreich beendet.',
@@ -46,6 +48,7 @@ const translation: Ii18n = {
   GnuPGNoRecipientsSelectedForEncryption: 'GnuPG: Kein Empfänger für die Verschlüsselung ausgewählt.',
   GnuPGNoTextSelectedForDecryption: 'GnuPG: Kein Text für Entschlüsselung ausgewählt.',
   GnuPGNoTextSelectedForEncryption: 'GnuPG: Kein Text für Verschlüsselung ausgewählt.',
+  GnuPGSelectPublicKey: 'Öffentlichen Schlüssel auswählen ...',
   GnuPGSignFailed: 'GnuPG: Signieren fehlgeschlagen!',
   GnuPGVerfication: 'GnuPG: Verifikation',
   GnuPGVerficationFailed: 'GnuPG: Verifikation fehlgeschlagen!',

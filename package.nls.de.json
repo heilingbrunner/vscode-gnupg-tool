@@ -1,4 +1,5 @@
 {
+  "command.EditPublicKey.title": "Öffentlichen Schlüssel editieren",
   "command.Environment.title": "Umgebung ...",
   "command.Encrypt.title": "Verschlüsseln ...",
   "command.Decrypt.title": "Entschlüsseln ...",

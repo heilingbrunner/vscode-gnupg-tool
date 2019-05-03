@@ -55,6 +55,7 @@
     "onCommand:extension.ExportPublicKeys",
     "onCommand:extension.ExportSecretKeys",
     "onCommand:extension.ExportSecretSubKeys",
+    "onCommand:extension.EditPublicKey",
     "workspaceContains:**/*.asc",
     "workspaceContains:**/*.gpg",
     "workspaceContains:**/*.sig",
@@ -229,6 +230,11 @@
       {
         "command": "extension.ExportSecretSubKeys",
         "title": "%command.ExportSecretSubKeys.title%",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.EditPublicKey",
+        "title": "%command.EditPublicKey.title%",
         "category": "GnuPG"
       }
     ],

@@ -1,4 +1,5 @@
 {
+  "command.EditPublicKey.title": "Edit Public Key ...",
   "command.Environment.title": "Environment ...",
   "command.Encrypt.title": "Encoder ...",
   "command.Decrypt.title": "Déchiffrer ...",

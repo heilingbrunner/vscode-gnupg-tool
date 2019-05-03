@@ -10,7 +10,6 @@ export interface Ii18n {
   CommandEncrypt: string;
   CommandDecrypt: string;
   CommandTrust: string;
-
   CommandCheckGnuPG: string;
   CommandListPublicKeys: string;
   CommandListSecretKeys: string;
@@ -31,10 +30,10 @@ export interface Ii18n {
   CommandExportPublicKeys: string;
   CommandExportSecretKeys: string;
   CommandExportSecretSubKeys: string;
-
   Decrypted: string;
   Encrypted: string;
   GnuPGDecryptionFailed: string;
+  GnuPGEditPublicKeyFailed: string;
   GnuPGEncryptionFailed: string;
   GnuPGEndSessionFailed: string;
   GnuPGEndSessionSuccessfully: string;
@@ -53,6 +52,7 @@ export interface Ii18n {
   GnuPGNoRecipientsSelectedForEncryption: string;
   GnuPGNoTextSelectedForDecryption: string;
   GnuPGNoTextSelectedForEncryption: string;
+  GnuPGSelectPublicKey: string;
   GnuPGSignFailed: string;
   GnuPGVerfication: string;
   GnuPGVerficationFailed: string;

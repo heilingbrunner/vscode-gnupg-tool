@@ -96,10 +96,12 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  // submenu Encrypt ...
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.Encrypt', (uri: vscode.Uri) => {
       let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
 
+      // fill array with commands
       commands.push({ label: i18n().CommandEncryptSelectionAsym, tag: 'CommandEncryptSelectionAsym' });
       commands.push({ label: i18n().CommandEncryptSelectionSymm, tag: 'CommandEncryptSelectionSymm' });
       commands.push({ label: i18n().CommandEncryptFileAsym, tag: 'CommandEncryptFileAsym' });
@@ -107,6 +109,7 @@ export function activate(context: vscode.ExtensionContext) {
       commands.push({ label: i18n().CommandEncryptPreviewAsym, tag: 'CommandEncryptPreviewAsym' });
       commands.push({ label: i18n().CommandEncryptPreviewSymm, tag: 'CommandEncryptPreviewSymm' });
 
+      // show array as quickpick
       vscode.window.showQuickPick(commands).then(selectedCommand => {
         if (!selectedCommand) {
           return;
@@ -142,14 +145,17 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  // submenu Decrypt ...
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.Decrypt', (uri: vscode.Uri) => {
       let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
 
+      // fill array with commands
       commands.push({ label: i18n().CommandDecryptSelection, tag: 'CommandDecryptSelection' });
       commands.push({ label: i18n().CommandDecryptFile, tag: 'CommandDecryptFile' });
       commands.push({ label: i18n().CommandDecryptPreview, tag: 'CommandDecryptPreview' });
 
+      // show array as quickpick
       vscode.window.showQuickPick(commands).then(selectedCommand => {
         if (!selectedCommand) {
           return;
@@ -174,13 +180,16 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  // submenu Trust ...
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.Trust', (uri: vscode.Uri) => {
       let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
 
+      // fill array with commands
       commands.push({ label: i18n().CommandSignFile, tag: 'CommandSignFile' });
       commands.push({ label: i18n().CommandVerifyFile, tag: 'CommandVerifyFile' });
 
+      // show array as quickpick
       vscode.window.showQuickPick(commands).then(selectedCommand => {
         if (!selectedCommand) {
           return;
@@ -328,6 +337,12 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ExportSecretSubKeys', (uri: vscode.Uri) => {
       exportPrivateSubKeys(uri);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.EditPublicKey', () => {
+      editPublicKey();
     })
   );
 
@@ -858,4 +873,22 @@ function launchGnuPGProviderForVerify(uri: vscode.Uri) {
 
   // go on to content provider ...
   vscode.commands.executeCommand('vscode.open', newUri);
+}
+
+function editPublicKey() {
+  promiseListPublicKeys()
+    .then(stdout => promiseParseKeys(stdout))
+    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+    .then(keys => promiseKeysToQuickPickItems(keys))
+    .then(quickpickitems =>
+      vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
+    )
+    .then(pubkey => {
+      if (pubkey) {
+        const terminal = vscode.window.createTerminal(`GnuPG Terminal`);
+        terminal.show();
+        terminal.sendText('gpg --edit-key ' + pubkey.fingerprint, false);
+      }
+    })
+    .catch(err => vscode.window.showErrorMessage(i18n().GnuPGEditPublicKeyFailed + ' ' + err));
 }
