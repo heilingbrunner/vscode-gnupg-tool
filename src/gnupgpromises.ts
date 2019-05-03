@@ -297,6 +297,7 @@ export function promiseKeysToQuickPickItems(
     label: string;
     description: string;
     detail: string;
+    userId: string;
     fingerprint: string;
   }[]
 > {
@@ -306,6 +307,7 @@ export function promiseKeysToQuickPickItems(
       description: k.validityDescription,
       detail: k.fingerprint + ', ' + k.validityDescription,
       validity: k.validity,
+      userId: k.userIds[0],
       fingerprint: k.fingerprint
     }));
 
@@ -437,4 +439,32 @@ function getLastGnuPGError(err: { stack: string }): string {
     });
   }
   return gpgerror;
+}
+
+export function promiseDeleteKey(key?: { fingerprint: string, userId: string }): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    if(key){
+      let args = ['--batch', '--yes'];
+      args = args.concat(['--delete-keys']);
+      args = args.concat([key.fingerprint]);
+
+      call('', args, (err: { stack: string }, stdout: Buffer) => {
+        err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      });
+    }
+  });
+}
+
+export function promiseDeleteSecretKey(key?: { fingerprint: string, userId: string }): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    if(key){
+      let args = ['--batch', '--yes'];
+      args = args.concat(['--delete-secret-keys']);
+      args = args.concat([key.fingerprint]);
+
+      call('', args, (err: { stack: string }, stdout: Buffer) => {
+        err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      });
+    }
+  });
 }

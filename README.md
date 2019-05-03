@@ -48,7 +48,8 @@ The editor context menu ...
 - [VSCode GPG extension](https://marketplace.visualstudio.com/items?itemName=jvalecillos.gpg) by Jose Valecillos
 - [node-gpg](https://github.com/drudge/node-gpg) by Nicholas Penree
 - [GNU Privacy Guard](https://en.wikipedia.org/wiki/GNU_Privacy_Guard)
-- [GnuPG](https://www.gnupg.org/documentation/manuals/gnupg/index.html#SEC_Contents) documentation
+- [GnuPG documentation](https://www.gnupg.org/documentation/manuals/gnupg/index.html#SEC_Contents) 
+- [GnuPG commands](https://www.gnupg.org/documentation/manuals/gnupg/GPG-Commands.html#GPG-Commands) 
 
 ## Usage
 

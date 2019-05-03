@@ -20,7 +20,9 @@ import {
   promiseExportSecretKeys,
   promiseExportSecretSubKeys,
   promiseDecryptUri,
-  promiseEncryptAsymUri
+  promiseEncryptAsymUri,
+  promiseDeleteKey,
+  promiseDeleteSecretKey
 } from './gnupgpromises';
 import VirtualDocumentProvider from './virtualdocumentprovider';
 import GnuPGProvider from './gnupgprovider';
@@ -343,6 +345,24 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EditPublicKey', () => {
       editPublicKey();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.GenerateKey', () => {
+      generateKey();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.DeleteKey', () => {
+      deleteKey();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.DeleteSecretKey', () => {
+      deleteSecretKey();
     })
   );
 
@@ -891,4 +911,36 @@ function editPublicKey() {
       }
     })
     .catch(err => vscode.window.showErrorMessage(i18n().GnuPGEditPublicKeyFailed + ' ' + err));
+}
+
+function generateKey() {
+  const terminal = vscode.window.createTerminal(`GnuPG Terminal`);
+  terminal.show();
+  terminal.sendText('gpg --full-generate-key', false);
+}
+
+function deleteKey() {
+  promiseListPublicKeys()
+  .then(stdout => promiseParseKeys(stdout))
+  .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+  .then(keys => promiseKeysToQuickPickItems(keys))
+  .then(quickpickitems =>
+    vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
+  )
+  .then(key => promiseDeleteKey(key))
+  .then(() => vscode.window.showInformationMessage(i18n().GnuPGPublicKeyDeletedSuccessfully))
+  .catch(err => vscode.window.showErrorMessage(i18n().GnuPGDeleteKeyFailed + ' ' + err));
+}
+
+function deleteSecretKey() {
+  promiseListSecretKeys()
+  .then(stdout => promiseParseKeys(stdout))
+  .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+  .then(keys => promiseKeysToQuickPickItems(keys))
+  .then(quickpickitems =>
+    vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
+  )
+  .then(key => promiseDeleteSecretKey(key))
+  .then(() => vscode.window.showInformationMessage(i18n().GnuPGSecretKeyDeletedSuccessfully))
+  .catch(err => vscode.window.showErrorMessage(i18n().GnuPGDeleteSecretKeyFailed + ' ' + err));
 }

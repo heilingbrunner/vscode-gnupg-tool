@@ -56,6 +56,9 @@
     "onCommand:extension.ExportSecretKeys",
     "onCommand:extension.ExportSecretSubKeys",
     "onCommand:extension.EditPublicKey",
+    "onCommand:extension.GenerateKey",
+    "onCommand:extension.DeleteKey",
+    "onCommand:extension.DeleteSecretKey",
     "workspaceContains:**/*.asc",
     "workspaceContains:**/*.gpg",
     "workspaceContains:**/*.sig",
@@ -235,6 +238,21 @@
       {
         "command": "extension.EditPublicKey",
         "title": "%command.EditPublicKey.title%",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.GenerateKey",
+        "title": "%command.GenerateKey.title%",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.DeleteKey",
+        "title": "%command.DeleteKey.title%",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.DeleteSecretKey",
+        "title": "%command.DeleteSecretKey.title%",
         "category": "GnuPG"
       }
     ],
