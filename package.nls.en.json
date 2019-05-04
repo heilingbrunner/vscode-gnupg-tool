@@ -22,6 +22,7 @@
   "command.ExportSecretSubKeys.title": "Export Secret Sub Keys",
   "command.GenerateKey.title": "Generate Key",
   "command.ImportKeys.title": "Import Keys",
+  "command.Keys.title": "Keys ...",
   "command.ListPublicKeys.title": "List Public Keys",
   "command.ListSecretKeys.title": "List Secret Keys",
   "command.ShowSmartcard.title": "Show Smartcard",

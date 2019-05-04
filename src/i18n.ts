@@ -7,10 +7,12 @@ import zh_CN from './i18n/zh-CN';
 
 export interface Ii18n {
   CommandCheckGnuPG: string;
+  CommandCopyFingerprintToClipboard: string;
   CommandDecrypt: string;
   CommandDecryptFile: string;
   CommandDecryptPreview: string;
   CommandDecryptSelection: string;
+  CommandEditPublicKey: string;
   CommandEncrypt: string;
   CommandEncryptFileAsym: string;
   CommandEncryptFileSymm: string;
@@ -23,6 +25,8 @@ export interface Ii18n {
   CommandExportPublicKeys: string;
   CommandExportSecretKeys: string;
   CommandExportSecretSubKeys: string;
+  CommandGenerateKey: string;
+  CommandKeys: string;
   CommandImportKeys: string;
   CommandListPublicKeys: string;
   CommandListSecretKeys: string;

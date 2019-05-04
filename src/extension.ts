@@ -49,12 +49,6 @@ export function activate(context: vscode.ExtensionContext) {
 
       commands.push({ label: i18n().CommandCheckGnuPG, tag: 'CommandCheckGnuPG' });
       commands.push({ label: i18n().CommandShowSmartcard, tag: 'CommandShowSmartcard' });
-      commands.push({ label: i18n().CommandListPublicKeys, tag: 'CommandListPublicKeys' });
-      commands.push({ label: i18n().CommandListSecretKeys, tag: 'CommandListSecretKeys' });
-      commands.push({ label: i18n().CommandImportKeys, tag: 'CommandImportKeys' });
-      commands.push({ label: i18n().CommandExportPublicKeys, tag: 'CommandExportPublicKeys' });
-      commands.push({ label: i18n().CommandExportSecretKeys, tag: 'CommandExportSecretKeys' });
-      commands.push({ label: i18n().CommandExportSecretSubKeys, tag: 'CommandExportSecretSubKeys' });
       commands.push({ label: i18n().CommandEndSession, tag: 'CommandEndSession' });
 
       vscode.window.showQuickPick(commands).then(selectedCommand => {
@@ -70,14 +64,54 @@ export function activate(context: vscode.ExtensionContext) {
               checkGnuPG();
             });
             break;
+          case 'CommandShowSmartcard':
+            showSmartcard();
+            break;
+          case 'CommandEndSession':
+            endSession();
+            break;
+        }
+      });
+    })
+  );
+
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.Keys', (uri: vscode.Uri) => {
+      let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
+
+      commands.push({ label: i18n().CommandGenerateKey, tag: 'CommandGenerateKey' });
+      commands.push({ label: i18n().CommandEditPublicKey, tag: 'CommandEditPublicKey' });
+      commands.push({ label: i18n().CommandCopyFingerprintToClipboard, tag: 'CommandCopyFingerprintToClipboard' });
+      commands.push({ label: i18n().CommandListPublicKeys, tag: 'CommandListPublicKeys' });
+      commands.push({ label: i18n().CommandListSecretKeys, tag: 'CommandListSecretKeys' });
+      commands.push({ label: i18n().CommandImportKeys, tag: 'CommandImportKeys' });
+      commands.push({ label: i18n().CommandExportPublicKeys, tag: 'CommandExportPublicKeys' });
+      commands.push({ label: i18n().CommandExportSecretKeys, tag: 'CommandExportSecretKeys' });
+      commands.push({ label: i18n().CommandExportSecretSubKeys, tag: 'CommandExportSecretSubKeys' });
+
+      vscode.window.showQuickPick(commands).then(selectedCommand => {
+        if (!selectedCommand) {
+          return;
+        }
+
+        const editor = vscode.window.activeTextEditor;
+
+        switch (selectedCommand.tag) {
+          case 'CommandGenerateKey':
+            generateKey();
+            break;
+          case 'CommandEditPublicKey':
+            editPublicKey();
+            break;
+          case 'CommandCopyFingerprintToClipboard':
+            copyFingerprintToClipboard();
+            break;
           case 'CommandListPublicKeys':
             listPublicKeys();
             break;
           case 'CommandListSecretKeys':
             listPrivateKeys();
-            break;
-          case 'CommandShowSmartcard':
-            showSmartcard();
             break;
           case 'CommandImportKeys':
             importKeys(uri);
@@ -90,9 +124,6 @@ export function activate(context: vscode.ExtensionContext) {
             break;
           case 'CommandExportSecretSubKeys':
             exportPrivateSubKeys(uri);
-            break;
-          case 'CommandEndSession':
-            endSession();
             break;
         }
       });
