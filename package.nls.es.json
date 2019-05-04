@@ -1,5 +1,6 @@
 {
   "command.CheckGnuPG.title": "Compruebe GnuPG",
+  "command.CopyFingerprintToClipboard.title": "Copy Fingerprint To Clipboard",
   "command.Decrypt.title": "Descifrar ...",
   "command.DecryptFile.title": "Descifrar archivo",
   "command.DecryptPreview.title": "Vista previa del archivo descifrado",

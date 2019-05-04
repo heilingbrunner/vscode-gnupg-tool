@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as cp from 'child_process';
 
 import {
   promiseCheckVersion,
@@ -363,6 +364,12 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DeleteSecretKey', () => {
       deleteSecretKey();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.CopyFingerprintToClipboard', () => {
+      copyFingerprintToClipboard();
     })
   );
 
@@ -921,26 +928,60 @@ function generateKey() {
 
 function deleteKey() {
   promiseListPublicKeys()
-  .then(stdout => promiseParseKeys(stdout))
-  .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-  .then(keys => promiseKeysToQuickPickItems(keys))
-  .then(quickpickitems =>
-    vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
-  )
-  .then(key => promiseDeleteKey(key))
-  .then(() => vscode.window.showInformationMessage(i18n().GnuPGPublicKeyDeletedSuccessfully))
-  .catch(err => vscode.window.showErrorMessage(i18n().GnuPGDeleteKeyFailed + ' ' + err));
+    .then(stdout => promiseParseKeys(stdout))
+    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+    .then(keys => promiseKeysToQuickPickItems(keys))
+    .then(quickpickitems =>
+      vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
+    )
+    .then(key => promiseDeleteKey(key))
+    .then(() => vscode.window.showInformationMessage(i18n().GnuPGPublicKeyDeletedSuccessfully))
+    .catch(err => vscode.window.showErrorMessage(i18n().GnuPGDeleteKeyFailed + ' ' + err));
 }
 
 function deleteSecretKey() {
   promiseListSecretKeys()
-  .then(stdout => promiseParseKeys(stdout))
-  .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-  .then(keys => promiseKeysToQuickPickItems(keys))
-  .then(quickpickitems =>
-    vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
-  )
-  .then(key => promiseDeleteSecretKey(key))
-  .then(() => vscode.window.showInformationMessage(i18n().GnuPGSecretKeyDeletedSuccessfully))
-  .catch(err => vscode.window.showErrorMessage(i18n().GnuPGDeleteSecretKeyFailed + ' ' + err));
+    .then(stdout => promiseParseKeys(stdout))
+    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+    .then(keys => promiseKeysToQuickPickItems(keys))
+    .then(quickpickitems =>
+      vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
+    )
+    .then(key => promiseDeleteSecretKey(key))
+    .then(() => vscode.window.showInformationMessage(i18n().GnuPGSecretKeyDeletedSuccessfully))
+    .catch(err => vscode.window.showErrorMessage(i18n().GnuPGDeleteSecretKeyFailed + ' ' + err));
+}
+
+function copyFingerprintToClipboard() {
+  promiseListPublicKeys()
+    .then(stdout => promiseParseKeys(stdout))
+    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+    .then(keys => promiseKeysToQuickPickItems(keys))
+    .then(quickpickitems =>
+      vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
+    )
+    .then(async key => {
+      try {
+        return new Promise(function (reject, resolve) {
+          if (key) {
+            switch (process.platform) {
+              case "darwin":
+                cp.exec('echo ' + key.fingerprint + ' | pbcopy');
+                break;
+              case "win32":
+                cp.exec('echo ' + key.fingerprint + ' | clip');
+                break;
+              case "linux":
+                cp.exec('echo ' + key.fingerprint + ' | xclip');
+                break;
+              default:
+                throw new Error(i18n().GnuPGNotSupportedPlatform + "'" + process.platform + "'");
+            }
+          }
+        });
+      }
+      catch (err) {
+        return await vscode.window.showErrorMessage(i18n().GnuPGCopyFingerprintToClipboardFailed + ' ' + err);
+      }
+    });
 }

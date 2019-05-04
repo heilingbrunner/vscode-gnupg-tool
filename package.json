@@ -59,6 +59,7 @@
     "onCommand:extension.GenerateKey",
     "onCommand:extension.DeleteKey",
     "onCommand:extension.DeleteSecretKey",
+    "onCommand:extension.CopyFingerprintToClipboard",
     "workspaceContains:**/*.asc",
     "workspaceContains:**/*.gpg",
     "workspaceContains:**/*.sig",
@@ -254,6 +255,11 @@
         "command": "extension.DeleteSecretKey",
         "title": "%command.DeleteSecretKey.title%",
         "category": "GnuPG"
+      },
+      {
+        "command": "extension.CopyFingerprintToClipboard",
+        "title": "%command.CopyFingerprintToClipboard.title%",
+        "category": "GnuPG"
       }
     ],
     "menus": {
@@ -439,6 +445,7 @@
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "dependencies": {
+    "@types/copy-paste": "^1.1.30",
     "gpg": "^0.6.0"
   },
   "devDependencies": {

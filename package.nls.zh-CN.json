@@ -1,5 +1,6 @@
 {
   "command.CheckGnuPG.title": "检查 GnuPG",
+  "command.CopyFingerprintToClipboard.title": "Copy Fingerprint To Clipboard",
   "command.Decrypt.title": "解码 ...",
   "command.DecryptFile.title": "解密文件",
   "command.DecryptPreview.title": "预览解密文件",

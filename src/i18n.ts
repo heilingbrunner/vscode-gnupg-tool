@@ -32,6 +32,7 @@ export interface Ii18n {
   CommandVerifyFile: string;
   Decrypted: string;
   Encrypted: string;
+  GnuPGCopyFingerprintToClipboardFailed: string;
   GnuPGDecryptionFailed: string;
   GnuPGDeleteKeyFailed: string;
   GnuPGDeleteSecretKeyFailed: string;
@@ -54,6 +55,7 @@ export interface Ii18n {
   GnuPGNoRecipientsSelectedForEncryption: string;
   GnuPGNoTextSelectedForDecryption: string;
   GnuPGNoTextSelectedForEncryption: string;
+  GnuPGNotSupportedPlatform: string;
   GnuPGPublicKeyDeletedSuccessfully: string;
   GnuPGSecretKeyDeletedSuccessfully: string;
   GnuPGSelectPublicKey: string;
