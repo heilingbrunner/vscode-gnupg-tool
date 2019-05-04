@@ -16,7 +16,7 @@
 - End session to reset password cache by __killing gpg-agent__.
 - Works with __smartcards__.
 - __Sign__/__verify__ file.
-- Keys __import__/__export__.
+- Keys __generate__/__edit__/__delete__/__import__/__export__.
 
 ## Supported locales
 
@@ -35,6 +35,40 @@ The command palette ...
 
 ![Command palette](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/command-palette.png)
 
+Available commands:
+
+- Check GnuPG
+- Copy Fingerprint To Clipboard (using Windows: CLIP, Linux: XCLIP, MacOS: PBCOPY)
+- Decrypt ... (opens sub menu)
+- Decrypt File
+- Decrypt Preview
+- Decrypt Selection
+- Delete Key
+- Delete Secret Key
+- Edit Public Key (with use of the internal terminal)
+- Encrypt ... (opens sub menu)
+- Encrypt File For Recipients
+- Encrypt File w/ Passphrase
+- Encrypt Preview For Recipients
+- Encrypt Preview w/ Passphrase
+- Encrypt Selection For Recipients
+- Encrypt Selection w/ Passphrase
+- End Session
+- Environment ... (opens sub menu)
+- Export Public Keys
+- Export Secret Keys
+- Export Secret Sub-Keys
+- Generate Key
+- Import Keys
+- Keys ... (opens sub menu)
+- List Public Keys
+- List Secret Keys
+- Show Smartcard
+- Sign File
+- Trust ... (opens sub menu)
+- Verify File
+
+
 The explorer context menu ...
 
 ![Explorer context menu](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/explorer-context-menu.png)
@@ -49,7 +83,6 @@ The editor context menu ...
 - [node-gpg](https://github.com/drudge/node-gpg) by Nicholas Penree
 - [GNU Privacy Guard](https://en.wikipedia.org/wiki/GNU_Privacy_Guard)
 - [GnuPG documentation](https://www.gnupg.org/documentation/manuals/gnupg/index.html#SEC_Contents) 
-- [GnuPG commands](https://www.gnupg.org/documentation/manuals/gnupg/GPG-Commands.html#GPG-Commands) 
 
 ## Usage
 
@@ -84,21 +117,3 @@ The editor context menu ...
 #### Debian
 
 - Refer to [GnuPG binary releases](https://gnupg.org/download/)
-
-## Used GnuPG Commands
-
-- Check GnuPG: `gpg --version` (using [gpg call](https://github.com/drudge/node-gpg))
-- List Public Keys: `gpg -k --with-colons` (using [gpg call](https://github.com/drudge/node-gpg))
-- List Secret Keys: `gpg -K --with-colons` (using [gpg call](https://github.com/drudge/node-gpg))
-- Show Smartcard: `gpg --card-status`  (using [gpg call](https://github.com/drudge/node-gpg))
-- Encrypt text selection: `gpg --armor --recipient <fingerprint> --encrypt` from stdin to stdout (using [gpg encrypt](https://github.com/drudge/node-gpg))
-- Encrypt file for recipients: `gpg --armor --batch --yes --recipient <fingerprint> --output <filename>.<ext>.asc --encrypt <filename>.<ext>`
-- Encrypt file with passphrase: `gpg --armor --batch --yes --output <filename>.<ext>.asc --symmetric <filename>.<ext>`
-- Decrypt: `gpg --decrypt` from stdin to stdout (using [gpg decrypt](https://github.com/drudge/node-gpg))
-- End session: `gpg-connect-agent killagent /bye`
-- Sign File: `gpg --armor --output <filename>.<ext>.sig --local-user <ssb.fingerprint> --detach-sign <filename>.<ext>` (using [gpg call](https://github.com/drudge/node-gpg))
-- Verify File: `gpg --verify <filename>.<ext>.sig <filename>.<ext> 2>&1` (using `child_process.exec(...)`)
-- Import Keys: `gpg --import <filename>.<ext>`
-- Export Public Keys: `gpg --armor --batch --yes --output <filename>.<ext> --export <fingerprint>`
-- Export Secret Keys: `gpg --armor --batch --yes --output <filename>.<ext>--export-secret-keys <fingerprint>`
-- Export Secret Sub Keys: `gpg --armor --batch --yes --output <filename>.<ext>--export-secret-subkeys <fingerprint>`

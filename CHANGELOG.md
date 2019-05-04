@@ -1,8 +1,10 @@
 # Change Log
 
-## [1.0.7] - 2019-04-12
+## [1.0.7] - 2019-05-04
 
 - devDependencies update
+- sub menus
+- more commands
 
 ## [1.0.6] - 2019-04-12
 
