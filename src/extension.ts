@@ -948,6 +948,7 @@ function editPublicKey() {
         terminal.sendText('gpg --edit-key ' + pubkey.fingerprint, false);
       }
     })
+    .then(() => vscode.window.showInformationMessage(i18n().GnuPGSwitchToTerminalAndHitReturn))
     .catch(err => vscode.window.showErrorMessage(i18n().GnuPGEditPublicKeyFailed + ' ' + err));
 }
 
@@ -955,6 +956,7 @@ function generateKey() {
   const terminal = vscode.window.createTerminal(`GnuPG Terminal`);
   terminal.show();
   terminal.sendText('gpg --full-generate-key', false);
+  vscode.window.showInformationMessage(i18n().GnuPGSwitchToTerminalAndHitReturn);
 }
 
 function deleteKey() {

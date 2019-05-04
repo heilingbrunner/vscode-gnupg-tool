@@ -59,6 +59,7 @@ const translation: Ii18n = {
   GnuPGSecretKeyDeletedSuccessfully: 'GnuPG: Secret Key deleted successfully',
   GnuPGSelectPublicKey: 'Select Public Key ...',
   GnuPGSignFailed: 'GnuPG: Signing failed!',
+  GnuPGSwitchToTerminalAndHitReturn: 'Switch to terminal and hit <RETURN>',
   GnuPGVerfication: 'GnuPG: Verification',
   GnuPGVerficationFailed: 'GnuPG: Verification failed!',
   SelectKeyToExport: 'Select key to export ...',

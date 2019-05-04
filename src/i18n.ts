@@ -64,6 +64,7 @@ export interface Ii18n {
   GnuPGSecretKeyDeletedSuccessfully: string;
   GnuPGSelectPublicKey: string;
   GnuPGSignFailed: string;
+  GnuPGSwitchToTerminalAndHitReturn: string;
   GnuPGVerfication: string;
   GnuPGVerficationFailed: string;
   SelectKeyToExport: string;
