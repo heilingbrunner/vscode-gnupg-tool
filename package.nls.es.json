@@ -1,6 +1,7 @@
 {
   "command.CheckGnuPG.title": "Compruebe GnuPG",
   "command.CopyFingerprintToClipboard.title": "Copiar huella digital al portapapeles",
+  "command.CopyKeyIdToClipboard.title": "Copiar KeyId al portapapeles",
   "command.Decrypt.title": "Descifrar ...",
   "command.DecryptFile.title": "Descifrar archivo",
   "command.DecryptPreview.title": "Vista previa del archivo descifrado",

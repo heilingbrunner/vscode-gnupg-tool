@@ -33,6 +33,7 @@
   "activationEvents": [
     "onCommand:extension.CheckGnuPG",
     "onCommand:extension.CopyFingerprintToClipboard",
+    "onCommand:extension.CopyKeyIdToClipboard",
     "onCommand:extension.Decrypt",
     "onCommand:extension.DecryptFile",
     "onCommand:extension.DecryptPreview",
@@ -265,6 +266,11 @@
       {
         "command": "extension.CopyFingerprintToClipboard",
         "title": "%command.CopyFingerprintToClipboard.title%",
+        "category": "GnuPG"
+      },
+      {
+        "command": "extension.CopyKeyIdToClipboard",
+        "title": "%command.CopyKeyIdToClipboard.title%",
         "category": "GnuPG"
       }
     ],

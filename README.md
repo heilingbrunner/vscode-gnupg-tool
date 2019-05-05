@@ -39,6 +39,7 @@ Available commands:
 
 - Check GnuPG
 - Copy Fingerprint To Clipboard (using Windows: CLIP, Linux: XCLIP, MacOS: PBCOPY)
+- Copy KeyId To Clipboard (using Windows: CLIP, Linux: XCLIP, MacOS: PBCOPY)
 - Decrypt ... (opens sub menu)
 - Decrypt File
 - Decrypt Preview

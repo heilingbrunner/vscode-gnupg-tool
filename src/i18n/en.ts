@@ -3,6 +3,7 @@ import { Ii18n } from '../i18n';
 const translation: Ii18n = {
   CommandCheckGnuPG: 'Check GnuPG',
   CommandCopyFingerprintToClipboard: 'Copy Fingerprint to Clipboard',
+  CommandCopyKeyIdToClipboard: 'Copy KeyId to Clipboard',
   CommandDecrypt: 'Decrypt ...',
   CommandDecryptFile: 'Decrypt File',
   CommandDecryptPreview: 'Preview Decrypted File',
@@ -31,7 +32,8 @@ const translation: Ii18n = {
   CommandVerifyFile: 'Verify File',
   Decrypted: 'decrypted',
   Encrypted: 'encrypted',
-  GnuPGCopyFingerprintToClipboardFailed: 'Copy Fingerprint to Clipboard failed!',
+  GnuPGCopyFingerprintToClipboardFailed: 'GnuPG: Copy Fingerprint to Clipboard failed!',
+  GnuPGCopyKeyIdToClipboardFailed: 'GnuPG: Copy KeyId to Clipboard failed!',
   GnuPGDecryptionFailed: 'GnuPG: Decryption failed!',
   GnuPGDeleteKeyFailed: 'GnuPG: Delete Public key failed!',
   GnuPGDeleteSecretKeyFailed: 'GnuPG: Delete Secret key failed!',

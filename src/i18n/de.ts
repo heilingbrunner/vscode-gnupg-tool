@@ -3,6 +3,7 @@ import { Ii18n } from '../i18n';
 const translation: Ii18n = {
   CommandCheckGnuPG: 'GnuPG überprüfen',
   CommandCopyFingerprintToClipboard: 'Fingerprint in die Zwischenablage kopieren',
+  CommandCopyKeyIdToClipboard: 'KeyId in die Zwischenablage kopieren',
   CommandDecrypt: 'Entschlüsseln ...',
   CommandDecryptFile: 'Datei entschlüsseln',
   CommandDecryptPreview: 'Vorschau der entschlüsselten Datei',
@@ -31,7 +32,8 @@ const translation: Ii18n = {
   CommandVerifyFile: 'Datei verifizieren',
   Decrypted: 'entschlüsselt',
   Encrypted: 'verschlüsselt',
-  GnuPGCopyFingerprintToClipboardFailed: 'Kopieren des Fingerprints in die Zwischenablage ist fehlgeschlagen!',
+  GnuPGCopyFingerprintToClipboardFailed: 'GnuPG: Kopieren des Fingerprints in die Zwischenablage ist fehlgeschlagen!',
+  GnuPGCopyKeyIdToClipboardFailed: 'GnuPG: Kopieren der KeyId in die Zwischenablage ist fehlgeschlagen!',
   GnuPGDecryptionFailed: 'GnuPG: Entschlüsselung fehlgeschlagen!',
   GnuPGDeleteKeyFailed: 'GnuPG: Löschen des öffentlichen Schlüssels ist fehlgeschlagen!',
   GnuPGDeleteSecretKeyFailed: 'GnuPG: Löschen des geheimen Schlüssels ist fehlgeschlagen!',

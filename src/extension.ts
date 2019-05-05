@@ -83,6 +83,7 @@ export function activate(context: vscode.ExtensionContext) {
       commands.push({ label: i18n().CommandGenerateKey, tag: 'CommandGenerateKey' });
       commands.push({ label: i18n().CommandEditPublicKey, tag: 'CommandEditPublicKey' });
       commands.push({ label: i18n().CommandCopyFingerprintToClipboard, tag: 'CommandCopyFingerprintToClipboard' });
+      commands.push({ label: i18n().CommandCopyKeyIdToClipboard, tag: 'CommandCopyKeyIdToClipboard' });
       commands.push({ label: i18n().CommandListPublicKeys, tag: 'CommandListPublicKeys' });
       commands.push({ label: i18n().CommandListSecretKeys, tag: 'CommandListSecretKeys' });
       commands.push({ label: i18n().CommandImportKeys, tag: 'CommandImportKeys' });
@@ -106,6 +107,9 @@ export function activate(context: vscode.ExtensionContext) {
             break;
           case 'CommandCopyFingerprintToClipboard':
             copyFingerprintToClipboard();
+            break;
+          case 'CommandCopyKeyIdToClipboard':
+            copyKeyIdToClipboard();
             break;
           case 'CommandListPublicKeys':
             listPublicKeys();
@@ -401,6 +405,12 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.CopyFingerprintToClipboard', () => {
       copyFingerprintToClipboard();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.CopyKeyIdToClipboard', () => {
+      copyKeyIdToClipboard();
     })
   );
 
@@ -1006,6 +1016,40 @@ function copyFingerprintToClipboard() {
                 break;
               case "linux":
                 cp.exec('echo ' + key.fingerprint + ' | xclip -selection c');
+                break;
+              default:
+                throw new Error(i18n().GnuPGNotSupportedPlatform + "'" + process.platform + "'");
+            }
+          }
+        });
+      }
+      catch (err) {
+        return await vscode.window.showErrorMessage(i18n().GnuPGCopyFingerprintToClipboardFailed + ' ' + err);
+      }
+    });
+}
+
+function copyKeyIdToClipboard() {
+  promiseListPublicKeys()
+    .then(stdout => promiseParseKeys(stdout))
+    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+    .then(keys => promiseKeysToQuickPickItems(keys))
+    .then(quickpickitems =>
+      vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
+    )
+    .then(async key => {
+      try {
+        return new Promise(function (reject, resolve) {
+          if (key) {
+            switch (process.platform) {
+              case "darwin":
+                cp.exec('echo ' + key.keyId + ' | pbcopy');
+                break;
+              case "win32":
+                cp.exec('echo ' + key.keyId + ' | clip');
+                break;
+              case "linux":
+                cp.exec('echo ' + key.keyId + ' | xclip -selection c');
                 break;
               default:
                 throw new Error(i18n().GnuPGNotSupportedPlatform + "'" + process.platform + "'");

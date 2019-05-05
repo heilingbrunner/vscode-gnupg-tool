@@ -3,6 +3,7 @@ import { Ii18n } from '../i18n';
 const translation: Ii18n = {
   CommandCheckGnuPG: 'Compruebe GnuPG',
   CommandCopyFingerprintToClipboard: 'Copiar huella digital al portapapeles',
+  CommandCopyKeyIdToClipboard: 'Copiar KeyId al portapapeles',
   CommandDecrypt: 'Descifrar ...',
   CommandDecryptFile: 'Descifrar archivo',
   CommandDecryptPreview: 'Vista previa del archivo descifrado',
@@ -31,7 +32,8 @@ const translation: Ii18n = {
   CommandVerifyFile: 'Verificar archivo',
   Decrypted: 'descifrado',
   Encrypted: 'cifrado',
-  GnuPGCopyFingerprintToClipboardFailed: 'Copia la huella digital al portapapeles fallada!',
+  GnuPGCopyFingerprintToClipboardFailed: 'GnuPG: Copia la huella digital al portapapeles fallada!',
+  GnuPGCopyKeyIdToClipboardFailed: 'GnuPG: Copia KeyId al Portapapeles fallado!',
   GnuPGDecryptionFailed: 'GnuPG: Descifrado fallido!',
   GnuPGDeleteKeyFailed: 'GnuPG: Eliminar clave pública falló!',
   GnuPGDeleteSecretKeyFailed: 'GnuPG: Error al eliminar clave secreta!',

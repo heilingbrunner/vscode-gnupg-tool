@@ -3,6 +3,7 @@ import { Ii18n } from "../i18n";
 const translation: Ii18n = {
   CommandCheckGnuPG: '检查 GnuPG',
   CommandCopyFingerprintToClipboard: '将指纹复制到剪贴板',
+  CommandCopyKeyIdToClipboard: '将KeyId复制到剪贴板',
   CommandDecrypt: '解码 ...',
   CommandDecryptFile: '解密文件',
   CommandDecryptPreview: '预览解密文件',
@@ -31,7 +32,8 @@ const translation: Ii18n = {
   CommandVerifyFile: '验证文件',
   Decrypted: '解密',
   Encrypted: '加密',
-  GnuPGCopyFingerprintToClipboardFailed: '将指纹复制到剪贴板失败!',
+  GnuPGCopyFingerprintToClipboardFailed: 'GnuPG: 将指纹复制到剪贴板失败!',
+  GnuPGCopyKeyIdToClipboardFailed: 'GnuPG: 将KeyId复制到剪贴板失败！',
   GnuPGDecryptionFailed: 'GnuPG: 解密失败了!',
   GnuPGDeleteKeyFailed: 'GnuPG: 删除公钥失败!',
   GnuPGDeleteSecretKeyFailed: 'GnuPG: 删除密钥失败!',

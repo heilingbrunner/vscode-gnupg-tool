@@ -299,6 +299,7 @@ export function promiseKeysToQuickPickItems(
     detail: string;
     userId: string;
     fingerprint: string;
+    keyId: string;
   }[]
 > {
   return new Promise((resolve, reject) => {
@@ -308,7 +309,8 @@ export function promiseKeysToQuickPickItems(
       detail: k.fingerprint + ', ' + k.validityDescription,
       validity: k.validity,
       userId: k.userIds[0],
-      fingerprint: k.fingerprint
+      fingerprint: k.fingerprint,
+      keyId: k.keyId
     }));
 
     arr ? resolve(arr) : reject();

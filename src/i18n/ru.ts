@@ -3,6 +3,7 @@ import { Ii18n } from '../i18n';
 const translation: Ii18n = {
   CommandCheckGnuPG: 'Проверьте GnuPG',
   CommandCopyFingerprintToClipboard: 'Скопировать отпечаток пальца в буфер обмена',
+  CommandCopyKeyIdToClipboard: 'Скопировать KeyId в буфер обмена',
   CommandDecrypt: 'расшифровывать ...',
   CommandDecryptFile: 'Расшифровать файл',
   CommandDecryptPreview: 'Предварительный просмотр расшифрованного файла',
@@ -31,7 +32,8 @@ const translation: Ii18n = {
   CommandVerifyFile: 'Проверить файл',
   Decrypted: 'расшифрованный',
   Encrypted: 'зашифрованная',
-  GnuPGCopyFingerprintToClipboardFailed: 'Ошибка копирования отпечатка пальца в буфер обмена',
+  GnuPGCopyFingerprintToClipboardFailed: 'GnuPG: Ошибка копирования отпечатка пальца в буфер обмена',
+  GnuPGCopyKeyIdToClipboardFailed: 'GnuPG: Не удалось скопировать KeyId в буфер обмена!',
   GnuPGDecryptionFailed: 'GnuPG: Расшифровка не удалась!',
   GnuPGDeleteKeyFailed: 'GnuPG: Не удалось удалить открытый ключ!',
   GnuPGDeleteSecretKeyFailed: 'GnuPG: Ошибка удаления секретного ключа!',

@@ -1,6 +1,7 @@
 {
   "command.CheckGnuPG.title": "GnuPG überprüfen",
   "command.CopyFingerprintToClipboard.title": "Fingerprint in die Zwischenablage kopieren",
+  "command.CopyKeyIdToClipboard.title": "KeyId in die Zwischenablage kopieren",
   "command.Decrypt.title": "Entschlüsseln ...",
   "command.DecryptFile.title": "Datei entschlüsseln",
   "command.DecryptPreview.title": "Vorschau der entschlüsselten Datei",

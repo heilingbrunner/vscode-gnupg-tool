@@ -8,6 +8,7 @@ import zh_CN from './i18n/zh-CN';
 export interface Ii18n {
   CommandCheckGnuPG: string;
   CommandCopyFingerprintToClipboard: string;
+  CommandCopyKeyIdToClipboard: string;
   CommandDecrypt: string;
   CommandDecryptFile: string;
   CommandDecryptPreview: string;
@@ -37,6 +38,7 @@ export interface Ii18n {
   Decrypted: string;
   Encrypted: string;
   GnuPGCopyFingerprintToClipboardFailed: string;
+  GnuPGCopyKeyIdToClipboardFailed: string;
   GnuPGDecryptionFailed: string;
   GnuPGDeleteKeyFailed: string;
   GnuPGDeleteSecretKeyFailed: string;
