@@ -1005,7 +1005,7 @@ function copyFingerprintToClipboard() {
                 cp.exec('echo ' + key.fingerprint + ' | clip');
                 break;
               case "linux":
-                cp.exec('echo ' + key.fingerprint + ' | xclip');
+                cp.exec('echo ' + key.fingerprint + ' | xclip -selection c');
                 break;
               default:
                 throw new Error(i18n().GnuPGNotSupportedPlatform + "'" + process.platform + "'");
