@@ -1,4 +1,4 @@
-import { Ii18n } from "../i18n";
+import { Ii18n } from '../i18n';
 
 const translation: Ii18n = {
   CommandCheckGnuPG: '检查 GnuPG',
@@ -28,7 +28,7 @@ const translation: Ii18n = {
   CommandListPublicKeys: '列出公钥',
   CommandListSecretKeys: '列出密钥',
   CommandShowSmartcard: '显示 Smartcard',
-  CommandSignFile: '签名文件 (detached)',
+  CommandSignFile: '签名文件 (detach-sign)',
   CommandTrust: '信任 ...',
   CommandVerifyFile: '验证文件',
   Decrypted: '解密',

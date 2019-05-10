@@ -28,7 +28,7 @@ const translation: Ii18n = {
   CommandListPublicKeys: 'Список открытых ключей',
   CommandListSecretKeys: 'Список секретных ключей',
   CommandShowSmartcard: 'Показать Smartcard',
-  CommandSignFile: 'Файл подписи (detached)',
+  CommandSignFile: 'Файл подписи (detach-sign)',
   CommandTrust: 'Доверять ...',
   CommandVerifyFile: 'Проверить файл',
   Decrypted: 'расшифрованный',

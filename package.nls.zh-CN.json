@@ -28,7 +28,7 @@
   "command.ListPublicKeys.title": "列出公钥",
   "command.ListSecretKeys.title": "列出密钥",
   "command.ShowSmartcard.title": "显示 Smartcard",
-  "command.SignFile.title": "签名文件 (detached)",
+  "command.SignFile.title": "签名文件 (detach-sign)",
   "command.Trust.title": "信任 ...",
   "command.VerifyFile.title": "验证文件"
 }

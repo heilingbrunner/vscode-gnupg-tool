@@ -28,7 +28,7 @@
   "command.ListPublicKeys.title": "Список открытых ключей",
   "command.ListSecretKeys.title": "Список секретных ключей",
   "command.ShowSmartcard.title": "Показать Smartcard",
-  "command.SignFile.title": "Файл подписи (detached)",
+  "command.SignFile.title": "Файл подписи (detach-sign)",
   "command.Trust.title": "доверие ...",
   "command.VerifyFile.title": "Проверить файл"
 }

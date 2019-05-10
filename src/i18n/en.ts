@@ -28,7 +28,7 @@ const translation: Ii18n = {
   CommandListPublicKeys: 'List Public Keys',
   CommandListSecretKeys: 'List Secret Keys',
   CommandShowSmartcard: 'Show Smartcard',
-  CommandSignFile: 'Sign File (detached)',
+  CommandSignFile: 'Sign File (detach-sign)',
   CommandTrust: 'Trust ...',
   CommandVerifyFile: 'Verify File',
   Decrypted: 'decrypted',

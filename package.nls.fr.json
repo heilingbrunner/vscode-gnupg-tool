@@ -28,7 +28,7 @@
   "command.ListPublicKeys.title": "Liste des clés publiques",
   "command.ListSecretKeys.title": "Liste des clés secrètes",
   "command.ShowSmartcard.title": "Montrer Smartcard",
-  "command.SignFile.title": "Fichier des signes (detached)",
+  "command.SignFile.title": "Fichier des signes (detach-sign)",
   "command.Trust.title": "Confiance ...",
   "command.VerifyFile.title": "Vérifier le fichier"
 }

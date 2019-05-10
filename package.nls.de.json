@@ -28,7 +28,7 @@
   "command.ListPublicKeys.title": "Öffentliche Schlüssel auflisten",
   "command.ListSecretKeys.title": "Geheime Schlüssel auflisten",
   "command.ShowSmartcard.title": "Smartcard anzeigen",
-  "command.SignFile.title": "Datei signieren (detached)",
+  "command.SignFile.title": "Datei signieren (detach-sign)",
   "command.Trust.title": "Vertrauen ...",
   "command.VerifyFile.title": "Datei verifizieren"
 }
