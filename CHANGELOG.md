@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.8] - 2019-05-10
+
+- new clear-sign command
+- verify detached (`*.sig`) or clear-signed (`*.asc`) files
+
 ## [1.0.7] - 2019-05-04
 
 - devDependencies update
