@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.9] - 2019-05-10
+
+- delete public/secret key improved
+
 ## [1.0.8] - 2019-05-10
 
 - new clear-sign command

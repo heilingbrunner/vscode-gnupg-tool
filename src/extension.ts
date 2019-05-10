@@ -1014,7 +1014,7 @@ function generateKey() {
 function deleteKey() {
   promiseListPublicKeys()
     .then(stdout => promiseParseKeys(stdout))
-    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => true)) // list all keys !!
     .then(keys => promiseKeysToQuickPickItems(keys))
     .then(quickpickitems =>
       vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
@@ -1027,7 +1027,7 @@ function deleteKey() {
 function deleteSecretKey() {
   promiseListSecretKeys()
     .then(stdout => promiseParseKeys(stdout))
-    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => true)) // list all keys !!
     .then(keys => promiseKeysToQuickPickItems(keys))
     .then(quickpickitems =>
       vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
