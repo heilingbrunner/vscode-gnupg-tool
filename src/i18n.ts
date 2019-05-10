@@ -7,6 +7,7 @@ import zh_CN from './i18n/zh-CN';
 
 export interface Ii18n {
   CommandCheckGnuPG: string;
+  CommandClearSignFile: string;
   CommandCopyFingerprintToClipboard: string;
   CommandCopyKeyIdToClipboard: string;
   CommandDecrypt: string;

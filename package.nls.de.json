@@ -1,5 +1,6 @@
 {
   "command.CheckGnuPG.title": "GnuPG überprüfen",
+  "command.ClearSignFile.title": "Datei signieren (clear-sign)",
   "command.CopyFingerprintToClipboard.title": "Fingerprint in die Zwischenablage kopieren",
   "command.CopyKeyIdToClipboard.title": "KeyId in die Zwischenablage kopieren",
   "command.Decrypt.title": "Entschlüsseln ...",
@@ -27,7 +28,7 @@
   "command.ListPublicKeys.title": "Öffentliche Schlüssel auflisten",
   "command.ListSecretKeys.title": "Geheime Schlüssel auflisten",
   "command.ShowSmartcard.title": "Smartcard anzeigen",
-  "command.SignFile.title": "Datei signieren",
+  "command.SignFile.title": "Datei signieren (detached)",
   "command.Trust.title": "Vertrauen ...",
   "command.VerifyFile.title": "Datei verifizieren"
 }

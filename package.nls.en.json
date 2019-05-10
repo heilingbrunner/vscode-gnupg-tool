@@ -1,5 +1,6 @@
 {
   "command.CheckGnuPG.title": "Check GnuPG",
+  "command.ClearSignFile.title": "Sign File (clear-sign)",
   "command.CopyFingerprintToClipboard.title": "Copy Fingerprint To Clipboard",
   "command.CopyKeyIdToClipboard.title": "Copy KeyId To Clipboard",
   "command.Decrypt.title": "Decrypt ...",
@@ -27,7 +28,7 @@
   "command.ListPublicKeys.title": "List Public Keys",
   "command.ListSecretKeys.title": "List Secret Keys",
   "command.ShowSmartcard.title": "Show Smartcard",
-  "command.SignFile.title": "Sign File",
+  "command.SignFile.title": "Sign File (detached)",
   "command.Trust.title": "Trust ...",
   "command.VerifyFile.title": "Verify File"
 }

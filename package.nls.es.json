@@ -1,5 +1,6 @@
 {
   "command.CheckGnuPG.title": "Compruebe GnuPG",
+  "command.ClearSignFile.title": "Archivo de firmas (clear-sign)",
   "command.CopyFingerprintToClipboard.title": "Copiar huella digital al portapapeles",
   "command.CopyKeyIdToClipboard.title": "Copiar KeyId al portapapeles",
   "command.Decrypt.title": "Descifrar ...",
@@ -27,7 +28,7 @@
   "command.ListPublicKeys.title": "Lista de claves públicas",
   "command.ListSecretKeys.title": "Lista de claves secretas",
   "command.ShowSmartcard.title": "Mostrar Smartcard",
-  "command.SignFile.title": "Archivo de firmas",
+  "command.SignFile.title": "Archivo de firmas (detached)",
   "command.Trust.title": "Confianza ...",
   "command.VerifyFile.title": "Verificar archivo"
 }

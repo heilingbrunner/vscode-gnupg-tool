@@ -23,7 +23,8 @@ import {
   promiseDecryptUri,
   promiseEncryptAsymUri,
   promiseDeleteKey,
-  promiseDeleteSecretKey
+  promiseDeleteSecretKey,
+  promiseClearSign
 } from './gnupgpromises';
 import VirtualDocumentProvider from './virtualdocumentprovider';
 import GnuPGProvider from './gnupgprovider';
@@ -74,7 +75,6 @@ export function activate(context: vscode.ExtensionContext) {
       });
     })
   );
-
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.Keys', (uri: vscode.Uri) => {
@@ -225,6 +225,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       // fill array with commands
       commands.push({ label: i18n().CommandSignFile, tag: 'CommandSignFile' });
+      commands.push({ label: i18n().CommandClearSignFile, tag: 'CommandClearSignFile' });
       commands.push({ label: i18n().CommandVerifyFile, tag: 'CommandVerifyFile' });
 
       // show array as quickpick
@@ -238,6 +239,9 @@ export function activate(context: vscode.ExtensionContext) {
         switch (selectedCommand.tag) {
           case 'CommandSignFile':
             signFile(uri);
+            break;
+          case 'CommandClearSignFile':
+            clearSignFile(uri);
             break;
           case 'CommandVerifyFile':
             verifyFile(uri);
@@ -339,6 +343,12 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.SignFile', (uri: vscode.Uri) => {
       signFile(uri);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.ClearSignFile', (uri: vscode.Uri) => {
+      clearSignFile(uri);
     })
   );
 
@@ -684,9 +694,30 @@ function signFile(uri: vscode.Uri) {
   }
 }
 
+function clearSignFile(uri: vscode.Uri) {
+  if (uri !== undefined && uri.scheme === 'file') {
+    if (!uri.fsPath.match(/\.(sig)$/i)) {
+      clearSignUri(uri);
+    } else {
+      vscode.window.showInformationMessage(i18n().GnuPGFileIsAlreadyASignature);
+    }
+  } else {
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
+    vscode.window.showOpenDialog(option).then(uriSelected => {
+      if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
+        if (!uriSelected[0].fsPath.match(/\.(sig)$/i)) {
+          clearSignUri(uriSelected[0]);
+        } else {
+          vscode.window.showInformationMessage(i18n().GnuPGFileIsAlreadyASignature);
+        }
+      }
+    });
+  }
+}
+
 function verifyFile(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
-    if (uri.fsPath.match(/\.(sig)$/i)) {
+    if (uri.fsPath.match(/\.(sig|asc)$/i)) {
       launchGnuPGProviderForVerify(uri);
     } else {
       vscode.window.showInformationMessage(i18n().GnuPGFileIsNotASignature);
@@ -879,6 +910,17 @@ function signUri(uri: vscode.Uri) {
     .catch(err => vscode.window.showErrorMessage(i18n().GnuPGSignFailed + ' ' + err));
 }
 
+function clearSignUri(uri: vscode.Uri) {
+  promiseListSecretKeys()
+    .then(stdout => promiseParseKeys(stdout))
+    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToSign))
+    .then(keys => promiseKeysToQuickPickItems(keys))
+    .then(quickpickitems => vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectSigner }))
+    .then(key => promiseClearSign(uri, key))
+    .then(() => vscode.window.showInformationMessage(i18n().GnuPGFileSignedSuccessfully))
+    .catch(err => vscode.window.showErrorMessage(i18n().GnuPGSignFailed + ' ' + err));
+}
+
 function launchGnuPGProviderEncryptAsym(uri: vscode.Uri) {
   // check filePath ...
   if (typeof uri === 'undefined' || !fs.existsSync(uri.fsPath)) {
@@ -1005,16 +1047,16 @@ function copyFingerprintToClipboard() {
     )
     .then(async key => {
       try {
-        return new Promise(function (reject, resolve) {
+        return new Promise(function(reject, resolve) {
           if (key) {
             switch (process.platform) {
-              case "darwin":
+              case 'darwin':
                 cp.exec('echo ' + key.fingerprint + ' | pbcopy');
                 break;
-              case "win32":
+              case 'win32':
                 cp.exec('echo ' + key.fingerprint + ' | clip');
                 break;
-              case "linux":
+              case 'linux':
                 cp.exec('echo ' + key.fingerprint + ' | xclip -selection c');
                 break;
               default:
@@ -1022,8 +1064,7 @@ function copyFingerprintToClipboard() {
             }
           }
         });
-      }
-      catch (err) {
+      } catch (err) {
         return await vscode.window.showErrorMessage(i18n().GnuPGCopyFingerprintToClipboardFailed + ' ' + err);
       }
     });
@@ -1039,16 +1080,16 @@ function copyKeyIdToClipboard() {
     )
     .then(async key => {
       try {
-        return new Promise(function (reject, resolve) {
+        return new Promise(function(reject, resolve) {
           if (key) {
             switch (process.platform) {
-              case "darwin":
+              case 'darwin':
                 cp.exec('echo ' + key.keyId + ' | pbcopy');
                 break;
-              case "win32":
+              case 'win32':
                 cp.exec('echo ' + key.keyId + ' | clip');
                 break;
-              case "linux":
+              case 'linux':
                 cp.exec('echo ' + key.keyId + ' | xclip -selection c');
                 break;
               default:
@@ -1056,8 +1097,7 @@ function copyKeyIdToClipboard() {
             }
           }
         });
-      }
-      catch (err) {
+      } catch (err) {
         return await vscode.window.showErrorMessage(i18n().GnuPGCopyFingerprintToClipboardFailed + ' ' + err);
       }
     });

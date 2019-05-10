@@ -1,5 +1,6 @@
 {
   "command.CheckGnuPG.title": "检查 GnuPG",
+  "command.ClearSignFile.title": "签名文件 (clear-sign)",
   "command.CopyFingerprintToClipboard.title": "将指纹复制到剪贴板",
   "command.CopyKeyIdToClipboard.title": "将KeyId复制到剪贴板",
   "command.Decrypt.title": "解码 ...",
@@ -27,7 +28,7 @@
   "command.ListPublicKeys.title": "列出公钥",
   "command.ListSecretKeys.title": "列出密钥",
   "command.ShowSmartcard.title": "显示 Smartcard",
-  "command.SignFile.title": "签名文件",
+  "command.SignFile.title": "签名文件 (detached)",
   "command.Trust.title": "信任 ...",
   "command.VerifyFile.title": "验证文件"
 }

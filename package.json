@@ -32,6 +32,7 @@
   },
   "activationEvents": [
     "onCommand:extension.CheckGnuPG",
+    "onCommand:extension.ClearSignFile",
     "onCommand:extension.CopyFingerprintToClipboard",
     "onCommand:extension.CopyKeyIdToClipboard",
     "onCommand:extension.Decrypt",
@@ -219,6 +220,11 @@
         "category": "GnuPG"
       },
       {
+        "command": "extension.ClearSignFile",
+        "title": "%command.ClearSignFile.title%",
+        "category": "GnuPG"
+      },
+      {
         "command": "extension.VerifyFile",
         "title": "%command.VerifyFile.title%",
         "category": "GnuPG"
@@ -340,6 +346,11 @@
         },
         {
           "command": "extension.SignFile",
+          "group": "gnupg2@3",
+          "when": "resourceExtname != .asc && resourceExtname != .gpg && resourceExtname != .sig"
+        },
+        {
+          "command": "extension.ClearSignFile",
           "group": "gnupg2@3",
           "when": "resourceExtname != .asc && resourceExtname != .gpg && resourceExtname != .sig"
         },

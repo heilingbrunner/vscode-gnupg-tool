@@ -345,10 +345,33 @@ export function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }): Pro
   });
 }
 
+export function promiseClearSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    let args = ['--armor', '--batch', '--yes'];
+    //args = args.concat(['--output', uri.fsPath + '.sig']);
+    if (key !== undefined) {
+      args = args.concat(['--local-user', key.fingerprint]);
+    }
+    args = args.concat(['--clear-sign']);
+    args = args.concat([uri.fsPath]);
+
+    call('', args, (err: { stack: string }, stdout: Buffer) => {
+      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+    });
+  });
+}
+
 export function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     // GnuPG prints (at least some of) this output to stderr, not stdout.
-    let args = ['--verify', uri.fsPath, uri.fsPath.slice(0, -'.sig'.length)];
+
+    //for detached or clear-signed file ...
+    let args = ['--verify', uri.fsPath];
+
+    //when detached signed file, add fsPath of data file
+    if(uri.fsPath.endsWith('.sig')){
+      args = args.concat([uri.fsPath.slice(0, -'.sig'.length)]);
+    }
 
     call('', args, (err: { stack: string }, stdout: Buffer, stderr: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stderr);

@@ -2,6 +2,7 @@ import { Ii18n } from "../i18n";
 
 const translation: Ii18n = {
   CommandCheckGnuPG: '检查 GnuPG',
+  CommandClearSignFile: '签名文件 (clear-sign)',
   CommandCopyFingerprintToClipboard: '将指纹复制到剪贴板',
   CommandCopyKeyIdToClipboard: '将KeyId复制到剪贴板',
   CommandDecrypt: '解码 ...',
@@ -27,7 +28,7 @@ const translation: Ii18n = {
   CommandListPublicKeys: '列出公钥',
   CommandListSecretKeys: '列出密钥',
   CommandShowSmartcard: '显示 Smartcard',
-  CommandSignFile: '签名文件',
+  CommandSignFile: '签名文件 (detached)',
   CommandTrust: '信任 ...',
   CommandVerifyFile: '验证文件',
   Decrypted: '解密',
@@ -45,7 +46,7 @@ const translation: Ii18n = {
   GnuPGFileDecryptedSuccessfully: 'GnuPG: 文件解密成功.',
   GnuPGFileEncryptedSuccessfully: 'GnuPG: 文件加密成功.',
   GnuPGFileIsAlreadyASignature: 'GnuPG: 文件已经是签名 (*.sig).',
-  GnuPGFileIsNotASignature: 'GnuPG: 文件不是签名 (*.sig).',
+  GnuPGFileIsNotASignature: 'GnuPG: 文件不是签名 (*.sig|*.asc).',
   GnuPGFileNotEncrypted: 'GnuPG: 文件未加密 (*.asc|*.gpg).',
   GnuPGFileSignedSuccessfully: 'GnuPG: 文件签名成功.',
   GnuPGGpgNotAvailable: 'GnuPG: gpg 无法使用!',

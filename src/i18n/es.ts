@@ -2,6 +2,7 @@ import { Ii18n } from '../i18n';
 
 const translation: Ii18n = {
   CommandCheckGnuPG: 'Compruebe GnuPG',
+  CommandClearSignFile: 'Archivo de firmas (clear-sign)',
   CommandCopyFingerprintToClipboard: 'Copiar huella digital al portapapeles',
   CommandCopyKeyIdToClipboard: 'Copiar KeyId al portapapeles',
   CommandDecrypt: 'Descifrar ...',
@@ -27,7 +28,7 @@ const translation: Ii18n = {
   CommandListPublicKeys: 'Lista de claves públicas',
   CommandListSecretKeys: 'Lista de claves secretas',
   CommandShowSmartcard: 'Mostrar Smartcard',
-  CommandSignFile: 'Archivo de firmas',
+  CommandSignFile: 'Archivo de firmas (detached)',
   CommandTrust: 'Confianza ...',
   CommandVerifyFile: 'Verificar archivo',
   Decrypted: 'descifrado',
@@ -45,7 +46,7 @@ const translation: Ii18n = {
   GnuPGFileDecryptedSuccessfully: 'GnuPG: Archivo descifrado exitosamente.',
   GnuPGFileEncryptedSuccessfully: 'GnuPG: Archivo cifrado correctamente.',
   GnuPGFileIsAlreadyASignature: 'GnuPG: El archivo ya es una firma (*.sig).',
-  GnuPGFileIsNotASignature: 'GnuPG: El archivo no es una firma (*.sig).',
+  GnuPGFileIsNotASignature: 'GnuPG: El archivo no es una firma (*.sig|*.asc).',
   GnuPGFileNotEncrypted: 'GnuPG: Archivo no cifrado (*.asc|*.gpg).',
   GnuPGFileSignedSuccessfully: 'GnuPG: Archivo firmado correctamente.',
   GnuPGGpgNotAvailable: 'GnuPG: gpg no disponible!',
