@@ -34,8 +34,30 @@ export function setContent(uri: vscode.Uri, content: Buffer): Promise<Buffer> {
 
 export function getWorkspaceUri(): vscode.Uri | undefined {
   let uri: vscode.Uri | undefined;
-  if (vscode.workspace) {
-    uri = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : undefined;
-  }
+  uri = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : undefined;
   return uri;
+}
+
+export function isDirectory(path: string): boolean {
+  try {
+    return fs.statSync(path).isDirectory();
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      return false;
+    } else {
+      throw e;
+    }
+  }
+}
+
+export function isFile(path: string): boolean {
+  try {
+    return fs.statSync(path).isFile();
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      return false;
+    } else {
+      throw e;
+    }
+  }
 }

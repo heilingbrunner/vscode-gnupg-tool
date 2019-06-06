@@ -467,9 +467,7 @@
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
-  "dependencies": {
-    "gpg": "^0.6.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/mocha": "^5.2.6",
     "@types/node": "^11.13.4",

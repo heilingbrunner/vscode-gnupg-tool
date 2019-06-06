@@ -24,13 +24,15 @@ import {
   promiseEncryptAsymUri,
   promiseDeleteKey,
   promiseDeleteSecretKey,
-  promiseClearSign
+  promiseClearSign,
+  promiseCheckHomeDir
 } from './gnupgpromises';
 import VirtualDocumentProvider from './virtualdocumentprovider';
 import GnuPGProvider from './gnupgprovider';
 import { GnuPGKey } from './gnupgkey';
 import { i18n } from './i18n';
 import { getWorkspaceUri } from './utils';
+import { GnuPGParameters } from './gnupgparameters';
 
 let statusBarItem: vscode.StatusBarItem;
 
@@ -45,7 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('gnupg', new GnuPGProvider()));
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.Environment', (uri: vscode.Uri) => {
+    vscode.commands.registerCommand('extension.Environment', (_uri: vscode.Uri) => {
       let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
 
       commands.push({ label: i18n().CommandCheckGnuPG, tag: 'CommandCheckGnuPG' });
@@ -61,9 +63,9 @@ export function activate(context: vscode.ExtensionContext) {
 
         switch (selectedCommand.tag) {
           case 'CommandCheckGnuPG':
-            showVersion().then(() => {
-              checkGnuPG();
-            });
+            promiseKillGpgAgent()
+              .then(() => checkGnuPG())
+              .then(() => showVersion());
             break;
           case 'CommandShowSmartcard':
             showSmartcard();
@@ -253,9 +255,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.CheckGnuPG', () => {
-      showVersion().then(() => {
-        checkGnuPG();
-      });
+      promiseKillGpgAgent()
+        .then(() => checkGnuPG())
+        .then(() => showVersion());
     })
   );
 
@@ -424,7 +426,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  // Update statusBarItem on activate
+  // Check homedir, update statusBarItem
   checkGnuPG();
 }
 
@@ -435,19 +437,34 @@ export function deactivate() {
 
 // Commands .......................................................
 
-function checkGnuPG() {
-  promiseCheckVersion()
-    .then(stdout => promiseBufferToLines(stdout))
-    .then(lines => {
-      if (lines.length >= 2) {
-        statusBarItem.text = `$(mirror-private) ` + lines[0];
-        statusBarItem.show();
-      }
-    })
-    .catch(err => {
-      statusBarItem.hide();
-      vscode.window.showErrorMessage(i18n().GnuPGGpgNotAvailable + ' ' + err);
-    });
+function checkGnuPG(): Promise<undefined> {
+  return new Promise(resolve => {
+    promiseCheckHomeDir()
+      .then(changedhomedir => {
+        GnuPGParameters.sethomedir(changedhomedir);
+        console.log('homedir=' + GnuPGParameters.homedir);
+
+        if (changedhomedir) {
+          vscode.window.showInformationMessage('GnuPG homedir=' + changedhomedir);
+        } else {
+          //vscode.window.showInformationMessage('GnuPG default homedir');
+        }
+      })
+      .then(_ => promiseCheckVersion())
+      .then(stdout => promiseBufferToLines(stdout))
+      .then(lines => {
+        if (lines.length >= 2) {
+          statusBarItem.text = `$(mirror-private) ` + lines[0];
+          statusBarItem.show();
+        }
+      })
+      .catch(err => {
+        statusBarItem.hide();
+        vscode.window.showErrorMessage(i18n().GnuPGGpgNotAvailable + ' ' + err);
+      });
+
+    resolve(undefined);
+  });
 }
 
 function showVersion(): Thenable<{} | undefined> {
@@ -487,7 +504,7 @@ function encryptAsymSelection(editor: vscode.TextEditor) {
           if (recipients && recipients.length > 0) {
             return promiseEncryptAsymBuffer(content, recipients);
           } else {
-            return new Promise<Buffer>((resolve, reject) => {
+            return new Promise<Buffer>((_resolve, reject) => {
               reject(i18n().GnuPGNoRecipientsSelectedForEncryption);
             });
           }
@@ -757,7 +774,7 @@ function importKeys(uri: vscode.Uri) {
         promiseImportKeys(uriSelected[0])
           .then(result => {
             let txt = result.toString();
-            vscode.window.showInformationMessage('GnuPG: ' + txt);
+            vscode.window.showInformationMessage(txt);
           })
           .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyImportFailed + ' ' + err));
       }
@@ -878,7 +895,7 @@ function encryptAsymUri(uri: vscode.Uri) {
       if (recipients && recipients.length > 0) {
         return promiseEncryptAsymUri(uri, recipients);
       } else {
-        return new Promise<Buffer>((resolve, reject) => {
+        return new Promise<Buffer>((_resolve, reject) => {
           reject('No recipients selected for encryption.');
         });
       }
@@ -1014,7 +1031,7 @@ function generateKey() {
 function deleteKey() {
   promiseListPublicKeys()
     .then(stdout => promiseParseKeys(stdout))
-    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => true)) // list all keys !!
+    .then(map => promiseFilterKeys(map, (_k: GnuPGKey) => true)) // list all keys !!
     .then(keys => promiseKeysToQuickPickItems(keys))
     .then(quickpickitems =>
       vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
@@ -1027,7 +1044,7 @@ function deleteKey() {
 function deleteSecretKey() {
   promiseListSecretKeys()
     .then(stdout => promiseParseKeys(stdout))
-    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => true)) // list all keys !!
+    .then(map => promiseFilterKeys(map, (_k: GnuPGKey) => true)) // list all keys !!
     .then(keys => promiseKeysToQuickPickItems(keys))
     .then(quickpickitems =>
       vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().GnuPGSelectPublicKey, canPickMany: false })
@@ -1047,7 +1064,7 @@ function copyFingerprintToClipboard() {
     )
     .then(async key => {
       try {
-        return new Promise(function(reject, resolve) {
+        return new Promise(function(_reject, _resolve) {
           if (key) {
             switch (process.platform) {
               case 'darwin':
@@ -1080,7 +1097,7 @@ function copyKeyIdToClipboard() {
     )
     .then(async key => {
       try {
-        return new Promise(function(reject, resolve) {
+        return new Promise(function(_reject, _resolve) {
           if (key) {
             switch (process.platform) {
               case 'darwin':
