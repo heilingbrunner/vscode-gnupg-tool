@@ -2,6 +2,7 @@ import { spawn } from 'child_process';
 var globalArgs = ['--batch'];
 import { createReadStream as readStream } from 'fs';
 import { createWriteStream as writeStream } from 'fs';
+import { call } from './gpg';
 
 // export type cbfuncn = {
 //   (): void;
@@ -63,7 +64,8 @@ export function spawnGPG(stdin: any, defaultArgs: any, args: string[], cb?: cbfu
         return cb(new Error(error || msg.toString()));
       }
 
-      cb(undefined, msg, error);
+      //TODO ...
+      cb(undefined, undefined, undefined, msg + ' ' + error);
     }
   });
 
@@ -145,7 +147,7 @@ function once(cb?: cbfunc) {
     }
     called = true;
     if (cb) {
-      cb.apply(this, arguments);
+      cb.apply(arguments);
     }
   };
 }

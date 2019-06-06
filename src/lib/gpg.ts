@@ -343,7 +343,11 @@ export function importKey(
     }
     // Grab key fingerprint and send it back as second arg
     let match = buffer ? buffer.toString().match(/^gpg: key (.*?):/): '';
-    cb(undefined, undefined, undefined, result + ' ' + match ? match[1]: '');
+    let matchtxt = match;
+
+    //TODO ...
+    //cb(undefined, undefined, undefined, result + ' ' + match ? match[1]: '');
+    cb(undefined, undefined, undefined, result + ' ' + (match ? match[1]:''));
   });
 }
 
