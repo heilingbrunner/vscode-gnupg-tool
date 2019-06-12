@@ -17,7 +17,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
     return buffer.toString('ascii');
   }
 
-  getContent(uri: vscode.Uri): Promise<Buffer> {
+  async getContent(uri: vscode.Uri): Promise<Buffer> {
     switch (uri.path) {
       case '/GnuPG-Public-Keys':
         return this.listPublicKeys();
@@ -34,13 +34,13 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
     }
   }
 
-  listPublicKeys(): Promise<Buffer> {
-    return new Promise((resolve) => {
+  async listPublicKeys(): Promise<Buffer> {
+    return new Promise<Buffer>((resolve) => {
       promiseListPublicKeys()
         .then(stdout => promiseParseKeys(stdout))
         .then(keys => promiseKeysToText(keys))
         .then(recipients => {
-          let content = i18n().GnuPGPublicKey + (GnuPGParameters.homedir ? ' [homedir=' + GnuPGParameters.homedir + ']': '') + ':\r\n';
+          let content = i18n().GnuPGPublicKey + (GnuPGParameters.homedir ? ' [homedir=' + GnuPGParameters.homedir + ']' : '') + ':\r\n';
           content += '\r\n';
           recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));
           resolve(new Buffer(content));
@@ -51,13 +51,13 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
     });
   }
 
-  listPrivateKeys(): Promise<Buffer> {
-    return new Promise((resolve) => {
+  async listPrivateKeys(): Promise<Buffer> {
+    return new Promise<Buffer>((resolve) => {
       promiseListSecretKeys()
         .then(stdout => promiseParseKeys(stdout))
         .then(keys => promiseKeysToText(keys))
         .then(recipients => {
-          let content = i18n().GnuPGSecretKey + (GnuPGParameters.homedir ? ' [homedir=' + GnuPGParameters.homedir + ']': '') + ':\r\n';
+          let content = i18n().GnuPGSecretKey + (GnuPGParameters.homedir ? ' [homedir=' + GnuPGParameters.homedir + ']' : '') + ':\r\n';
           content += '\r\n';
           recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));
           resolve(new Buffer(content));
@@ -68,8 +68,8 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
     });
   }
 
-  showSmartcard(): Promise<Buffer> {
-    return new Promise((resolve) => {
+  async showSmartcard(): Promise<Buffer> {
+    return new Promise<Buffer>((resolve) => {
       promiseShowSmartcard()
         .then(stdout => resolve(stdout))
         .catch(err => {
@@ -78,8 +78,8 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
     });
   }
 
-  showVersion(): Promise<Buffer> {
-    return new Promise((resolve) => {
+  async showVersion(): Promise<Buffer> {
+    return new Promise<Buffer>((resolve) => {
       promiseCheckVersion()
         .then(stdout => resolve(stdout))
         .catch(err => {
@@ -88,8 +88,8 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
     });
   }
 
-  showVerification(uri: vscode.Uri): Promise<Buffer> {
-    return new Promise((resolve) => {
+  async showVerification(uri: vscode.Uri): Promise<Buffer> {
+    return new Promise<Buffer>((resolve) => {
       promiseVerify(uri)
         .then(stdout => resolve(stdout))
         .catch(err => {

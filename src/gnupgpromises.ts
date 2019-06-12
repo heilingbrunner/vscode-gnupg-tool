@@ -8,7 +8,8 @@ import { i18n } from './i18n';
 import { getWorkspaceUri, isDirectory, isFile } from './utils';
 import { GnuPGParameters } from './gnupgparameters';
 
-export function  promiseCheckVersion(): Promise<Buffer> {
+
+export async function promiseCheckVersion(): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--version']);
@@ -19,7 +20,7 @@ export function  promiseCheckVersion(): Promise<Buffer> {
   });
 }
 
-export function promiseListPublicKeys(): Promise<Buffer> {
+export async function promiseListPublicKeys(): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['-k', '--with-colons']);
@@ -30,7 +31,7 @@ export function promiseListPublicKeys(): Promise<Buffer> {
   });
 }
 
-export function promiseListSecretKeys(): Promise<Buffer> {
+export async function promiseListSecretKeys(): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['-K', '--with-colons']);
@@ -41,7 +42,7 @@ export function promiseListSecretKeys(): Promise<Buffer> {
   });
 }
 
-export function promiseParseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>> {
+export async function promiseParseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>> {
   //see source: gnupg-2.2.12\doc\DETAILS
   //https://github.com/gpg/gnupg/blob/master/doc/DETAILS
 
@@ -162,7 +163,7 @@ export function promiseParseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>>
   });
 }
 
-export function promiseEncryptAsymBuffer(content: Buffer, keys?: { fingerprint: string }[]): Promise<Buffer> {
+export async function promiseEncryptAsymBuffer(content: Buffer, keys?: { fingerprint: string }[]): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor']);
@@ -179,7 +180,7 @@ export function promiseEncryptAsymBuffer(content: Buffer, keys?: { fingerprint: 
   });
 }
 
-export function promiseEncryptSymBuffer(content: Buffer): Promise<Buffer> {
+export async function promiseEncryptSymBuffer(content: Buffer): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor', '--symmetric']);
@@ -190,7 +191,7 @@ export function promiseEncryptSymBuffer(content: Buffer): Promise<Buffer> {
   });
 }
 
-export function promiseEncryptAsymUri(uri: vscode.Uri, keys?: { fingerprint: string }[]): Promise<Buffer> {
+export async function promiseEncryptAsymUri(uri: vscode.Uri, keys?: { fingerprint: string }[]): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor']);
@@ -208,7 +209,7 @@ export function promiseEncryptAsymUri(uri: vscode.Uri, keys?: { fingerprint: str
   });
 }
 
-export function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
+export async function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor']);
@@ -220,7 +221,7 @@ export function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
   });
 }
 
-export function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
+export async function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     decrypt(content, args, (err?: Error, stdout?: Buffer) => {
@@ -229,7 +230,7 @@ export function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
   });
 }
 
-export function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
+export async function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let dest = '';
     if (uri.fsPath.match(/.*\.(asc|gpg)$/i)) {
@@ -244,7 +245,7 @@ export function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
   });
 }
 
-export function promiseShowSmartcard(): Promise<Buffer> {
+export async function promiseShowSmartcard(): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--card-status']);
@@ -255,7 +256,7 @@ export function promiseShowSmartcard(): Promise<Buffer> {
   });
 }
 
-export function promiseKillGpgAgent(): Promise<{ stdout: string; stderr: string }> {
+export async function promiseKillGpgAgent(): Promise<{ stdout: string; stderr: string }> {
   //https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html
   //https://www.gnupg.org/documentation/manuals/gnupg/Controlling-gpg_002dconnect_002dagent.html#Controlling-gpg_002dconnect_002dagent
   //gpgconf --kill gpg-agent: works on Windows
@@ -263,7 +264,7 @@ export function promiseKillGpgAgent(): Promise<{ stdout: string; stderr: string 
   return promiseExec('gpg-connect-agent killagent /bye', {});
 }
 
-export function promiseBufferToLines(stdout: Buffer): Promise<string[]> {
+export async function promiseBufferToLines(stdout: Buffer): Promise<string[]> {
   return new Promise<string[]>((resolve) => {
     let lines = stdout
       .toString()
@@ -275,7 +276,7 @@ export function promiseBufferToLines(stdout: Buffer): Promise<string[]> {
   });
 }
 
-export function promiseExec(cmd: string, opts: ExecOptions): Promise<{ stdout: string; stderr: string }> {
+export async function promiseExec(cmd: string, opts: ExecOptions): Promise<{ stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
     child_process.exec(cmd, opts, (err, stdout, stderr) =>
       err
@@ -288,7 +289,7 @@ export function promiseExec(cmd: string, opts: ExecOptions): Promise<{ stdout: s
   });
 }
 
-export function promiseFilterKeys(
+export async function promiseFilterKeys(
   keys: Map<string, GnuPGKey>,
   predicate: (k: GnuPGKey) => boolean
 ): Promise<Array<GnuPGKey>> {
@@ -297,7 +298,7 @@ export function promiseFilterKeys(
   });
 }
 
-export function promiseKeysToQuickPickItems(
+export async function promiseKeysToQuickPickItems(
   keyarray: Array<GnuPGKey>
 ): Promise<
   {
@@ -324,7 +325,7 @@ export function promiseKeysToQuickPickItems(
   });
 }
 
-export function promiseKeysToText(keys: Map<string, GnuPGKey>): Promise<string[]> {
+export async function promiseKeysToText(keys: Map<string, GnuPGKey>): Promise<string[]> {
   return new Promise<string[]>((resolve, reject) => {
     let recipients: string[] = [];
 
@@ -336,7 +337,7 @@ export function promiseKeysToText(keys: Map<string, GnuPGKey>): Promise<string[]
   });
 }
 
-export function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
+export async function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor']);
@@ -353,7 +354,7 @@ export function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }): Pro
   });
 }
 
-export function promiseClearSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
+export async function promiseClearSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor']);
@@ -369,7 +370,7 @@ export function promiseClearSign(uri: vscode.Uri, key?: { fingerprint: string })
   });
 }
 
-export function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
+export async function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     // GnuPG prints (at least some of) this output to stderr, not stdout.
 
@@ -388,7 +389,7 @@ export function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
   });
 }
 
-export function promiseImportKeys(uri: vscode.Uri): Promise<Buffer> {
+export async function promiseImportKeys(uri: vscode.Uri): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--import']);
@@ -400,7 +401,7 @@ export function promiseImportKeys(uri: vscode.Uri): Promise<Buffer> {
   });
 }
 
-export function promiseExportPublicKeys(
+export async function promiseExportPublicKeys(
   uri: vscode.Uri,
   key?: {
     label: string;
@@ -421,7 +422,7 @@ export function promiseExportPublicKeys(
   });
 }
 
-export function promiseExportSecretKeys(
+export async function promiseExportSecretKeys(
   uri: vscode.Uri,
   key?: {
     label: string;
@@ -442,7 +443,7 @@ export function promiseExportSecretKeys(
   });
 }
 
-export function promiseExportSecretSubKeys(
+export async function promiseExportSecretSubKeys(
   uri: vscode.Uri,
   key?: {
     label: string;
@@ -479,7 +480,7 @@ function getLastGnuPGError(err?: Error): string {
   return gpgerror;
 }
 
-export function promiseDeleteKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
+export async function promiseDeletePublicKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     if (key) {
       let args = GnuPGParameters.defaultargs;
@@ -493,7 +494,7 @@ export function promiseDeleteKey(key?: { fingerprint: string; userId: string }):
   });
 }
 
-export function promiseDeleteSecretKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
+export async function promiseDeleteSecretKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     if (key) {
       let args = GnuPGParameters.defaultargs;
@@ -507,7 +508,7 @@ export function promiseDeleteSecretKey(key?: { fingerprint: string; userId: stri
   });
 }
 
-export function promiseCheckHomeDir(): Promise<string | undefined> {
+export async function promiseCheckHomeDir(): Promise<string | undefined> {
   return new Promise<string | undefined>((resolve) => {
     //Check ...
     // public : pubring.kbx or pubring.gpg
