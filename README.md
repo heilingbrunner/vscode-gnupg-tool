@@ -21,7 +21,7 @@
 - Works with __smartcards__.
 - __Sign__/__verify__ file.
 - Keys __generate__/__edit__/__delete__/__import__/__export__.
-- Detects local/alternated __homedir__
+- Detects local/alternated __homedir/key ring__
 
 ## Supported locales
 
@@ -108,7 +108,7 @@ The editor context menu ...
 
 #### Support for an alternate homedir/key ring
 
-When VSCode is opened in a folder with (file:`pubring.kbx` __OR__ file:`pubring.gpg`) __AND__ (folder:`private-keys-v1.d` __OR__ file:`secring.gpg`), then the `--homedir` parameter is used in every command of this instance.
+When VSCode is opened in a folder with (file:`pubring.kbx` __OR__ file:`pubring.gpg`) __AND__ (folder:`private-keys-v1.d` __OR__ file:`secring.gpg`) included, then the `--homedir` parameter is used in every command of this VSCode instance.
 > Using several VSCode instances at the same time is not recommended, because the `gpg-agent` is running in the background for one session. Otherwise you have to kill the session. __TIP: Change folder in one instance, because `gpg-agent` will be killed automatically.__
 
 ## Requirements
