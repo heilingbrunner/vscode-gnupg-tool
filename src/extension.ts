@@ -452,12 +452,9 @@ async function checkGnuPG(): Promise<undefined> {
     promiseCheckHomeDir()
       .then(changedhomedir => {
         GnuPGParameters.homedir = changedhomedir;
-        console.log(GnuPGParameters.defaultargs);
 
         if (changedhomedir) {
-          vscode.window.showInformationMessage('GnuPG homedir=' + changedhomedir);
-        } else {
-          //vscode.window.showInformationMessage('GnuPG default homedir');
+          vscode.window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + GnuPGParameters.homedir);
         }
       })
       .then(_ => promiseCheckVersion())

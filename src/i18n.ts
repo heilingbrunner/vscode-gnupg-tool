@@ -76,6 +76,7 @@ export interface Ii18n {
   GnuPGShowSmartcardFailed: string;
   GnuPGSignFailed: string;
   GnuPGSwitchToTerminalAndHitReturn: string;
+  GnuPGUsingHomedir: string;
   GnuPGVerfication: string;
   GnuPGVerficationFailed: string;
   SelectKeyToExport: string;
