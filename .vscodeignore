@@ -1,10 +1,12 @@
 .vscode/
 .vscodetest/
+.vscode-test/
+icons/
 src/
 out/
-typings/
 images/
 
+**/*.vsix
 **/*.ts
 **/tsconfig.json
 **/tslint.json

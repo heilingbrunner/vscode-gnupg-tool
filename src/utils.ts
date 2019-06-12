@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
+import {readFile, writeFile, statSync} from 'fs';
 
 export function getContent(uri: vscode.Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     if (uri.scheme === 'file') {
       const filepath = uri.fsPath;
 
-      fs.readFile(filepath, (err, buffer) => {
+      readFile(filepath, (err, buffer) => {
         if (err) {
           reject(err);
         } else {
@@ -22,7 +22,7 @@ export function getContent(uri: vscode.Uri): Promise<Buffer> {
 export function setContent(uri: vscode.Uri, content: Buffer): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     // fs.writeFileSync(newUri.fsPath, encrypted);
-    fs.writeFile(uri.fsPath, content, err => {
+    writeFile(uri.fsPath, content, err => {
       if (err) {
         reject(err);
       } else {
@@ -40,7 +40,7 @@ export function getWorkspaceUri(): vscode.Uri | undefined {
 
 export function isDirectory(path: string): boolean {
   try {
-    return fs.statSync(path).isDirectory();
+    return statSync(path).isDirectory();
   } catch (e) {
     if (e.code === 'ENOENT') {
       return false;
@@ -52,7 +52,7 @@ export function isDirectory(path: string): boolean {
 
 export function isFile(path: string): boolean {
   try {
-    return fs.statSync(path).isFile();
+    return statSync(path).isFile();
   } catch (e) {
     if (e.code === 'ENOENT') {
       return false;

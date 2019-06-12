@@ -95,7 +95,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         return new Promise(async resolve => {
           promiseVerify(newUri)
             .then(verification => {
-              return resolve(i18n().GnuPGVerfication + ':\r\n' + verification.toString('utf8'));
+              return resolve(i18n().GnuPGVerfication + ':\r\n' + verification);
             })
             .catch(err => resolve(i18n().GnuPGVerficationFailed + '\r\n' + err));
         });

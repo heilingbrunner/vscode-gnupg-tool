@@ -1,25 +1,20 @@
+/*!
+ * node-gpg
+ * Copyright(c) 2011 Nicholas Penree <drudge@conceited.net>
+ * MIT Licensed
+ * /
+ 
+/*!
+ * Transformed to typescript and modified
+ */
+
 import { spawn } from 'child_process';
-var globalArgs = ['--batch'];
 import { createReadStream as readStream } from 'fs';
 import { createWriteStream as writeStream } from 'fs';
-import { call } from './gpg';
 
-// export type cbfuncn = {
-//   (): void;
-//   (err: Error): void;
-//   (arg0: null): void;
-//   (arg0: null, arg1: any): void;
-//   (arg0: any, arg1: any): void;
-//   (err: { stack: string }, stdout: Buffer): void;
-//   (arg0: null, arg1: Buffer, arg2: string): void;
-// };
 
 export type cbfunc = {
-  (): void;
-  //(err: { stack?: string } | Error | undefined): void;
-  //(err: { stack?: string } | Error | undefined, buffer: any): void;
-  //(err: { stack?: string } | Error | undefined, buffer: Buffer, result: string): void;
-  (err?: Error, buffer?: Buffer, stderr?: Buffer, result?: string): void;
+  (err?: Error, stdout?: Buffer, stderr?: Buffer, data?: string): void;
 };
 
 export type options = { source?: any; dest?: any };
@@ -33,39 +28,34 @@ export type options = { source?: any; dest?: any };
  * @param  {Function} cb          Callback.
  */
 export function spawnGPG(stdin: any, defaultArgs: any, args: string[], cb?: cbfunc) {
-  // Allow calling with (input, defaults, cb)
-  // if (typeof args === 'function') {
-  //   cb = args;
-  //   args = [];
-  // }
 
   cb = once(cb);
 
   var gpgArgs = (args || []).concat(defaultArgs);
-  var buffers: any[] | Uint8Array[] = [];
-  var buffersLength = 0;
-  var error = '';
+  var buffer: any[] | Uint8Array[] = [];
+  var bufferLength = 0;
+  var data = '';
   var gpg = spawnIt(gpgArgs, cb);
 
-  gpg.stdout.on('data', function(buf) {
-    buffers.push(buf);
-    buffersLength += buf.length;
+  gpg.stdout.on('data', function(buff) {
+    buffer.push(buff);
+    bufferLength += buff.length;
   });
 
-  gpg.stderr.on('data', function(buf) {
-    error += buf.toString('utf8');
+  gpg.stderr.on('data', function(buff) {
+    data += buff.toString('utf8');
   });
 
   gpg.on('close', function(code) {
     if (cb) {
-      var msg = Buffer.concat(buffers, buffersLength);
+      var stdout = Buffer.concat(buffer, bufferLength);
       if (code !== 0) {
         // If error is empty, we probably redirected stderr to stdout (for verifySignature, import, etc)
-        return cb(new Error(error || msg.toString()));
+        return cb(new Error(data || stdout.toString()));
       }
 
-      //TODO ...
-      cb(undefined, undefined, undefined, msg + ' ' + error);
+      //cb(err?: Error, stdout?: Buffer, stderr?: Buffer, data?: string): void;)
+      cb(undefined, stdout, undefined, data);
     }
   });
 
@@ -133,7 +123,7 @@ export function streaming(options: options, args: any, cb: cbfunc) {
 
 // Wrapper around spawn. Catches error events and passed global args.
 function spawnIt(args: string[], cb: cbfunc) {
-  var gpg = spawn('gpg', globalArgs.concat(args || []));
+  var gpg = spawn('gpg', (args || []));
   gpg.on('error', cb);
   return gpg;
 }
@@ -147,7 +137,11 @@ function once(cb?: cbfunc) {
     }
     called = true;
     if (cb) {
-      cb.apply(arguments);
+      let err = arguments[0];
+      let stdout = arguments[1];
+      let stderr = arguments[2];
+      let data = arguments[3];
+      cb(err,stdout,stderr,data);
     }
   };
 }

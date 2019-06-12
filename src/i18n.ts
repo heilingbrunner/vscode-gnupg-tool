@@ -14,6 +14,8 @@ export interface Ii18n {
   CommandDecryptFile: string;
   CommandDecryptPreview: string;
   CommandDecryptSelection: string;
+  CommandDeletePublicKey: string;
+  CommandDeleteSecretKey: string;
   CommandEditPublicKey: string;
   CommandEncrypt: string;
   CommandEncryptFileAsym: string;
@@ -59,13 +61,19 @@ export interface Ii18n {
   GnuPGKeyExportSuccessfully: string;
   GnuPGKeyImportFailed: string;
   GnuPGKeyImportSuccessfully: string;
+  GnuPGListPublicKeysFailed: string;
+  GnuPGListSecretKeysFailed: string;
+  GnuPGNotAvailable: string;
   GnuPGNoRecipientsSelectedForEncryption: string;
   GnuPGNoTextSelectedForDecryption: string;
   GnuPGNoTextSelectedForEncryption: string;
   GnuPGNotSupportedPlatform: string;
+  GnuPGPublicKey: string;
   GnuPGPublicKeyDeletedSuccessfully: string;
+  GnuPGSecretKey: string;
   GnuPGSecretKeyDeletedSuccessfully: string;
   GnuPGSelectPublicKey: string;
+  GnuPGShowSmartcardFailed: string;
   GnuPGSignFailed: string;
   GnuPGSwitchToTerminalAndHitReturn: string;
   GnuPGVerfication: string;

@@ -7,12 +7,18 @@ export class GnuPGParameters {
   //  [args]
   private static _homedir: string | undefined;
 
-  static sethomedir(path: string | undefined){
+  static set homedir(path: string | undefined){
     GnuPGParameters._homedir = path;
-  } 
+  }
+  static get homedir(): string| undefined {
+    return  GnuPGParameters._homedir;
+  }
 
-  static get homedir(): string[] {
+  static get defaultargs(): string[] {
     let parameters: string[] = [];
+
+    //default parameters ...
+    parameters = parameters.concat(['--batch']);
 
     if (GnuPGParameters._homedir) {
       parameters = parameters.concat(['--homedir', GnuPGParameters._homedir]);

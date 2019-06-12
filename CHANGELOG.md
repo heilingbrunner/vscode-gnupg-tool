@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.0] - 2019-06-11
+
+- support of alternating homedir/keyring location
+
 ## [1.0.9] - 2019-05-10
 
 - delete public/secret key improved

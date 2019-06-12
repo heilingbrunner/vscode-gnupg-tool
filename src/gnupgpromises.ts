@@ -8,34 +8,34 @@ import { i18n } from './i18n';
 import { getWorkspaceUri, isDirectory, isFile } from './utils';
 import { GnuPGParameters } from './gnupgparameters';
 
-export function promiseCheckVersion(): Promise<Buffer> {
-  return new Promise(function(resolve, reject) {
-    let args = GnuPGParameters.homedir;
+export function  promiseCheckVersion(): Promise<Buffer> {
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
     args = args.concat(['--version']);
 
-    call('', args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    call('', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
 }
 
 export function promiseListPublicKeys(): Promise<Buffer> {
-  return new Promise(function(resolve, reject) {
-    let args = GnuPGParameters.homedir;
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
     args = args.concat(['-k', '--with-colons']);
 
-    call('', args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    call('', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
 }
 
 export function promiseListSecretKeys(): Promise<Buffer> {
-  return new Promise(function(resolve, reject) {
-    let args = GnuPGParameters.homedir;
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
     args = args.concat(['-K', '--with-colons']);
 
-    call('', args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    call('', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
@@ -45,7 +45,7 @@ export function promiseParseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>>
   //see source: gnupg-2.2.12\doc\DETAILS
   //https://github.com/gpg/gnupg/blob/master/doc/DETAILS
 
-  return new Promise((resolve, reject) => {
+  return new Promise<Map<string, GnuPGKey>>((resolve, reject) => {
     let lines = stdout
       .toString()
       .trim()
@@ -163,8 +163,8 @@ export function promiseParseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>>
 }
 
 export function promiseEncryptAsymBuffer(content: Buffer, keys?: { fingerprint: string }[]): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor']);
 
     if (keys !== undefined) {
@@ -173,27 +173,27 @@ export function promiseEncryptAsymBuffer(content: Buffer, keys?: { fingerprint: 
       });
     }
 
-    encrypt(content, args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    encrypt(content, args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
 }
 
 export function promiseEncryptSymBuffer(content: Buffer): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor', '--symmetric']);
 
-    call(content, args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    call(content, args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
 }
 
 export function promiseEncryptAsymUri(uri: vscode.Uri, keys?: { fingerprint: string }[]): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
-    args = args.concat(['--armor', '--batch', '--yes']);
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
+    args = args.concat(['--armor']);
 
     if (keys !== undefined) {
       keys.forEach(recipient => {
@@ -202,35 +202,35 @@ export function promiseEncryptAsymUri(uri: vscode.Uri, keys?: { fingerprint: str
     }
 
     args = args.concat(['--encrypt', uri.fsPath]);
-    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
 }
 
 export function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
-    args = args.concat(['--batch', '--yes', '--armor']);
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
+    args = args.concat(['--armor']);
 
     args = args.concat(['--symmetric', uri.fsPath]);
-    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
 }
 
 export function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
-    decrypt(content, args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
+    decrypt(content, args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
 }
 
 export function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
+  return new Promise<Buffer>((resolve, reject) => {
     let dest = '';
     if (uri.fsPath.match(/.*\.(asc|gpg)$/i)) {
       dest = uri.fsPath.slice(0, -'.asc'.length);
@@ -238,18 +238,18 @@ export function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
       dest = uri.fsPath + '.decrypted';
     }
 
-    decryptToFile({ source: uri.fsPath, dest: dest }, [], (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    decryptToFile({ source: uri.fsPath, dest: dest }, [], (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
 }
 
 export function promiseShowSmartcard(): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
     args = args.concat(['--card-status']);
 
-    call('', args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    call('', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
@@ -264,7 +264,7 @@ export function promiseKillGpgAgent(): Promise<{ stdout: string; stderr: string 
 }
 
 export function promiseBufferToLines(stdout: Buffer): Promise<string[]> {
-  return new Promise((resolve, reject) => {
+  return new Promise<string[]>((resolve) => {
     let lines = stdout
       .toString()
       .replace(/\r/g, '')
@@ -292,7 +292,7 @@ export function promiseFilterKeys(
   keys: Map<string, GnuPGKey>,
   predicate: (k: GnuPGKey) => boolean
 ): Promise<Array<GnuPGKey>> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     resolve(Array.from(keys.values()).filter(k => predicate(k)));
   });
 }
@@ -325,7 +325,7 @@ export function promiseKeysToQuickPickItems(
 }
 
 export function promiseKeysToText(keys: Map<string, GnuPGKey>): Promise<string[]> {
-  return new Promise((resolve, reject) => {
+  return new Promise<string[]>((resolve, reject) => {
     let recipients: string[] = [];
 
     keys.forEach(key => {
@@ -337,9 +337,9 @@ export function promiseKeysToText(keys: Map<string, GnuPGKey>): Promise<string[]
 }
 
 export function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
-    args = args.concat(['--armor', '--batch', '--yes']);
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
+    args = args.concat(['--armor']);
     args = args.concat(['--output', uri.fsPath + '.sig']);
     if (key !== undefined) {
       args = args.concat(['--local-user', key.fingerprint]);
@@ -347,34 +347,34 @@ export function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }): Pro
     args = args.concat(['--detach-sign']);
     args = args.concat([uri.fsPath]);
 
-    call('', args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    call('', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
 }
 
 export function promiseClearSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
-    args = args.concat(['--armor', '--batch', '--yes']);
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
+    args = args.concat(['--armor']);
     if (key !== undefined) {
       args = args.concat(['--local-user', key.fingerprint]);
     }
     args = args.concat(['--clear-sign']);
     args = args.concat([uri.fsPath]);
 
-    call('', args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    call('', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
 }
 
 export function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
+  return new Promise<Buffer>((resolve, reject) => {
     // GnuPG prints (at least some of) this output to stderr, not stdout.
 
     //for detached or clear-signed file ...
-    let args = GnuPGParameters.homedir;
+    let args = GnuPGParameters.defaultargs;
     args = args.concat(['--verify', uri.fsPath]);
 
     //when detached signed file, add fsPath of data file
@@ -382,19 +382,19 @@ export function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
       args = args.concat([uri.fsPath.slice(0, -'.sig'.length)]);
     }
 
-    call('', args, (err?: { stack?: string }, stdout?: Buffer, stderr?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stderr);
+    call('', args, (err?: Error, stdout?: Buffer, stderr?: Buffer, data?: string) => {
+      err ? reject(getLastGnuPGError(err)) : resolve(new Buffer((data ||'')));
     });
   });
 }
 
 export function promiseImportKeys(uri: vscode.Uri): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
     args = args.concat(['--import']);
     args = args.concat([uri.fsPath]);
 
-    call('', args, (err?: { stack?: string } | Error) => {
+    call('', args, (err?: Error) => {
       err ? reject(getLastGnuPGError(err)) : resolve(new Buffer(i18n().GnuPGKeyImportSuccessfully));
     });
   });
@@ -409,13 +409,13 @@ export function promiseExportPublicKeys(
     fingerprint: string;
   }
 ): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
-    args = args.concat(['--armor', '--batch', '--yes', '--output', uri.fsPath]);
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
+    args = args.concat(['--armor', '--output', uri.fsPath]);
     args = args.concat('--export');
     args = args.concat(key ? key.fingerprint : '');
 
-    call('', args, (err?: { stack?: string } | Error) => {
+    call('', args, (err?: Error) => {
       err ? reject(getLastGnuPGError(err)) : resolve(new Buffer(i18n().GnuPGKeyExportSuccessfully));
     });
   });
@@ -430,13 +430,13 @@ export function promiseExportSecretKeys(
     fingerprint: string;
   }
 ): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
-    args = args.concat(['--armor', '--batch', '--yes', '--output', uri.fsPath]);
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
+    args = args.concat(['--armor', '--output', uri.fsPath]);
     args = args.concat('--export-secret-keys');
     args = args.concat(key ? key.fingerprint : '');
 
-    call('', args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+    call('', args, (err?: Error) => {
       err ? reject(getLastGnuPGError(err)) : resolve(new Buffer(i18n().GnuPGKeyExportSuccessfully));
     });
   });
@@ -451,19 +451,19 @@ export function promiseExportSecretSubKeys(
     fingerprint: string;
   }
 ): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let args = GnuPGParameters.homedir;
-    args = args.concat(['--armor', '--batch', '--yes', '--output', uri.fsPath]);
+  return new Promise<Buffer>((resolve, reject) => {
+    let args = GnuPGParameters.defaultargs;
+    args = args.concat(['--armor', '--output', uri.fsPath]);
     args = args.concat('--export-secret-subkeys');
     args = args.concat(key ? key.fingerprint : '');
 
-    call('', args, (err?: { stack?: string } | Error) => {
+    call('', args, (err?: Error) => {
       err ? reject(getLastGnuPGError(err)) : resolve(new Buffer(i18n().GnuPGKeyExportSuccessfully));
     });
   });
 }
 
-function getLastGnuPGError(err?: { stack?: string } | Error): string {
+function getLastGnuPGError(err?: Error): string {
   let gpgerror = '';
   if (err && err.stack) {
     err.stack.split(/(\r|)\n/).forEach((entry: string) => {
@@ -480,14 +480,13 @@ function getLastGnuPGError(err?: { stack?: string } | Error): string {
 }
 
 export function promiseDeleteKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
+  return new Promise<Buffer>((resolve, reject) => {
     if (key) {
-      let args = GnuPGParameters.homedir;
-      args = args.concat(['--batch', '--yes']);
+      let args = GnuPGParameters.defaultargs;
       args = args.concat(['--delete-keys']);
       args = args.concat([key.fingerprint]);
 
-      call('', args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+      call('', args, (err?: Error, stdout?: Buffer) => {
         err ? reject(getLastGnuPGError(err)) : resolve(stdout);
       });
     }
@@ -495,14 +494,13 @@ export function promiseDeleteKey(key?: { fingerprint: string; userId: string }):
 }
 
 export function promiseDeleteSecretKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
+  return new Promise<Buffer>((resolve, reject) => {
     if (key) {
-      let args = GnuPGParameters.homedir;
-      args = args.concat(['--batch', '--yes']);
+      let args = GnuPGParameters.defaultargs;
       args = args.concat(['--delete-secret-keys']);
       args = args.concat([key.fingerprint]);
 
-      call('', args, (err?: { stack?: string } | Error, stdout?: Buffer) => {
+      call('', args, (err?: Error, stdout?: Buffer) => {
         err ? reject(getLastGnuPGError(err)) : resolve(stdout);
       });
     }
@@ -510,7 +508,7 @@ export function promiseDeleteSecretKey(key?: { fingerprint: string; userId: stri
 }
 
 export function promiseCheckHomeDir(): Promise<string | undefined> {
-  return new Promise((resolve, reject) => {
+  return new Promise<string | undefined>((resolve) => {
     //Check ...
     // public : pubring.kbx or pubring.gpg
     // secret : folder: private-keys-v1.d or file : secring.gpg

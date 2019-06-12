@@ -2,6 +2,10 @@
  * node-gpg
  * Copyright(c) 2011 Nicholas Penree <drudge@conceited.net>
  * MIT Licensed
+ * /
+ 
+/*!
+ * Transformed to typescript and modified
  */
 
 /**
