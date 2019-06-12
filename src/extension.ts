@@ -1019,7 +1019,7 @@ async function editPublicKey() {
     )
     .then(pubkey => {
       if (pubkey) {
-        const terminal = vscode.window.createTerminal(`GnuPG Terminal`);
+        const terminal = vscode.window.createTerminal(i18n().GnuPGTerminal);
         terminal.show();
         terminal.sendText('gpg --edit-key ' + pubkey.fingerprint, false);
       }
@@ -1029,7 +1029,7 @@ async function editPublicKey() {
 }
 
 async function generateKey() {
-  const terminal = vscode.window.createTerminal(`GnuPG Terminal`);
+  const terminal = vscode.window.createTerminal(i18n().GnuPGTerminal);
   terminal.show();
   terminal.sendText('gpg --full-generate-key', false);
   vscode.window.showInformationMessage(i18n().GnuPGSwitchToTerminalAndHitReturn);
