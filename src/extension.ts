@@ -60,7 +60,7 @@ export async function activate(context: vscode.ExtensionContext) {
       commands.push({ label: i18n().CommandShowSmartcard, tag: 'CommandShowSmartcard' });
       commands.push({ label: i18n().CommandEndSession, tag: 'CommandEndSession' });
 
-      const selectedCommand = await vscode.window.showQuickPick(commands); //.then(selectedCommand => {
+      const selectedCommand = await vscode.window.showQuickPick(commands);
 
       if (!selectedCommand) {
         return;
@@ -70,7 +70,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
       switch (selectedCommand.tag) {
         case 'CommandCheckGnuPG':
-          await promiseKillGpgAgent();
           showVersion();
           break;
         case 'CommandShowSmartcard':
@@ -106,7 +105,7 @@ export async function activate(context: vscode.ExtensionContext) {
       commands.push({ label: i18n().CommandDeletePublicKey, tag: 'CommandDeletePublicKey' });
       commands.push({ label: i18n().CommandDeleteSecretKey, tag: 'CommandDeleteSecretKey' });
 
-      const selectedCommand = await vscode.window.showQuickPick(commands); //.then(selectedCommand => {
+      const selectedCommand = await vscode.window.showQuickPick(commands);
 
       if (!selectedCommand) {
         return;
@@ -174,7 +173,7 @@ export async function activate(context: vscode.ExtensionContext) {
       commands.push({ label: i18n().CommandEncryptPreviewSymm, tag: 'CommandEncryptPreviewSymm' });
 
       // show array as quickpick
-      const selectedCommand = await vscode.window.showQuickPick(commands); //.then(selectedCommand => {
+      const selectedCommand = await vscode.window.showQuickPick(commands);
 
       if (!selectedCommand) {
         return;
@@ -225,7 +224,7 @@ export async function activate(context: vscode.ExtensionContext) {
       commands.push({ label: i18n().CommandDecryptPreview, tag: 'CommandDecryptPreview' });
 
       // show array as quickpick
-      const selectedCommand = await vscode.window.showQuickPick(commands); //.then(selectedCommand => {
+      const selectedCommand = await vscode.window.showQuickPick(commands);
 
       if (!selectedCommand) {
         return;
@@ -265,7 +264,7 @@ export async function activate(context: vscode.ExtensionContext) {
       commands.push({ label: i18n().CommandVerifyFile, tag: 'CommandVerifyFile' });
 
       // show array as quickpick
-      const selectedCommand = await vscode.window.showQuickPick(commands); //.then(selectedCommand => {
+      const selectedCommand = await vscode.window.showQuickPick(commands);
 
       if (!selectedCommand) {
         return;
@@ -593,8 +592,10 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  await promiseKillGpgAgent();
-  checkGnuPG();
+  try{
+    await promiseKillGpgAgent();
+    checkGnuPG();
+  }catch{}
 }
 
 // this method is called when your extension is deactivated
