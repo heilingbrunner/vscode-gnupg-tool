@@ -38,6 +38,11 @@ let statusBarItem: vscode.StatusBarItem;
 
 // extension plumping ...
 export async function activate(context: vscode.ExtensionContext) {
+  try {
+    await promiseKillGpgAgent();
+    await checkGnuPG();
+  } catch { }
+
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
   context.subscriptions.push(
@@ -211,7 +216,7 @@ export async function activate(context: vscode.ExtensionContext) {
   // submenu Decrypt ...
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.Decrypt', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -251,7 +256,7 @@ export async function activate(context: vscode.ExtensionContext) {
   // submenu Trust ...
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.Trust', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -299,7 +304,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ListPublicKeys', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -310,7 +315,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ListSecretKeys', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -321,7 +326,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ShowSmartcard', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -332,7 +337,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptSelectionAsym', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -346,7 +351,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptSelectionSymm', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -360,7 +365,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptFileAsym', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -371,7 +376,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptFileSymm', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -382,7 +387,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptPreviewAsym', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -393,7 +398,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptPreviewSymm', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -404,7 +409,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DecryptSelection', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -418,7 +423,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DecryptFile', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -429,7 +434,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DecryptPreview', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -440,7 +445,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.SignFile', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -451,7 +456,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ClearSignFile', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -462,7 +467,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.VerifyFile', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -473,7 +478,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EndSession', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -484,7 +489,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ImportKeys', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -495,7 +500,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ExportPublicKeys', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -506,7 +511,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ExportSecretKeys', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -517,7 +522,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ExportSecretSubKeys', async (uri: vscode.Uri) => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -528,7 +533,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EditPublicKey', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -539,7 +544,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.GenerateKey', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -550,7 +555,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DeleteKey', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -561,7 +566,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DeleteSecretKey', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -572,7 +577,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.CopyFingerprintToClipboard', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -583,7 +588,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.CopyKeyIdToClipboard', async () => {
-      if(!GnuPGParameters.available){
+      if (!GnuPGParameters.available) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
@@ -592,10 +597,6 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  try{
-    await promiseKillGpgAgent();
-    checkGnuPG();
-  }catch{}
 }
 
 // this method is called when your extension is deactivated
@@ -1064,7 +1065,7 @@ async function encryptAsymUri(uri: vscode.Uri) {
       canPickMany: true
     });
 
-    await async function() {
+    await async function () {
       if (recipients && recipients.length > 0) {
         return promiseEncryptAsymUri(uri, recipients);
       } else {
