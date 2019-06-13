@@ -1,16 +1,13 @@
 import * as vscode from 'vscode';
 import {
+  filterKeys,
+  keysToQuickPickItems,
+  parseKeys,
+  promiseDecryptBuffer,
   promiseEncryptAsymBuffer,
   promiseEncryptSymBuffer,
-  promiseDecryptBuffer,
   promiseListPublicKeys,
-  // promiseFilterKeys,
-  // promiseParseKeys,
-  // promiseKeysToQuickPickItems,
-  promiseVerify,
-  parseKeys,
-  filterKeys,
-  keysToQuickPickItems
+  promiseVerify
 } from './gnupgpromises';
 import { getContent } from './utils';
 import { GnuPGKey } from './gnupgkey';
@@ -27,7 +24,6 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
           path: uri.fsPath.slice(0, -(' - ' + i18n().Decrypted).length)
         });
         return new Promise(async resolve => {
-          // async/await ...
           try {
             const content = await getContent(newUri);
             const decrypted = await promiseDecryptBuffer(content);
@@ -35,16 +31,6 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
           } catch (err) {
             resolve(i18n().GnuPGDecryptionFailed + '\r\n' + err);
           }
-
-          // promises chain ...
-          // getContent(newUri)
-          //   .then(content => {
-          //     return promiseDecryptBuffer(content);
-          //   })
-          //   .then(decrypted => {
-          //     return resolve(decrypted.toString('utf8'));
-          //   })
-          //   .catch(err => resolve(i18n().GnuPGDecryptionFailed + '\r\n' + err));
         });
 
       case 'asymmetric':
@@ -55,7 +41,6 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
           path: uri.fsPath.slice(0, -(' - ' + i18n().Encrypted).length)
         });
         return new Promise(async (resolve, reject) => {
-          // async/await ...
           try {
             const content = await getContent(newUri);
             const stdout = await promiseListPublicKeys();
@@ -76,33 +61,6 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
           } catch (err) {
             resolve(i18n().GnuPGEncryptionFailed + '\r\n' + err);
           }
-
-          // promises chain ...
-          //   getContent(newUri).then(content => {
-          //     promiseListPublicKeys()
-          //       .then(stdout => promiseParseKeys(stdout))
-          //       .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-          //       .then(keys => promiseKeysToQuickPickItems(keys))
-          //       .then(quickpickitems =>
-          //         vscode.window.showQuickPick(quickpickitems, {
-          //           placeHolder: i18n().SelectRecipients,
-          //           canPickMany: true
-          //         })
-          //       )
-          //       .then(recipients => {
-          //         if (recipients && recipients.length > 0) {
-          //           return promiseEncryptAsymBuffer(content, recipients);
-          //         } else {
-          //           return new Promise<Buffer>((resolve, reject) => {
-          //             reject(i18n().GnuPGNoRecipientsSelectedForEncryption);
-          //           });
-          //         }
-          //       })
-          //       .then(encrypted => {
-          //         resolve(encrypted.toString('utf8'));
-          //       })
-          //       .catch(err => resolve(i18n().GnuPGEncryptionFailed + '\r\n' + err));
-          //   });
         });
 
       case 'symmetric':
@@ -113,7 +71,6 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
           path: uri.fsPath.slice(0, -(' - ' + i18n().Encrypted).length)
         });
         return new Promise(async resolve => {
-          // async/await ...
           try {
             const content = await getContent(newUri);
             const encrypted = await promiseEncryptSymBuffer(content);
@@ -122,15 +79,6 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
           } catch (err) {
             resolve(i18n().GnuPGEncryptionFailed + '\r\n' + err);
           }
-
-          // promises chain ...
-          // getContent(newUri).then(content => {
-          //   promiseEncryptSymBuffer(content)
-          //     .then(encrypted => {
-          //       resolve(encrypted.toString('utf8'));
-          //     })
-          //     .catch(err => resolve(i18n().GnuPGEncryptionFailed + '\r\n' + err));
-          // });
         });
 
       case 'verify':
@@ -140,7 +88,6 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
           path: uri.fsPath.slice(0, -(' - ' + i18n().Verified).length)
         });
         return new Promise(async resolve => {
-          // async/await ...
           try {
             const verification = await promiseVerify(newUri);
             
@@ -148,13 +95,6 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
           } catch (err) {
             resolve(i18n().GnuPGVerficationFailed + '\r\n' + err);
           }
-
-          // promises chain ...
-          // promiseVerify(newUri)
-          //   .then(verification => {
-          //     return resolve(i18n().GnuPGVerfication + ':\r\n' + verification);
-          //   })
-          //   .catch(err => resolve(i18n().GnuPGVerficationFailed + '\r\n' + err));
         });
 
       default:
