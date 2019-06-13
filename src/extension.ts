@@ -13,9 +13,9 @@ import {
   promiseSign,
   promiseListPublicKeys,
   promiseListSecretKeys,
-  promiseFilterKeys,
-  promiseParseKeys,
-  promiseKeysToQuickPickItems,
+  // promiseFilterKeys,
+  // promiseParseKeys,
+  // promiseKeysToQuickPickItems,
   promiseImportKeys,
   promiseExportPublicKeys,
   promiseExportSecretKeys,
@@ -25,7 +25,10 @@ import {
   promiseDeletePublicKey,
   promiseDeleteSecretKey,
   promiseClearSign,
-  promiseCheckHomeDir
+  promiseCheckHomeDir,
+  parseKeys,
+  filterKeys,
+  keysToQuickPickItems
 } from './gnupgpromises';
 import VirtualDocumentProvider from './virtualdocumentprovider';
 import GnuPGProvider from './gnupgprovider';
@@ -270,25 +273,25 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.CheckGnuPG', async () => {
       //includes checkGnuPG();
-      await showVersion();
+      showVersion();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ListPublicKeys', async () => {
-      await listPublicKeys();
+      listPublicKeys();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ListSecretKeys', async () => {
-      await listPrivateKeys();
+      listPrivateKeys();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ShowSmartcard', async () => {
-      await showSmartcard();
+      showSmartcard();
     })
   );
 
@@ -296,7 +299,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('extension.EncryptSelectionAsym', async () => {
       const editor = vscode.window.activeTextEditor;
       if (editor) {
-        await encryptAsymSelection(editor);
+        encryptAsymSelection(editor);
       }
     })
   );
@@ -305,32 +308,32 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('extension.EncryptSelectionSymm', async () => {
       const editor = vscode.window.activeTextEditor;
       if (editor) {
-        await encryptSymmSelection(editor);
+        encryptSymmSelection(editor);
       }
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptFileAsym', async (uri: vscode.Uri) => {
-      await encryptAsymFile(uri);
+      encryptAsymFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptFileSymm', async (uri: vscode.Uri) => {
-      await encryptSymmFile(uri);
+      encryptSymmFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptPreviewAsym', async (uri: vscode.Uri) => {
-      await encryptPreviewAsym(uri);
+      encryptPreviewAsym(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptPreviewSymm', async (uri: vscode.Uri) => {
-      await encryptPreviewSymm(uri);
+      encryptPreviewSymm(uri);
     })
   );
 
@@ -338,109 +341,109 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('extension.DecryptSelection', async () => {
       const editor = vscode.window.activeTextEditor;
       if (editor) {
-        await decryptSelection(editor);
+        decryptSelection(editor);
       }
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DecryptFile', async (uri: vscode.Uri) => {
-      await decryptFile(uri);
+      decryptFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DecryptPreview', async (uri: vscode.Uri) => {
-      await decryptPreview(uri);
+      decryptPreview(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.SignFile', async (uri: vscode.Uri) => {
-      await signFile(uri);
+      signFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ClearSignFile', async (uri: vscode.Uri) => {
-      await clearSignFile(uri);
+      clearSignFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.VerifyFile', async (uri: vscode.Uri) => {
-      await verifyFile(uri);
+      verifyFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EndSession', async () => {
-      await endSession();
+      endSession();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ImportKeys', async (uri: vscode.Uri) => {
-      await importKeys(uri);
+      importKeys(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ExportPublicKeys', async (uri: vscode.Uri) => {
-      await exportPublicKeys(uri);
+      exportPublicKeys(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ExportSecretKeys', async (uri: vscode.Uri) => {
-      await exportPrivateKeys(uri);
+      exportPrivateKeys(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ExportSecretSubKeys', async (uri: vscode.Uri) => {
-      await exportPrivateSubKeys(uri);
+      exportPrivateSubKeys(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EditPublicKey', async () => {
-      await editPublicKey();
+      editPublicKey();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.GenerateKey', async () => {
-      await generateKey();
+      generateKey();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DeleteKey', async () => {
-      await deletePublicKey();
+      deletePublicKey();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DeleteSecretKey', async () => {
-      await deleteSecretKey();
+      deleteSecretKey();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.CopyFingerprintToClipboard', async () => {
-      await copyFingerprintToClipboard();
+      copyFingerprintToClipboard();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.CopyKeyIdToClipboard', async () => {
-      await copyKeyIdToClipboard();
+      copyKeyIdToClipboard();
     })
   );
 
   await promiseKillGpgAgent();
-  await checkGnuPG();
+  checkGnuPG();
 }
 
 // this method is called when your extension is deactivated
@@ -465,7 +468,6 @@ async function checkGnuPG() {
     }
 
     statusBarItem_show(lines);
-
   } catch (err) {
     statusBarItem.hide();
     vscode.window.showErrorMessage(i18n().GnuPGGpgNotAvailable + ' ' + err);
@@ -497,29 +499,29 @@ async function checkGnuPG() {
   //);
 }
 
-async function statusBarItem_show(lines: string[]) {
+function statusBarItem_show(lines: string[]) {
   if (lines.length >= 2) {
     statusBarItem.text = `$(mirror-private) ` + lines[0];
     statusBarItem.show();
   }
 }
 
-async function showVersion() {
+function showVersion() {
   let newUri = vscode.Uri.parse('virtual-document://gnupg/GnuPG-Version');
   vscode.commands.executeCommand('vscode.open', newUri);
 }
 
-async function listPublicKeys() {
+function listPublicKeys() {
   let newUri = vscode.Uri.parse('virtual-document://gnupg/GnuPG-Public-Keys');
   vscode.commands.executeCommand('vscode.open', newUri);
 }
 
-async function listPrivateKeys() {
+function listPrivateKeys() {
   let newUri = vscode.Uri.parse('virtual-document://gnupg/GnuPG-Private-Keys');
   vscode.commands.executeCommand('vscode.open', newUri);
 }
 
-async function showSmartcard() {
+function showSmartcard() {
   let newUri = vscode.Uri.parse('virtual-document://gnupg/GnuPG-Smartcard');
   vscode.commands.executeCommand('vscode.open', newUri);
 }
@@ -531,54 +533,53 @@ async function encryptAsymSelection(editor: vscode.TextEditor) {
 
     if (content && content.length > 0) {
       // async/await ...
-      // TODO ...
-      // try {
-      //   const stdout = await promiseListPublicKeys();
-      //   const map = await promiseParseKeys(stdout);
-      //   const keys = await promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
-      //   const quickpickitems = await promiseKeysToQuickPickItems(keys);
-      //   const recipients = await vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectRecipients, canPickMany: true });
-      //   const encrypted = await async function (){
-      //     if (recipients && recipients.length > 0) {
-      //     return promiseEncryptAsymBuffer(content, recipients);
-      //   } else {
-      //     return new Promise<Buffer>((_resolve, reject) => {
-      //       reject(i18n().GnuPGNoRecipientsSelectedForEncryption);
-      //     });
-      //   }};
-      //   await async function () {
-      //     if (encrypted !== undefined) {
-      //       await editor.edit(edit => edit.replace(selection, encrypted.toString('utf8')));
-      //     }
-      //   };
-      // } catch (err) {
-      //   await vscode.window.showErrorMessage(i18n().GnuPGEncryptionFailed + ' ' + err);
-      // }
+      try {
+        const stdout = await promiseListPublicKeys();
+        const map = parseKeys(stdout);
+        const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
+        const quickpickitems = keysToQuickPickItems(keys);
+        const recipients = await vscode.window.showQuickPick(quickpickitems, {
+          placeHolder: i18n().SelectRecipients,
+          canPickMany: true
+        });
 
-      promiseListPublicKeys()
-        .then(stdout => promiseParseKeys(stdout))
-        .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-        .then(keys => promiseKeysToQuickPickItems(keys))
-        .then(quickpickitems =>
-          vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectRecipients, canPickMany: true })
-        )
-        .then(recipients => {
-          if (recipients && recipients.length > 0) {
-            return promiseEncryptAsymBuffer(content, recipients);
-          } else {
-            return new Promise<Buffer>((_resolve, reject) => {
-              reject(i18n().GnuPGNoRecipientsSelectedForEncryption);
-            });
-          }
-        })
-        .then(encrypted => {
+        if (recipients && recipients.length > 0) {
+          const encrypted = await promiseEncryptAsymBuffer(content, recipients);
           if (encrypted !== undefined) {
             editor.edit(edit => edit.replace(selection, encrypted.toString('utf8')));
           }
-        })
-        .catch(err => vscode.window.showErrorMessage(i18n().GnuPGEncryptionFailed + ' ' + err));
+        } else {
+          vscode.window.showErrorMessage(i18n().GnuPGNoRecipientsSelectedForEncryption);
+        }
+      } catch (err) {
+        vscode.window.showErrorMessage(i18n().GnuPGEncryptionFailed + ' ' + err);
+      }
+
+      // promises chain ...
+      // promiseListPublicKeys()
+      //   .then(stdout => promiseParseKeys(stdout))
+      //   .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+      //   .then(keys => promiseKeysToQuickPickItems(keys))
+      //   .then(quickpickitems =>
+      //     vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectRecipients, canPickMany: true })
+      //   )
+      //   .then(recipients => {
+      //     if (recipients && recipients.length > 0) {
+      //       return promiseEncryptAsymBuffer(content, recipients);
+      //     } else {
+      //       return new Promise<Buffer>((_resolve, reject) => {
+      //         reject(i18n().GnuPGNoRecipientsSelectedForEncryption);
+      //       });
+      //     }
+      //   })
+      //   .then(encrypted => {
+      //     if (encrypted !== undefined) {
+      //       editor.edit(edit => edit.replace(selection, encrypted.toString('utf8')));
+      //     }
+      //   })
+      //   .catch(err => vscode.window.showErrorMessage(i18n().GnuPGEncryptionFailed + ' ' + err));
     } else {
-      vscode.window.showWarningMessage('No text selected for GnuPG encryption.');
+      vscode.window.showWarningMessage(i18n().GnuPGNoTextSelectedForEncryption);
     }
   }
 }
@@ -779,7 +780,7 @@ async function decryptPreview(uri: vscode.Uri) {
   }
 }
 
-async function signFile(uri: vscode.Uri) {
+function signFile(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (!uri.fsPath.match(/\.(sig)$/i)) {
       signUri(uri);
@@ -800,7 +801,7 @@ async function signFile(uri: vscode.Uri) {
   }
 }
 
-async function clearSignFile(uri: vscode.Uri) {
+function clearSignFile(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (!uri.fsPath.match(/\.(sig)$/i)) {
       clearSignUri(uri);
@@ -821,7 +822,7 @@ async function clearSignFile(uri: vscode.Uri) {
   }
 }
 
-async function verifyFile(uri: vscode.Uri) {
+function verifyFile(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(sig|asc)$/i)) {
       launchGnuPGProviderForVerify(uri);
@@ -903,113 +904,254 @@ async function importKeys(uri: vscode.Uri) {
 
 async function exportPublicKeys(uri: vscode.Uri) {
   // async/await ...
-  try {
-  } catch (err) {}
+  const stdout = await promiseListPublicKeys();
+  const map = parseKeys(stdout);
+  const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
+  const quickpickitems = keysToQuickPickItems(keys);
+  const user = await vscode.window.showQuickPick(quickpickitems, {
+    placeHolder: i18n().SelectKeyToExport,
+    canPickMany: false
+  });
+  if (uri !== undefined && uri.scheme === 'file') {
+    // async/await ...
+    try {
+      const result = promiseExportPublicKeys(uri, user);
+      let txt = result.toString();
+      vscode.window.showInformationMessage(txt);
+    } catch (err) {
+      vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
+    }
 
-  promiseListPublicKeys()
-    .then(stdout => promiseParseKeys(stdout))
-    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-    .then(keys => promiseKeysToQuickPickItems(keys))
-    .then(quickpickitems =>
-      vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectKeyToExport, canPickMany: false })
-    )
-    .then(user => {
-      if (uri !== undefined && uri.scheme === 'file') {
-        promiseExportPublicKeys(uri, user)
-          .then(result => {
-            let txt = result.toString();
-            vscode.window.showInformationMessage(txt);
-          })
-          .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
-      } else {
-        const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-        vscode.window.showSaveDialog(option).then(uriSelected => {
-          if (uriSelected && uriSelected.scheme === 'file') {
-            promiseExportPublicKeys(uriSelected, user)
-              .then(result => {
-                let txt = result.toString();
-                vscode.window.showInformationMessage(txt);
-              })
-              .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
-          } else {
-          }
-        });
+    // promises chain ...
+    // promiseExportPublicKeys(uri, user)
+    //   .then(result => {
+    //     let txt = result.toString();
+    //     vscode.window.showInformationMessage(txt);
+    //   })
+    //   .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
+  } else {
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
+    vscode.window.showSaveDialog(option).then(async uriSelected => {
+      if (uriSelected && uriSelected.scheme === 'file') {
+        // async/await ...
+        try {
+          const result = await promiseExportPublicKeys(uriSelected, user);
+          let txt = result.toString();
+          vscode.window.showInformationMessage(txt);
+        } catch (err) {
+          vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
+        }
+
+        // promises chain ...
+        // promiseExportPublicKeys(uriSelected, user)
+        //   .then(result => {
+        //     let txt = result.toString();
+        //     vscode.window.showInformationMessage(txt);
+        //   })
+        //   .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
       }
     });
+  }
+
+  // promises chain ...
+  // promiseListPublicKeys()
+  //   .then(stdout => promiseParseKeys(stdout))
+  //   .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+  //   .then(keys => promiseKeysToQuickPickItems(keys))
+  //   .then(quickpickitems =>
+  //     vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectKeyToExport, canPickMany: false })
+  //   )
+  //   .then(user => {
+  //     if (uri !== undefined && uri.scheme === 'file') {
+  //       promiseExportPublicKeys(uri, user)
+  //         .then(result => {
+  //           let txt = result.toString();
+  //           vscode.window.showInformationMessage(txt);
+  //         })
+  //         .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
+  //     } else {
+  //       const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
+  //       vscode.window.showSaveDialog(option).then(uriSelected => {
+  //         if (uriSelected && uriSelected.scheme === 'file') {
+  //           promiseExportPublicKeys(uriSelected, user)
+  //             .then(result => {
+  //               let txt = result.toString();
+  //               vscode.window.showInformationMessage(txt);
+  //             })
+  //             .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
+  //         } else {
+  //         }
+  //       });
+  //     }
+  //   });
 }
 
 async function exportPrivateKeys(uri: vscode.Uri) {
   // async/await ...
-  try {
-  } catch (err) {}
+  const stdout = await promiseListPublicKeys();
+  const map = parseKeys(stdout);
+  const keys = filterKeys(map, (k: GnuPGKey) => true); // list all keys
+  const quickpickitems = keysToQuickPickItems(keys);
+  const user = await vscode.window.showQuickPick(quickpickitems, {
+    placeHolder: i18n().SelectKeyToExport,
+    canPickMany: false
+  });
+  if (uri !== undefined && uri.scheme === 'file') {
+    // async/await ...
+    try {
+      const result = await promiseExportSecretKeys(uri, user);
+      let txt = result.toString();
+      vscode.window.showInformationMessage(txt);
+    } catch (err) {
+      vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
+    }
 
-  promiseListPublicKeys()
-    .then(stdout => promiseParseKeys(stdout))
-    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-    .then(keys => promiseKeysToQuickPickItems(keys))
-    .then(quickpickitems =>
-      vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectKeyToExport, canPickMany: false })
-    )
-    .then(user => {
-      if (uri !== undefined && uri.scheme === 'file') {
-        promiseExportSecretKeys(uri, user)
-          .then(result => {
-            let txt = result.toString();
-            vscode.window.showInformationMessage(txt);
-          })
-          .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
-      } else {
-        const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-        vscode.window.showSaveDialog(option).then(uriSelected => {
-          if (uriSelected && uriSelected.scheme === 'file') {
-            promiseExportSecretKeys(uriSelected, user)
-              .then(result => {
-                let txt = result.toString();
-                vscode.window.showInformationMessage(txt);
-              })
-              .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
-          } else {
-          }
-        });
+    //promises chain ...
+    // promiseExportSecretKeys(uri, user)
+    //   .then(result => {
+    //     let txt = result.toString();
+    //     vscode.window.showInformationMessage(txt);
+    //   })
+    //   .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
+  } else {
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
+    vscode.window.showSaveDialog(option).then(async uriSelected => {
+      if (uriSelected && uriSelected.scheme === 'file') {
+        // async/await ...
+        try {
+          const result = await promiseExportSecretKeys(uriSelected, user);
+          let txt = result.toString();
+          vscode.window.showInformationMessage(txt);
+        } catch (err) {
+          vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
+        }
+
+        // promises chain ...
+        // promiseExportSecretKeys(uriSelected, user)
+        //   .then(result => {
+        //     let txt = result.toString();
+        //     vscode.window.showInformationMessage(txt);
+        //   })
+        //   .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
       }
     });
+  }
+
+  // promises chain ...
+  // promiseListPublicKeys()
+  //   .then(stdout => promiseParseKeys(stdout))
+  //   .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+  //   .then(keys => promiseKeysToQuickPickItems(keys))
+  //   .then(quickpickitems =>
+  //     vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectKeyToExport, canPickMany: false })
+  //   )
+  //   .then(user => {
+  //     if (uri !== undefined && uri.scheme === 'file') {
+  //       promiseExportSecretKeys(uri, user)
+  //         .then(result => {
+  //           let txt = result.toString();
+  //           vscode.window.showInformationMessage(txt);
+  //         })
+  //         .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
+  //     } else {
+  //       const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
+  //       vscode.window.showSaveDialog(option).then(uriSelected => {
+  //         if (uriSelected && uriSelected.scheme === 'file') {
+  //           promiseExportSecretKeys(uriSelected, user)
+  //             .then(result => {
+  //               let txt = result.toString();
+  //               vscode.window.showInformationMessage(txt);
+  //             })
+  //             .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
+  //         } else {
+  //         }
+  //       });
+  //     }
+  //   });
 }
 
 async function exportPrivateSubKeys(uri: vscode.Uri) {
   // async/await ...
-  try {
-  } catch (err) {}
+  const stdout = await promiseListPublicKeys();
+  const map = parseKeys(stdout);
+  const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
+  const quickpickitems = keysToQuickPickItems(keys);
+  const user = await vscode.window.showQuickPick(quickpickitems, {
+    placeHolder: i18n().SelectKeyToExport,
+    canPickMany: false
+  });
+  if (uri !== undefined && uri.scheme === 'file') {
+    // async/await ...
+    try {
+      const result = await promiseExportSecretSubKeys(uri, user);
+      let txt = result.toString();
+      vscode.window.showInformationMessage(txt);
+    } catch (err) {
+      vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
+    }
 
-  promiseListPublicKeys()
-    .then(stdout => promiseParseKeys(stdout))
-    .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
-    .then(keys => promiseKeysToQuickPickItems(keys))
-    .then(quickpickitems =>
-      vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectKeyToExport, canPickMany: false })
-    )
-    .then(user => {
-      if (uri !== undefined && uri.scheme === 'file') {
-        promiseExportSecretSubKeys(uri, user)
-          .then(result => {
-            let txt = result.toString();
-            vscode.window.showInformationMessage(txt);
-          })
-          .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
-      } else {
-        const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-        vscode.window.showSaveDialog(option).then(uriSelected => {
-          if (uriSelected && uriSelected.scheme === 'file') {
-            promiseExportSecretSubKeys(uriSelected, user)
-              .then(result => {
-                let txt = result.toString();
-                vscode.window.showInformationMessage(txt);
-              })
-              .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
-          } else {
-          }
-        });
+    // promises chain ...
+    // promiseExportSecretSubKeys(uri, user)
+    //   .then(result => {
+    //     let txt = result.toString();
+    //     vscode.window.showInformationMessage(txt);
+    //   })
+    //   .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
+  } else {
+    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
+    vscode.window.showSaveDialog(option).then(async uriSelected => {
+      if (uriSelected && uriSelected.scheme === 'file') {
+        // async/await ...
+        try {
+          const result = await promiseExportSecretSubKeys(uriSelected, user);
+          let txt = result.toString();
+          vscode.window.showInformationMessage(txt);
+        } catch (err) {
+          vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
+        }
+
+        // promises chain ...
+        // promiseExportSecretSubKeys(uriSelected, user)
+        //   .then(result => {
+        //     let txt = result.toString();
+        //     vscode.window.showInformationMessage(txt);
+        //   })
+        //   .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
       }
     });
+  }
+
+  // promises chain ...
+  // promiseListPublicKeys()
+  //   .then(stdout => promiseParseKeys(stdout))
+  //   .then(map => promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt))
+  //   .then(keys => promiseKeysToQuickPickItems(keys))
+  //   .then(quickpickitems =>
+  //     vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectKeyToExport, canPickMany: false })
+  //   )
+  //   .then(user => {
+  //     if (uri !== undefined && uri.scheme === 'file') {
+  //       promiseExportSecretSubKeys(uri, user)
+  //         .then(result => {
+  //           let txt = result.toString();
+  //           vscode.window.showInformationMessage(txt);
+  //         })
+  //         .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
+  //     } else {
+  //       const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
+  //       vscode.window.showSaveDialog(option).then(uriSelected => {
+  //         if (uriSelected && uriSelected.scheme === 'file') {
+  //           promiseExportSecretSubKeys(uriSelected, user)
+  //             .then(result => {
+  //               let txt = result.toString();
+  //               vscode.window.showInformationMessage(txt);
+  //             })
+  //             .catch(err => vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err));
+  //         } else {
+  //         }
+  //       });
+  //     }
+  //   });
 }
 
 // Uri Helper .......................................................
@@ -1018,9 +1160,9 @@ async function encryptAsymUri(uri: vscode.Uri) {
   // async/await ...
   try {
     const stdout = await promiseListPublicKeys();
-    const map = await promiseParseKeys(stdout);
-    const keys = await promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
-    const quickpickitems = await promiseKeysToQuickPickItems(keys);
+    const map = parseKeys(stdout);
+    const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
+    const quickpickitems = keysToQuickPickItems(keys);
     const recipients = await vscode.window.showQuickPick(quickpickitems, {
       placeHolder: i18n().SelectRecipients,
       canPickMany: true
@@ -1096,9 +1238,9 @@ async function signUri(uri: vscode.Uri) {
   // async/await ...
   try {
     const stdout = await promiseListSecretKeys();
-    const map = await promiseParseKeys(stdout);
-    const keys = await promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToSign);
-    const quickpickitems = await promiseKeysToQuickPickItems(keys);
+    const map = parseKeys(stdout);
+    const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToSign);
+    const quickpickitems = keysToQuickPickItems(keys);
     const key = await vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectSigner });
     await promiseSign(uri, key);
     vscode.window.showInformationMessage(i18n().GnuPGFileSignedSuccessfully);
@@ -1121,9 +1263,9 @@ async function clearSignUri(uri: vscode.Uri) {
   // async/await ...
   try {
     const stdout = await promiseListSecretKeys();
-    const map = await promiseParseKeys(stdout);
-    const keys = await promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToSign);
-    const quickpickitems = await promiseKeysToQuickPickItems(keys);
+    const map = parseKeys(stdout);
+    const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToSign);
+    const quickpickitems = keysToQuickPickItems(keys);
     const key = await vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectSigner });
     await promiseClearSign(uri, key);
     vscode.window.showInformationMessage(i18n().GnuPGFileSignedSuccessfully);
@@ -1142,7 +1284,7 @@ async function clearSignUri(uri: vscode.Uri) {
   //   .catch(err => vscode.window.showErrorMessage(i18n().GnuPGSignFailed + ' ' + err));
 }
 
-async function launchGnuPGProviderEncryptAsym(uri: vscode.Uri) {
+function launchGnuPGProviderEncryptAsym(uri: vscode.Uri) {
   // check filePath ...
   if (typeof uri === 'undefined' || !fs.existsSync(uri.fsPath)) {
     return;
@@ -1158,7 +1300,7 @@ async function launchGnuPGProviderEncryptAsym(uri: vscode.Uri) {
   vscode.commands.executeCommand('vscode.open', newUri);
 }
 
-async function launchGnuPGProviderEncryptSymm(uri: vscode.Uri) {
+function launchGnuPGProviderEncryptSymm(uri: vscode.Uri) {
   // check filePath ...
   if (typeof uri === 'undefined' || !fs.existsSync(uri.fsPath)) {
     return;
@@ -1174,7 +1316,7 @@ async function launchGnuPGProviderEncryptSymm(uri: vscode.Uri) {
   vscode.commands.executeCommand('vscode.open', newUri);
 }
 
-async function launchGnuPGProviderForDecrypt(uri: vscode.Uri) {
+function launchGnuPGProviderForDecrypt(uri: vscode.Uri) {
   // check filePath ...
   if (typeof uri === 'undefined' || !fs.existsSync(uri.fsPath)) {
     return;
@@ -1190,7 +1332,7 @@ async function launchGnuPGProviderForDecrypt(uri: vscode.Uri) {
   vscode.commands.executeCommand('vscode.open', newUri);
 }
 
-async function launchGnuPGProviderForVerify(uri: vscode.Uri) {
+function launchGnuPGProviderForVerify(uri: vscode.Uri) {
   // check filePath ...
   if (typeof uri === 'undefined' || !fs.existsSync(uri.fsPath)) {
     return;
@@ -1210,9 +1352,9 @@ async function editPublicKey() {
   // async/await ...
   try {
     const stdout = await promiseListPublicKeys();
-    const map = await promiseParseKeys(stdout);
-    const keys = await promiseFilterKeys(map, (k: GnuPGKey) => true); // list all keys !!
-    const quickpickitems = await promiseKeysToQuickPickItems(keys);
+    const map = parseKeys(stdout);
+    const keys = filterKeys(map, (k: GnuPGKey) => true); // list all keys !!
+    const quickpickitems = keysToQuickPickItems(keys);
     const pubkey = await vscode.window.showQuickPick(quickpickitems, {
       placeHolder: i18n().GnuPGSelectPublicKey,
       canPickMany: false
@@ -1248,7 +1390,7 @@ async function editPublicKey() {
   //   .catch(err => vscode.window.showErrorMessage(i18n().GnuPGEditPublicKeyFailed + ' ' + err));
 }
 
-async function generateKey() {
+function generateKey() {
   const terminal = vscode.window.createTerminal(i18n().GnuPGTerminal);
   terminal.show();
   terminal.sendText('gpg --full-generate-key', false);
@@ -1259,9 +1401,9 @@ async function deletePublicKey() {
   // async/await ...
   try {
     const stdout = await promiseListPublicKeys();
-    const map = await promiseParseKeys(stdout);
-    const keys = await promiseFilterKeys(map, (_k: GnuPGKey) => true);
-    const quickpickitems = await promiseKeysToQuickPickItems(keys);
+    const map = parseKeys(stdout);
+    const keys = filterKeys(map, (_k: GnuPGKey) => true);
+    const quickpickitems = keysToQuickPickItems(keys);
     const key = await vscode.window.showQuickPick(quickpickitems, {
       placeHolder: i18n().GnuPGSelectPublicKey,
       canPickMany: false
@@ -1291,9 +1433,9 @@ async function deleteSecretKey() {
   // async/await ...
   try {
     const stdout = await promiseListSecretKeys();
-    const map = await promiseParseKeys(stdout);
-    const keys = await promiseFilterKeys(map, (_k: GnuPGKey) => true); // list all keys !!
-    const quickpickitems = await promiseKeysToQuickPickItems(keys);
+    const map = parseKeys(stdout);
+    const keys = filterKeys(map, (_k: GnuPGKey) => true); // list all keys !!
+    const quickpickitems = keysToQuickPickItems(keys);
     const key = await vscode.window.showQuickPick(quickpickitems, {
       placeHolder: i18n().GnuPGSelectPublicKey,
       canPickMany: false
@@ -1323,9 +1465,9 @@ async function copyFingerprintToClipboard() {
   // async/await ...
   try {
     const stdout = await promiseListPublicKeys();
-    const map = await promiseParseKeys(stdout);
-    const keys = await promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
-    const quickpickitems = await promiseKeysToQuickPickItems(keys);
+    const map = parseKeys(stdout);
+    const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
+    const quickpickitems = keysToQuickPickItems(keys);
     const key = await vscode.window.showQuickPick(quickpickitems, {
       placeHolder: i18n().GnuPGSelectPublicKey,
       canPickMany: false
@@ -1387,9 +1529,9 @@ async function copyKeyIdToClipboard() {
   // async/await ...
   try {
     const stdout = await promiseListPublicKeys();
-    const map = await promiseParseKeys(stdout);
-    const keys = await promiseFilterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
-    const quickpickitems = await promiseKeysToQuickPickItems(keys);
+    const map = parseKeys(stdout);
+    const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
+    const quickpickitems = keysToQuickPickItems(keys);
     const key = await vscode.window.showQuickPick(quickpickitems, {
       placeHolder: i18n().GnuPGSelectPublicKey,
       canPickMany: false
