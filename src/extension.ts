@@ -619,9 +619,7 @@ async function checkGnuPG() {
 
     statusBarItem_show(lines);
   } catch (err) {
-    //statusBarItem.hide();
-    statusBarItem_show([i18n().GnuPGGpgNotAvailable]);
-    //vscode.window.showErrorMessage(i18n().GnuPGGpgNotAvailable + ' ' + err);
+    statusBarItem_show([i18n().GnuPGNotAvailable]);
   }
 }
 

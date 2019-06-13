@@ -56,7 +56,7 @@ export interface Ii18n {
   GnuPGFileIsNotASignature: string;
   GnuPGFileNotEncrypted: string;
   GnuPGFileSignedSuccessfully: string;
-  GnuPGGpgNotAvailable: string;
+  GnuPGGnuPGNotAvailable: string;
   GnuPGKeyExportFailed: string;
   GnuPGKeyExportSuccessfully: string;
   GnuPGKeyImportFailed: string;
