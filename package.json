@@ -449,11 +449,6 @@
           "when": "resourceExtname == .sig"
         }
       ]
-    },
-    "configuration": {
-      "type": "object",
-      "title": "GnuPG Tool Configuration",
-      "properties": {}
     }
   },
   "main": "./dist/extension",

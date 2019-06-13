@@ -3,10 +3,10 @@ import * as fs from 'fs';
 import * as cp from 'child_process';
 
 import {
+  bufferToLines,
   filterKeys,
   keysToQuickPickItems,
   parseKeys,
-  promiseBufferToLines,
   promiseCheckHomeDir,
   promiseCheckVersion,
   promiseClearSign,
@@ -49,6 +49,11 @@ export async function activate(context: vscode.ExtensionContext) {
   // submenu Environment ...
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.Environment', async (_uri: vscode.Uri) => {
+      if (!GnuPGParameters.available) {
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
 
       commands.push({ label: i18n().CommandCheckGnuPG, tag: 'CommandCheckGnuPG' });
@@ -75,13 +80,17 @@ export async function activate(context: vscode.ExtensionContext) {
           endSession();
           break;
       }
-      //});
     })
   );
 
   // submenu Keys ...
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.Keys', async (uri: vscode.Uri) => {
+      if (!GnuPGParameters.available) {
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
 
       commands.push({ label: i18n().CommandGenerateKey, tag: 'CommandGenerateKey' });
@@ -143,13 +152,17 @@ export async function activate(context: vscode.ExtensionContext) {
           deleteSecretKey();
           break;
       }
-      //});
     })
   );
 
   // submenu Encrypt ...
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.Encrypt', async (uri: vscode.Uri) => {
+      if (!GnuPGParameters.available) {
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
 
       // fill array with commands
@@ -193,13 +206,17 @@ export async function activate(context: vscode.ExtensionContext) {
           encryptPreviewSymm(uri);
           break;
       }
-      //});
     })
   );
 
   // submenu Decrypt ...
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.Decrypt', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
 
       // fill array with commands
@@ -229,13 +246,17 @@ export async function activate(context: vscode.ExtensionContext) {
           decryptPreview(uri);
           break;
       }
-      //});
     })
   );
 
   // submenu Trust ...
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.Trust', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       let commands: { label: string; description?: string; detail?: string; tag: string }[] = []; //extended vscode.QuickPickItem
 
       // fill array with commands
@@ -263,12 +284,15 @@ export async function activate(context: vscode.ExtensionContext) {
           verifyFile(uri);
           break;
       }
-      //});
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.CheckGnuPG', async () => {
+      if (!GnuPGParameters.available) {
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
       //includes checkGnuPG();
       showVersion();
     })
@@ -276,24 +300,44 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ListPublicKeys', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       listPublicKeys();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ListSecretKeys', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       listPrivateKeys();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ShowSmartcard', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       showSmartcard();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptSelectionAsym', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       const editor = vscode.window.activeTextEditor;
       if (editor) {
         encryptAsymSelection(editor);
@@ -303,6 +347,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptSelectionSymm', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       const editor = vscode.window.activeTextEditor;
       if (editor) {
         encryptSymmSelection(editor);
@@ -312,30 +361,55 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptFileAsym', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       encryptAsymFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptFileSymm', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       encryptSymmFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptPreviewAsym', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       encryptPreviewAsym(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EncryptPreviewSymm', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       encryptPreviewSymm(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DecryptSelection', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       const editor = vscode.window.activeTextEditor;
       if (editor) {
         decryptSelection(editor);
@@ -345,96 +419,176 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DecryptFile', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       decryptFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DecryptPreview', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       decryptPreview(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.SignFile', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       signFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ClearSignFile', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       clearSignFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.VerifyFile', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       verifyFile(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EndSession', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       endSession();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ImportKeys', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       importKeys(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ExportPublicKeys', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       exportPublicKeys(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ExportSecretKeys', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       exportPrivateKeys(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.ExportSecretSubKeys', async (uri: vscode.Uri) => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       exportPrivateSubKeys(uri);
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.EditPublicKey', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       editPublicKey();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.GenerateKey', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       generateKey();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DeleteKey', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       deletePublicKey();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.DeleteSecretKey', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       deleteSecretKey();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.CopyFingerprintToClipboard', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       copyFingerprintToClipboard();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.CopyKeyIdToClipboard', async () => {
+      if(!GnuPGParameters.available){
+        vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
       copyKeyIdToClipboard();
     })
   );
@@ -452,10 +606,10 @@ export function deactivate() {
 
 async function checkGnuPG() {
   try {
-    GnuPGParameters.homedir = await promiseCheckHomeDir();
-
     const stdout = await promiseCheckVersion();
-    const lines = await promiseBufferToLines(stdout);
+    const lines = bufferToLines(stdout);
+
+    GnuPGParameters.homedir = await promiseCheckHomeDir();
 
     if (GnuPGParameters.homedir) {
       vscode.window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + GnuPGParameters.homedir);
