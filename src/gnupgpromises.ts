@@ -16,9 +16,10 @@ export async function promiseCheckVersion(): Promise<Buffer> {
     call('', args, (err?: Error, stdout?: Buffer) => {
       if (err) {
         reject(getLastGnuPGError(err));
+      } else {
+        GnuPGParameters.available = true;
+        resolve(stdout);
       }
-      GnuPGParameters.available = true;
-      resolve(stdout);
     });
   });
 }
@@ -276,9 +277,9 @@ export async function promiseExec(cmd: string, opts: ExecOptions): Promise<{ std
       err
         ? reject(err)
         : resolve({
-            stdout: stdout,
-            stderr: stderr
-          })
+          stdout: stdout,
+          stderr: stderr
+        })
     );
   });
 }
@@ -449,6 +450,7 @@ export async function promiseExportSecretSubKeys(
 
 function getLastGnuPGError(err?: Error): string {
   let gpgerror = '';
+
   if (err && err.stack) {
     err.stack.split(/(\r|)\n/).forEach((entry: string) => {
       if (gpgerror.length === 0) {
@@ -460,6 +462,7 @@ function getLastGnuPGError(err?: Error): string {
       }
     });
   }
+
   return gpgerror;
 }
 

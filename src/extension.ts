@@ -38,12 +38,12 @@ let statusBarItem: vscode.StatusBarItem;
 
 // extension plumping ...
 export async function activate(context: vscode.ExtensionContext) {
-  try {
-    await promiseKillGpgAgent();
-    await checkGnuPG();
-  } catch { }
-
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+
+  try {
+    await checkGnuPG();
+    await promiseKillGpgAgent();
+  } catch { }
 
   context.subscriptions.push(
     vscode.workspace.registerTextDocumentContentProvider('virtual-document', new VirtualDocumentProvider())
@@ -619,13 +619,14 @@ async function checkGnuPG() {
 
     statusBarItem_show(lines);
   } catch (err) {
-    statusBarItem.hide();
-    vscode.window.showErrorMessage(i18n().GnuPGGpgNotAvailable + ' ' + err);
+    //statusBarItem.hide();
+    statusBarItem_show([i18n().GnuPGGpgNotAvailable]);
+    //vscode.window.showErrorMessage(i18n().GnuPGGpgNotAvailable + ' ' + err);
   }
 }
 
 function statusBarItem_show(lines: string[]) {
-  if (lines.length >= 2) {
+  if (lines.length >= 1) {
     statusBarItem.text = `$(mirror-private) ` + lines[0];
     statusBarItem.show();
   }
