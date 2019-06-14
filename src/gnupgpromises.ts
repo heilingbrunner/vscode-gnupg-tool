@@ -8,18 +8,23 @@ import { i18n } from './i18n';
 import { getWorkspaceUri, isDirectory, isFile } from './utils';
 import { GnuPGParameters } from './gnupgparameters';
 
-export function  promiseCheckVersion(): Promise<Buffer> {
+export async function promiseCheckVersion(): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--version']);
 
     call('', args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        GnuPGParameters.available = true;
+        resolve(stdout);
+      }
     });
   });
 }
 
-export function promiseListPublicKeys(): Promise<Buffer> {
+export async function promiseListPublicKeys(): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['-k', '--with-colons']);
@@ -30,7 +35,7 @@ export function promiseListPublicKeys(): Promise<Buffer> {
   });
 }
 
-export function promiseListSecretKeys(): Promise<Buffer> {
+export async function promiseListSecretKeys(): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['-K', '--with-colons']);
@@ -41,128 +46,121 @@ export function promiseListSecretKeys(): Promise<Buffer> {
   });
 }
 
-export function promiseParseKeys(stdout: Buffer): Promise<Map<string, GnuPGKey>> {
+export function parseKeys(stdout: Buffer): Map<string, GnuPGKey> {
   //see source: gnupg-2.2.12\doc\DETAILS
   //https://github.com/gpg/gnupg/blob/master/doc/DETAILS
 
-  return new Promise<Map<string, GnuPGKey>>((resolve, reject) => {
-    let lines = stdout
-      .toString()
-      .trim()
-      .split(/(\r\n|\n)/g);
+  let lines = stdout
+    .toString()
+    .trim()
+    .split(/(\r\n|\n)/g);
 
-    let keys = new Map<string, GnuPGKey>();
-    let key: GnuPGKey | null = null;
+  let keys = new Map<string, GnuPGKey>();
+  let key: GnuPGKey | null = null;
 
-    for (var i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-      const record = line.split(':');
+  for (var i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    const record = line.split(':');
 
-      //pub :: Public key
-      //crt :: X.509 certificate
-      //crs :: X.509 certificate and private key available
-      //sub :: Subkey (secondary key)
-      //sec :: Private key
-      //ssb :: Private subkey (secondary key)
-      //uid :: User id
-      //uat :: User attribute (same as user id except for field 10).
-      //sig :: Signature
-      //rev :: Revocation signature
-      //rvs :: Revocation signature (standalone) [since 2.2.9]
-      //fpr :: Fingerprint (fingerprint is in field 10)
-      //pkd :: Public key data [*]
-      //grp :: Keygrip
-      //rvk :: Revocation key
-      //tfs :: TOFU statistics [*]
-      //tru :: Trust database information [*]
-      //spk :: Signature subpacket [*]
-      //cfg :: Configuration data [*]
-      switch (record[0]) {
-        case 'pub':
-        case 'sec':
-          //#region Details pub Record:
+    //pub :: Public key
+    //crt :: X.509 certificate
+    //crs :: X.509 certificate and private key available
+    //sub :: Subkey (secondary key)
+    //sec :: Private key
+    //ssb :: Private subkey (secondary key)
+    //uid :: User id
+    //uat :: User attribute (same as user id except for field 10).
+    //sig :: Signature
+    //rev :: Revocation signature
+    //rvs :: Revocation signature (standalone) [since 2.2.9]
+    //fpr :: Fingerprint (fingerprint is in field 10)
+    //pkd :: Public key data [*]
+    //grp :: Keygrip
+    //rvk :: Revocation key
+    //tfs :: TOFU statistics [*]
+    //tru :: Trust database information [*]
+    //spk :: Signature subpacket [*]
+    //cfg :: Configuration data [*]
+    switch (record[0]) {
+      case 'pub':
+      case 'sec':
+        //#region Details pub Record:
 
-          //record[0]: Type of record
-          //record[1]: Validity
-          //record[2]: Key length
-          //record[3]: Public key algorithm
-          //record[4]: KeyID
-          //record[5]: Creation date
-          //record[6]: Expiration date
-          //record[7]: Certificate S/N, UID hash, trust signature info
-          //record[8]: Ownertrust
-          //record[9]: User-ID
-          //record[10]: Signature class
-          //record[11]: Key capabilities
-          //record[12]: Issuer certificate fingerprint or other info
-          //record[13]: Flag field
-          //record[14]: S/N of a token
-          //record[15]: Hash algorithm
-          //record[16]: Curve name
-          //record[17]: Compliance flags
-          //record[18]: Last update
-          //record[19]: Origin
-          //record[20]: Comment
+        //record[0]: Type of record
+        //record[1]: Validity
+        //record[2]: Key length
+        //record[3]: Public key algorithm
+        //record[4]: KeyID
+        //record[5]: Creation date
+        //record[6]: Expiration date
+        //record[7]: Certificate S/N, UID hash, trust signature info
+        //record[8]: Ownertrust
+        //record[9]: User-ID
+        //record[10]: Signature class
+        //record[11]: Key capabilities
+        //record[12]: Issuer certificate fingerprint or other info
+        //record[13]: Flag field
+        //record[14]: S/N of a token
+        //record[15]: Hash algorithm
+        //record[16]: Curve name
+        //record[17]: Compliance flags
+        //record[18]: Last update
+        //record[19]: Origin
+        //record[20]: Comment
 
-          //#endregion
+        //#endregion
 
-          // Add previous key, if exists
-          if (key !== null && !keys.has(key.keyId)) {
-            keys.set(key.keyId, key);
-          }
+        // Add previous key, if exists
+        if (key !== null && !keys.has(key.keyId)) {
+          keys.set(key.keyId, key);
+        }
 
-          //create new key
-          key = new GnuPGKey();
-          (key.keyId = record[4]),
-            (key.expiration = record[6]),
-            (key.capabilities = record[11]),
-            (key.validity = record[1]);
+        //create new key
+        key = new GnuPGKey();
+        (key.keyId = record[4]),
+          (key.expiration = record[6]),
+          (key.capabilities = record[11]),
+          (key.validity = record[1]);
 
-          break;
+        break;
 
-        case 'fpr':
-          //#region Details fpr Record
+      case 'fpr':
+        //#region Details fpr Record
 
-          //record[9]: fingerprint
+        //record[9]: fingerprint
 
-          //#endregion
+        //#endregion
 
-          // Fingerprint contains keyId
-          if (key !== null && record[9].endsWith(key.keyId)) {
-            key.fingerprint = record[9];
-          }
-          break;
+        // Fingerprint contains keyId
+        if (key !== null && record[9].endsWith(key.keyId)) {
+          key.fingerprint = record[9];
+        }
+        break;
 
-        case 'uid':
-          //#region Details uid Record
+      case 'uid':
+        //#region Details uid Record
 
-          //record[9]: userid
+        //record[9]: userid
 
-          //#endregion
+        //#endregion
 
-          // User Id: name email
-          if (key !== null) {
-            key.addUserId(record[9]);
-          }
-          break;
-      }
+        // User Id: name email
+        if (key !== null) {
+          key.addUserId(record[9]);
+        }
+        break;
     }
+  }
 
-    // Add last key
-    if (key !== null && !keys.has(key.keyId)) {
-      keys.set(key.keyId, key);
-    }
+  // Add last key
+  if (key !== null && !keys.has(key.keyId)) {
+    keys.set(key.keyId, key);
+  }
 
-    // resolve, reject
-    if (keys.size > 0) {
-      resolve(keys);
-    } else {
-      reject();
-    }
-  });
+  return keys;
 }
 
-export function promiseEncryptAsymBuffer(content: Buffer, keys?: { fingerprint: string }[]): Promise<Buffer> {
+export async function promiseEncryptAsymBuffer(content: Buffer, keys?: { fingerprint: string }[]): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor']);
@@ -179,7 +177,7 @@ export function promiseEncryptAsymBuffer(content: Buffer, keys?: { fingerprint: 
   });
 }
 
-export function promiseEncryptSymBuffer(content: Buffer): Promise<Buffer> {
+export async function promiseEncryptSymBuffer(content: Buffer): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor', '--symmetric']);
@@ -190,7 +188,7 @@ export function promiseEncryptSymBuffer(content: Buffer): Promise<Buffer> {
   });
 }
 
-export function promiseEncryptAsymUri(uri: vscode.Uri, keys?: { fingerprint: string }[]): Promise<Buffer> {
+export async function promiseEncryptAsymUri(uri: vscode.Uri, keys?: { fingerprint: string }[]): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor']);
@@ -208,7 +206,7 @@ export function promiseEncryptAsymUri(uri: vscode.Uri, keys?: { fingerprint: str
   });
 }
 
-export function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
+export async function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor']);
@@ -220,7 +218,7 @@ export function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
   });
 }
 
-export function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
+export async function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     decrypt(content, args, (err?: Error, stdout?: Buffer) => {
@@ -229,7 +227,7 @@ export function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
   });
 }
 
-export function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
+export async function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let dest = '';
     if (uri.fsPath.match(/.*\.(asc|gpg)$/i)) {
@@ -244,7 +242,7 @@ export function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
   });
 }
 
-export function promiseShowSmartcard(): Promise<Buffer> {
+export async function promiseShowSmartcard(): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--card-status']);
@@ -255,88 +253,82 @@ export function promiseShowSmartcard(): Promise<Buffer> {
   });
 }
 
-export function promiseKillGpgAgent(): Promise<{ stdout: string; stderr: string }> {
+export async function promiseKillGpgAgent(): Promise<void> {
   //https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html
   //https://www.gnupg.org/documentation/manuals/gnupg/Controlling-gpg_002dconnect_002dagent.html#Controlling-gpg_002dconnect_002dagent
   //gpgconf --kill gpg-agent: works on Windows
   //gpg-connect-agent killagent /bye
-  return promiseExec('gpg-connect-agent killagent /bye', {});
+
+  promiseExec('gpg-connect-agent killagent /bye', {});
+
+  if(GnuPGParameters.homedir){
+    let homedir = '--homedir ' + GnuPGParameters.homedir;
+    promiseExec('gpg-connect-agent ' + homedir + ' killagent /bye', {});
+  }
 }
 
-export function promiseBufferToLines(stdout: Buffer): Promise<string[]> {
-  return new Promise<string[]>((resolve) => {
-    let lines = stdout
-      .toString()
-      .replace(/\r/g, '')
-      .trim()
-      .split(/\n/g);
+export function bufferToLines(stdout: Buffer): string[] {
+  let lines = stdout
+    .toString()
+    .replace(/\r/g, '')
+    .trim()
+    .split(/\n/g);
 
-    resolve(lines);
-  });
+  return lines;
 }
 
-export function promiseExec(cmd: string, opts: ExecOptions): Promise<{ stdout: string; stderr: string }> {
+export async function promiseExec(cmd: string, opts: ExecOptions): Promise<void> {
   return new Promise((resolve, reject) => {
     child_process.exec(cmd, opts, (err, stdout, stderr) =>
       err
         ? reject(err)
-        : resolve({
-            stdout: stdout,
-            stderr: stderr
-          })
+        // : resolve({           -> Promise<{ stdout: string; stderr: string }>
+        //   stdout: stdout,
+        //   stderr: stderr
+        // })
+        : resolve() //           -> Promise<void>
     );
   });
 }
 
-export function promiseFilterKeys(
-  keys: Map<string, GnuPGKey>,
-  predicate: (k: GnuPGKey) => boolean
-): Promise<Array<GnuPGKey>> {
-  return new Promise((resolve) => {
-    resolve(Array.from(keys.values()).filter(k => predicate(k)));
-  });
+export function filterKeys(keys: Map<string, GnuPGKey>, predicate: (k: GnuPGKey) => boolean): Array<GnuPGKey> {
+  return Array.from(keys.values()).filter(k => predicate(k));
 }
 
-export function promiseKeysToQuickPickItems(
+export function keysToQuickPickItems(
   keyarray: Array<GnuPGKey>
-): Promise<
-  {
-    label: string;
-    description: string;
-    detail: string;
-    userId: string;
-    fingerprint: string;
-    keyId: string;
-  }[]
-> {
-  return new Promise((resolve, reject) => {
-    const arr = keyarray.map(k => ({
-      label: k.userIds.join(','),
-      description: k.validityDescription,
-      detail: k.fingerprint + ', ' + k.validityDescription,
-      validity: k.validity,
-      userId: k.userIds[0],
-      fingerprint: k.fingerprint,
-      keyId: k.keyId
-    }));
+): {
+  label: string;
+  description: string;
+  detail: string;
+  userId: string;
+  fingerprint: string;
+  keyId: string;
+}[] {
+  const arr = keyarray.map(k => ({
+    label: k.userIds.join(','),
+    description: k.validityDescription,
+    detail: k.fingerprint + ', ' + k.validityDescription,
+    validity: k.validity,
+    userId: k.userIds[0],
+    fingerprint: k.fingerprint,
+    keyId: k.keyId
+  }));
 
-    arr ? resolve(arr) : reject();
-  });
+  return arr;
 }
 
-export function promiseKeysToText(keys: Map<string, GnuPGKey>): Promise<string[]> {
-  return new Promise<string[]>((resolve, reject) => {
-    let recipients: string[] = [];
+export function keysToText(keys: Map<string, GnuPGKey>): string[] {
+  let recipients: string[] = [];
 
-    keys.forEach(key => {
-      recipients.push(key.toString());
-    });
-
-    recipients.length > 0 ? resolve(recipients) : reject();
+  keys.forEach(key => {
+    recipients.push(key.toString());
   });
+
+  return recipients;
 }
 
-export function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
+export async function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor']);
@@ -353,7 +345,7 @@ export function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }): Pro
   });
 }
 
-export function promiseClearSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
+export async function promiseClearSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--armor']);
@@ -369,7 +361,7 @@ export function promiseClearSign(uri: vscode.Uri, key?: { fingerprint: string })
   });
 }
 
-export function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
+export async function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     // GnuPG prints (at least some of) this output to stderr, not stdout.
 
@@ -383,12 +375,12 @@ export function promiseVerify(uri: vscode.Uri): Promise<Buffer> {
     }
 
     call('', args, (err?: Error, stdout?: Buffer, stderr?: Buffer, data?: string) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(new Buffer((data ||'')));
+      err ? reject(getLastGnuPGError(err)) : resolve(new Buffer(data || ''));
     });
   });
 }
 
-export function promiseImportKeys(uri: vscode.Uri): Promise<Buffer> {
+export async function promiseImportKeys(uri: vscode.Uri): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGParameters.defaultargs;
     args = args.concat(['--import']);
@@ -400,7 +392,7 @@ export function promiseImportKeys(uri: vscode.Uri): Promise<Buffer> {
   });
 }
 
-export function promiseExportPublicKeys(
+export async function promiseExportPublicKeys(
   uri: vscode.Uri,
   key?: {
     label: string;
@@ -421,7 +413,7 @@ export function promiseExportPublicKeys(
   });
 }
 
-export function promiseExportSecretKeys(
+export async function promiseExportSecretKeys(
   uri: vscode.Uri,
   key?: {
     label: string;
@@ -442,7 +434,7 @@ export function promiseExportSecretKeys(
   });
 }
 
-export function promiseExportSecretSubKeys(
+export async function promiseExportSecretSubKeys(
   uri: vscode.Uri,
   key?: {
     label: string;
@@ -465,6 +457,7 @@ export function promiseExportSecretSubKeys(
 
 function getLastGnuPGError(err?: Error): string {
   let gpgerror = '';
+
   if (err && err.stack) {
     err.stack.split(/(\r|)\n/).forEach((entry: string) => {
       if (gpgerror.length === 0) {
@@ -476,10 +469,11 @@ function getLastGnuPGError(err?: Error): string {
       }
     });
   }
+
   return gpgerror;
 }
 
-export function promiseDeleteKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
+export async function promiseDeletePublicKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     if (key) {
       let args = GnuPGParameters.defaultargs;
@@ -493,7 +487,7 @@ export function promiseDeleteKey(key?: { fingerprint: string; userId: string }):
   });
 }
 
-export function promiseDeleteSecretKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
+export async function promiseDeleteSecretKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     if (key) {
       let args = GnuPGParameters.defaultargs;
@@ -507,8 +501,8 @@ export function promiseDeleteSecretKey(key?: { fingerprint: string; userId: stri
   });
 }
 
-export function promiseCheckHomeDir(): Promise<string | undefined> {
-  return new Promise<string | undefined>((resolve) => {
+export async function promiseCheckHomeDir(): Promise<string | undefined> {
+  return new Promise<string | undefined>(resolve => {
     //Check ...
     // public : pubring.kbx or pubring.gpg
     // secret : folder: private-keys-v1.d or file : secring.gpg

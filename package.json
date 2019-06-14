@@ -31,42 +31,7 @@
     "theme": "dark"
   },
   "activationEvents": [
-    "onCommand:extension.CheckGnuPG",
-    "onCommand:extension.ClearSignFile",
-    "onCommand:extension.CopyFingerprintToClipboard",
-    "onCommand:extension.CopyKeyIdToClipboard",
-    "onCommand:extension.Decrypt",
-    "onCommand:extension.DecryptFile",
-    "onCommand:extension.DecryptPreview",
-    "onCommand:extension.DecryptSelection",
-    "onCommand:extension.DeleteKey",
-    "onCommand:extension.DeleteSecretKey",
-    "onCommand:extension.EditPublicKey",
-    "onCommand:extension.Encrypt",
-    "onCommand:extension.EncryptFileAsym",
-    "onCommand:extension.EncryptFileSymm",
-    "onCommand:extension.EncryptPreviewAsym",
-    "onCommand:extension.EncryptPreviewSymm",
-    "onCommand:extension.EncryptSelectionAsym",
-    "onCommand:extension.EncryptSelectionSymm",
-    "onCommand:extension.EndSession",
-    "onCommand:extension.Environment",
-    "onCommand:extension.ExportPublicKeys",
-    "onCommand:extension.ExportSecretKeys",
-    "onCommand:extension.ExportSecretSubKeys",
-    "onCommand:extension.GenerateKey",
-    "onCommand:extension.Keys",
-    "onCommand:extension.ImportKeys",
-    "onCommand:extension.ListPublicKeys",
-    "onCommand:extension.ListSecretKeys",
-    "onCommand:extension.ShowSmartcard",
-    "onCommand:extension.SignFile",
-    "onCommand:extension.Trust",
-    "onCommand:extension.VerifyFile",
-    "workspaceContains:**/*.asc",
-    "workspaceContains:**/*.gpg",
-    "workspaceContains:**/*.key",
-    "workspaceContains:**/*.sig"
+    "*"
   ],
   "contributes": {
     "languages": [
@@ -449,11 +414,6 @@
           "when": "resourceExtname == .sig"
         }
       ]
-    },
-    "configuration": {
-      "type": "object",
-      "title": "GnuPG Tool Configuration",
-      "properties": {}
     }
   },
   "main": "./dist/extension",

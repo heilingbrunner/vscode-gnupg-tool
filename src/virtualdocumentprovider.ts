@@ -1,12 +1,11 @@
 import * as vscode from 'vscode';
 import {
-  promiseListPublicKeys,
-  promiseParseKeys,
-  promiseKeysToText,
-  promiseShowSmartcard,
+  keysToText,
+  parseKeys,
   promiseCheckVersion,
+  promiseListPublicKeys,
   promiseListSecretKeys,
-  promiseVerify
+  promiseShowSmartcard
 } from './gnupgpromises';
 import { i18n } from './i18n';
 import { GnuPGParameters } from './gnupgparameters';
@@ -17,7 +16,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
     return buffer.toString('ascii');
   }
 
-  getContent(uri: vscode.Uri): Promise<Buffer> {
+  async getContent(uri: vscode.Uri): Promise<Buffer> {
     switch (uri.path) {
       case '/GnuPG-Public-Keys':
         return this.listPublicKeys();
@@ -27,74 +26,70 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
         return this.showSmartcard();
       case '/GnuPG-Version':
         return this.showVersion();
-      case '/GnuPG-Verification':
-        return this.showVerification(uri);
       default:
         return new Promise((resolve, reject) => resolve(new Buffer('...')));
     }
   }
 
-  listPublicKeys(): Promise<Buffer> {
-    return new Promise((resolve) => {
-      promiseListPublicKeys()
-        .then(stdout => promiseParseKeys(stdout))
-        .then(keys => promiseKeysToText(keys))
-        .then(recipients => {
-          let content = i18n().GnuPGPublicKey + (GnuPGParameters.homedir ? ' [homedir=' + GnuPGParameters.homedir + ']': '') + ':\r\n';
-          content += '\r\n';
-          recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));
-          resolve(new Buffer(content));
-        })
-        .catch(err => {
-          resolve(new Buffer(i18n().GnuPGListPublicKeysFailed + '\r\n' + err));
-        });
+  async listPublicKeys(): Promise<Buffer> {
+    return new Promise<Buffer>(async resolve => {
+      try {
+        const stdout = await promiseListPublicKeys();
+        const keys = parseKeys(stdout);
+        const recipients = keysToText(keys);
+
+        let content =
+          i18n().GnuPGPublicKey +
+          (GnuPGParameters.homedir ? ' [homedir=' + GnuPGParameters.homedir + ']' : '') +
+          ':\r\n';
+        content += '\r\n';
+        recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));
+
+        resolve(new Buffer(content));
+      } catch (err) {
+        resolve(new Buffer(i18n().GnuPGListPublicKeysFailed + '\r\n' + err));
+      }
     });
   }
 
-  listPrivateKeys(): Promise<Buffer> {
-    return new Promise((resolve) => {
-      promiseListSecretKeys()
-        .then(stdout => promiseParseKeys(stdout))
-        .then(keys => promiseKeysToText(keys))
-        .then(recipients => {
-          let content = i18n().GnuPGSecretKey + (GnuPGParameters.homedir ? ' [homedir=' + GnuPGParameters.homedir + ']': '') + ':\r\n';
-          content += '\r\n';
-          recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));
-          resolve(new Buffer(content));
-        })
-        .catch(err => {
-          resolve(new Buffer(i18n().GnuPGListSecretKeysFailed + '\r\n' + err));
-        });
+  async listPrivateKeys(): Promise<Buffer> {
+    return new Promise<Buffer>(async resolve => {
+      try {
+        const stdout = await promiseListSecretKeys();
+        const keys = parseKeys(stdout);
+        const recipients = keysToText(keys);
+        let content =
+          i18n().GnuPGSecretKey +
+          (GnuPGParameters.homedir ? ' [homedir=' + GnuPGParameters.homedir + ']' : '') +
+          ':\r\n';
+        content += '\r\n';
+        recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));
+        resolve(new Buffer(content));
+      } catch (err) {
+        resolve(new Buffer(i18n().GnuPGListSecretKeysFailed + '\r\n' + err));
+      }
     });
   }
 
-  showSmartcard(): Promise<Buffer> {
-    return new Promise((resolve) => {
-      promiseShowSmartcard()
-        .then(stdout => resolve(stdout))
-        .catch(err => {
-          resolve(new Buffer(i18n().GnuPGShowSmartcardFailed + '\r\n' + err));
-        });
+  async showSmartcard(): Promise<Buffer> {
+    return new Promise<Buffer>(async resolve => {
+      try {
+        const stdout = await promiseShowSmartcard();
+        resolve(stdout);
+      } catch (err) {
+        resolve(new Buffer(i18n().GnuPGShowSmartcardFailed + '\r\n' + err));
+      }
     });
   }
 
-  showVersion(): Promise<Buffer> {
-    return new Promise((resolve) => {
-      promiseCheckVersion()
-        .then(stdout => resolve(stdout))
-        .catch(err => {
-          resolve(new Buffer(i18n().GnuPGNotAvailable + '\r\n' + err));
-        });
-    });
-  }
-
-  showVerification(uri: vscode.Uri): Promise<Buffer> {
-    return new Promise((resolve) => {
-      promiseVerify(uri)
-        .then(stdout => resolve(stdout))
-        .catch(err => {
-          resolve(new Buffer(i18n().GnuPGNotAvailable + '\r\n' + err));
-        });
+  async showVersion(): Promise<Buffer> {
+    return new Promise<Buffer>(async resolve => {
+      try {
+        const stdout = await promiseCheckVersion();
+        resolve(stdout);
+      } catch (err) {
+        resolve(new Buffer(i18n().GnuPGNotAvailable + '\r\n' + err));
+      }
     });
   }
 }

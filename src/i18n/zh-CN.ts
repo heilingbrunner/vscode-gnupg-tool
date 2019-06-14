@@ -51,7 +51,7 @@ const translation: Ii18n = {
   GnuPGFileIsNotASignature: 'GnuPG: 文件不是签名 (*.sig|*.asc).',
   GnuPGFileNotEncrypted: 'GnuPG: 文件未加密 (*.asc|*.gpg).',
   GnuPGFileSignedSuccessfully: 'GnuPG: 文件签名成功.',
-  GnuPGGpgNotAvailable: 'GnuPG: gpg 无法使用!',
+  GnuPGGnuPGNotAvailable: 'GnuPG: GnuPG 无法使用!',
   GnuPGKeyExportFailed: 'GnuPG: 密钥导出失败!',
   GnuPGKeyExportSuccessfully: 'GnuPG: 密钥导出成功!',
   GnuPGKeyImportFailed: 'GnuPG: 密钥导入失败!',

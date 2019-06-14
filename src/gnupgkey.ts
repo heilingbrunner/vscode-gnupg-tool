@@ -1,4 +1,3 @@
-import { QuickPickItem } from 'vscode';
 
 export class GnuPGKey {
   keyId = '';
