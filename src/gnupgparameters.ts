@@ -29,7 +29,7 @@ export class GnuPGParameters {
     let parameters: string[] = [];
 
     //default parameters ...
-    parameters = parameters.concat(['--batch']);
+    parameters = parameters.concat(['--batch', '--yes']);
 
     if (GnuPGParameters._homedir) {
       parameters = parameters.concat(['--homedir', GnuPGParameters._homedir]);
