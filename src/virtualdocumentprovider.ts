@@ -6,9 +6,9 @@ import {
   promiseListPublicKeys,
   promiseListSecretKeys,
   promiseShowSmartcard
-} from './gnupgpromises';
+} from './gnupglib';
 import { i18n } from './i18n';
-import { GnuPGParameters } from './gnupgparameters';
+import { GnuPGGlobal } from './gnupgglobal';
 
 export default class VirtualDocumentProvider implements vscode.TextDocumentContentProvider {
   public async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
@@ -40,7 +40,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
 
         let content =
           i18n().GnuPGPublicKey +
-          (GnuPGParameters.homedir ? ' [homedir=' + GnuPGParameters.homedir + ']' : '') +
+          (GnuPGGlobal.homedir ? ' [homedir=' + GnuPGGlobal.homedir + ']' : '') +
           ':\r\n';
         content += '\r\n';
         recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));
@@ -60,7 +60,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
         const recipients = keysToText(keys);
         let content =
           i18n().GnuPGSecretKey +
-          (GnuPGParameters.homedir ? ' [homedir=' + GnuPGParameters.homedir + ']' : '') +
+          (GnuPGGlobal.homedir ? ' [homedir=' + GnuPGGlobal.homedir + ']' : '') +
           ':\r\n';
         content += '\r\n';
         recipients.forEach(r => (content += '- ' + r.toString() + '\r\n'));

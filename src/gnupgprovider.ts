@@ -8,7 +8,7 @@ import {
   promiseEncryptSymBuffer,
   promiseListPublicKeys,
   promiseVerify
-} from './gnupgpromises';
+} from './gnupglib';
 import { getContent } from './utils';
 import { GnuPGKey } from './gnupgkey';
 import { i18n } from './i18n';

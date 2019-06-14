@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-export class GnuPGParameters {
+export class GnuPGGlobal {
   //  gpg
   //  [--homedir name]
   //  [--options file]
@@ -11,18 +11,18 @@ export class GnuPGParameters {
   private static _homedir: string | undefined;
 
   static set available(available: boolean){
-    GnuPGParameters._available = available;
+    GnuPGGlobal._available = available;
   }
 
   static get available(): boolean {
-    return  GnuPGParameters._available;
+    return  GnuPGGlobal._available;
   }
 
   static set homedir(path: string | undefined){
-    GnuPGParameters._homedir = path;
+    GnuPGGlobal._homedir = path;
   }
   static get homedir(): string| undefined {
-    return  GnuPGParameters._homedir;
+    return  GnuPGGlobal._homedir;
   }
 
   static get defaultargs(): string[] {
@@ -31,8 +31,8 @@ export class GnuPGParameters {
     //default parameters ...
     parameters = parameters.concat(['--batch', '--yes']);
 
-    if (GnuPGParameters._homedir) {
-      parameters = parameters.concat(['--homedir', GnuPGParameters._homedir]);
+    if (GnuPGGlobal._homedir) {
+      parameters = parameters.concat(['--homedir', GnuPGGlobal._homedir]);
     }
 
     return parameters;
