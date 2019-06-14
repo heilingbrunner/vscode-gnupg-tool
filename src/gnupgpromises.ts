@@ -253,12 +253,18 @@ export async function promiseShowSmartcard(): Promise<Buffer> {
   });
 }
 
-export async function promiseKillGpgAgent(): Promise<{ stdout: string; stderr: string }> {
+export async function promiseKillGpgAgent(): Promise<void> {
   //https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html
   //https://www.gnupg.org/documentation/manuals/gnupg/Controlling-gpg_002dconnect_002dagent.html#Controlling-gpg_002dconnect_002dagent
   //gpgconf --kill gpg-agent: works on Windows
   //gpg-connect-agent killagent /bye
-  return promiseExec('gpg-connect-agent killagent /bye', {});
+
+  promiseExec('gpg-connect-agent killagent /bye', {});
+
+  if(GnuPGParameters.homedir){
+    let homedir = '--homedir ' + GnuPGParameters.homedir;
+    promiseExec('gpg-connect-agent ' + homedir + ' killagent /bye', {});
+  }
 }
 
 export function bufferToLines(stdout: Buffer): string[] {
@@ -271,15 +277,16 @@ export function bufferToLines(stdout: Buffer): string[] {
   return lines;
 }
 
-export async function promiseExec(cmd: string, opts: ExecOptions): Promise<{ stdout: string; stderr: string }> {
+export async function promiseExec(cmd: string, opts: ExecOptions): Promise<void> {
   return new Promise((resolve, reject) => {
     child_process.exec(cmd, opts, (err, stdout, stderr) =>
       err
         ? reject(err)
-        : resolve({
-          stdout: stdout,
-          stderr: stderr
-        })
+        // : resolve({           -> Promise<{ stdout: string; stderr: string }>
+        //   stdout: stdout,
+        //   stderr: stderr
+        // })
+        : resolve() //           -> Promise<void>
     );
   });
 }

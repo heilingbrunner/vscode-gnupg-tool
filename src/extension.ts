@@ -43,7 +43,7 @@ export async function activate(context: vscode.ExtensionContext) {
   try {
     await checkGnuPG();
     await promiseKillGpgAgent();
-  } catch { }
+  } catch {}
 
   context.subscriptions.push(
     vscode.workspace.registerTextDocumentContentProvider('virtual-document', new VirtualDocumentProvider())
@@ -297,8 +297,8 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(i18n().GnuPGNotAvailable);
         return;
       }
-      //includes checkGnuPG();
-      showVersion();
+
+      showVersion(); //includes checkGnuPG();
     })
   );
 
@@ -601,6 +601,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 // this method is called when your extension is deactivated
 export function deactivate() {
+  try {
+    promiseKillGpgAgent();
+  } catch {}
   statusBarItem.hide();
 }
 
@@ -1064,7 +1067,7 @@ async function encryptAsymUri(uri: vscode.Uri) {
       canPickMany: true
     });
 
-    await async function () {
+    await async function() {
       if (recipients && recipients.length > 0) {
         return promiseEncryptAsymUri(uri, recipients);
       } else {
