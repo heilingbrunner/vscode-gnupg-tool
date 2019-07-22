@@ -17,11 +17,40 @@ export async function promiseCheckVersion(): Promise<Buffer> {
       if (err) {
         reject(getLastGnuPGError(err));
       } else {
-        GnuPGGlobal.available = true;
         resolve(stdout);
       }
     });
   });
+}
+
+export async function promiseCheckWorkspaceAsHomeDir(): Promise<string | undefined> {
+  return new Promise<string | undefined>(resolve => {
+    let path = getWorkspaceUri();
+    if (path) {
+      let iskeyring = isKeyRingDirectory(path);
+
+      if (iskeyring) {
+        resolve(path.fsPath);
+      }
+    }
+    resolve(undefined);
+  });
+}
+
+export function isKeyRingDirectory(path: vscode.Uri | undefined): boolean {
+  // Check ...
+  // public : pubring.kbx or pubring.gpg
+  // secret : folder: private-keys-v1.d or file : secring.gpg
+  if (path) {
+    let pubexists = isFile(path.fsPath + '/pubring.kbx') || isFile(path.fsPath + '/pubring.gpg');
+    let secexists = isDirectory(path.fsPath + '/private-keys-v1.d') || isFile(path.fsPath + '/secring.gpg');
+
+    if (pubexists && secexists) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export async function promiseListPublicKeys(): Promise<Buffer> {
@@ -261,7 +290,7 @@ export async function promiseKillGpgAgent(): Promise<void> {
 
   promiseExec('gpg-connect-agent killagent /bye', {});
 
-  if(GnuPGGlobal.homedir){
+  if (GnuPGGlobal.homedir) {
     let homedir = '--homedir ' + GnuPGGlobal.homedir;
     promiseExec('gpg-connect-agent ' + homedir + ' killagent /bye', {});
   }
@@ -277,16 +306,37 @@ export function bufferToLines(stdout: Buffer): string[] {
   return lines;
 }
 
+export function linesToVersion(lines: string[]): string | undefined {
+  for (let line of lines) {
+    if (line.startsWith('gpg (GnuPG) ')) {
+      return line.substr('gpg (GnuPG) '.length).trim();
+    }
+  }
+  return undefined;
+}
+
+export function linesToHome(lines: string[]): string | undefined {
+  for (let line of lines) {
+    if (line.startsWith('Home: ')) {
+      return line.substr('Home: '.length).trim();
+    }
+  }
+  return undefined;
+}
+
 export async function promiseExec(cmd: string, opts: ExecOptions): Promise<void> {
   return new Promise((resolve, reject) => {
-    child_process.exec(cmd, opts, (err, stdout, stderr) =>
-      err
-        ? reject(err)
-        // : resolve({           -> Promise<{ stdout: string; stderr: string }>
-        //   stdout: stdout,
-        //   stderr: stderr
-        // })
-        : resolve() //           -> Promise<void>
+    child_process.exec(
+      cmd,
+      opts,
+      (err, stdout, stderr) =>
+        err
+          ? reject(err)
+          : // : resolve({           -> Promise<{ stdout: string; stderr: string }>
+            //   stdout: stdout,
+            //   stderr: stderr
+            // })
+            resolve() //           -> Promise<void>
     );
   });
 }
@@ -497,26 +547,6 @@ export async function promiseDeleteSecretKey(key?: { fingerprint: string; userId
       call('', args, (err?: Error, stdout?: Buffer) => {
         err ? reject(getLastGnuPGError(err)) : resolve(stdout);
       });
-    }
-  });
-}
-
-export async function promiseCheckHomeDir(): Promise<string | undefined> {
-  return new Promise<string | undefined>(resolve => {
-    //Check ...
-    // public : pubring.kbx or pubring.gpg
-    // secret : folder: private-keys-v1.d or file : secring.gpg
-
-    let path = getWorkspaceUri();
-    if (path) {
-      let pubexists = isFile(path.fsPath + '/pubring.kbx') || isFile(path.fsPath + '/pubring.gpg');
-      let secexists = isDirectory(path.fsPath + '/private-keys-v1.d') || isFile(path.fsPath + '/secring.gpg');
-
-      if (pubexists && secexists) {
-        resolve(path.fsPath);
-      } else {
-        resolve(undefined);
-      }
     }
   });
 }

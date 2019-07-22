@@ -109,7 +109,15 @@ The editor context menu ...
 #### Support for an alternate homedir/key ring
 
 When VSCode is opened in a folder with (file:`pubring.kbx` __OR__ file:`pubring.gpg`) __AND__ (folder:`private-keys-v1.d` __OR__ file:`secring.gpg`) included, then the `--homedir` parameter is used in every command of this VSCode instance.
+Additionally the extension supports a workspace configuration to set the path for the keyring. Consequently there is a order for the keyring location:
+
+1. Use __local__ keyring in workspace, when detected
+2. When __not 1.__ , then check for `GnuPG.homedir` configuration
+3. When __not 2.__ , then use GnuPG default keyring location
+
 > Using several VSCode instances at the same time is not recommended, because the `gpg-agent` is running in the background for one session. Otherwise you have to kill the session. __TIP: Change folder in one instance, because `gpg-agent` will be killed automatically.__
+
+> Use `Check GnuPG` command to see the current used home directory.
 
 ## Requirements
 

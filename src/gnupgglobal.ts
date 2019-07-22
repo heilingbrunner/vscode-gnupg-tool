@@ -8,7 +8,8 @@ export class GnuPGGlobal {
   //  [args]
 
   private static _available: boolean = false;
-  private static _homedir: string | undefined;
+  private static _homedir?: string;
+  private static _version?: string;
 
   static set available(available: boolean){
     GnuPGGlobal._available = available;
@@ -23,6 +24,13 @@ export class GnuPGGlobal {
   }
   static get homedir(): string| undefined {
     return  GnuPGGlobal._homedir;
+  }
+
+  static set version(version: string| undefined){
+    GnuPGGlobal._version = version;
+  }
+  static get version(): string| undefined {
+    return  GnuPGGlobal._version;
   }
 
   static get defaultargs(): string[] {

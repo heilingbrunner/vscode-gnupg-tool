@@ -33,8 +33,7 @@ export function setContent(uri: vscode.Uri, content: Buffer): Promise<Buffer> {
 }
 
 export function getWorkspaceUri(): vscode.Uri | undefined {
-  let uri: vscode.Uri | undefined;
-  uri = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : undefined;
+  let uri = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : undefined;
   return uri;
 }
 

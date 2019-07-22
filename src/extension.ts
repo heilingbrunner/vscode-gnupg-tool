@@ -7,7 +7,7 @@ import {
   filterKeys,
   keysToQuickPickItems,
   parseKeys,
-  promiseCheckHomeDir,
+  promiseCheckWorkspaceAsHomeDir,
   promiseCheckVersion,
   promiseClearSign,
   promiseDecryptBuffer,
@@ -25,7 +25,9 @@ import {
   promiseKillGpgAgent,
   promiseListPublicKeys,
   promiseListSecretKeys,
-  promiseSign
+  promiseSign,
+  linesToVersion,
+  linesToHome
 } from './gnupglib';
 import VirtualDocumentProvider from './virtualdocumentprovider';
 import GnuPGProvider from './gnupgprovider';
@@ -33,6 +35,7 @@ import { GnuPGKey } from './gnupgkey';
 import { i18n } from './i18n';
 import { getWorkspaceUri } from './utils';
 import { GnuPGGlobal } from './gnupgglobal';
+import { Configuration } from './configuration';
 
 let statusBarItem: vscode.StatusBarItem;
 
@@ -41,7 +44,7 @@ export async function activate(context: vscode.ExtensionContext) {
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
   try {
-    await checkGnuPG();
+    await checkGnuPG(false);
     await promiseKillGpgAgent();
   } catch {}
 
@@ -597,6 +600,11 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent) => {
+    if (e.affectsConfiguration('GnuPG')) {
+      checkGnuPG(true);
+    }
+  });
 }
 
 // this method is called when your extension is deactivated
@@ -609,28 +617,66 @@ export function deactivate() {
 
 // Commands .......................................................
 
-async function checkGnuPG() {
+async function checkGnuPG(onConfigChanged: boolean) {
   try {
-    const stdout = await promiseCheckVersion();
-    const lines = bufferToLines(stdout);
+    //Reset previous homedir
+    const previousWasNotDefaultHomedir = GnuPGGlobal.homedir !== undefined;
+    GnuPGGlobal.homedir = undefined;
 
-    GnuPGGlobal.homedir = await promiseCheckHomeDir();
+    // 1. Check workspace with local keyring
+    // 2. When not 1., then check vscode configuration
+    // 3. When not 2., then use default keyring
 
-    if (GnuPGGlobal.homedir) {
-      vscode.window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + GnuPGGlobal.homedir);
+    // 1.
+    const workspaceAsHomedir = await promiseCheckWorkspaceAsHomeDir();
+
+    // 2.
+    if (workspaceAsHomedir) {
+      GnuPGGlobal.homedir = workspaceAsHomedir;
+    } else {
+      const config = new Configuration();
+      if (config.homedir !== undefined) {
+        GnuPGGlobal.homedir = config.homedir;
+      }
     }
 
-    statusBarItem_show(lines);
+    // 3. Do nothing more, use default homedir
+
+    // Check Version with homedir
+    const stdout = await promiseCheckVersion();
+
+    if (stdout) {
+      const lines = bufferToLines(stdout);
+      const version = linesToVersion(lines);
+      const home = linesToHome(lines);
+
+      GnuPGGlobal.version = version;
+      GnuPGGlobal.available = true;
+
+      // console.log(home + '<--->' + GnuPGGlobal.homedir);
+
+      if (onConfigChanged) {
+        if (GnuPGGlobal.homedir) {
+          vscode.window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + GnuPGGlobal.homedir);
+        } else {
+          vscode.window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + home);
+        }
+      } else {
+        if (GnuPGGlobal.homedir) {
+          vscode.window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + GnuPGGlobal.homedir);
+        }
+      }
+
+      statusBarItem_show(GnuPGGlobal.version);
+    }
   } catch (err) {
-    statusBarItem_show([i18n().GnuPGNotAvailable]);
+    statusBarItem_show(i18n().GnuPGNotAvailable);
   }
 }
 
-function statusBarItem_show(lines: string[]) {
-  if (lines.length >= 1) {
-    statusBarItem.text = `$(mirror-private) ` + lines[0];
-    statusBarItem.show();
-  }
+function statusBarItem_show(line: string | undefined) {
+  statusBarItem.text = `$(mirror-private) gpg (GnuPG) ` + line;
+  statusBarItem.show();
 }
 
 function showVersion() {

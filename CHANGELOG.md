@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.2.0] - 2019-07-22
+
+- configuration setting for homedir/keyring location
+
 ## [1.1.0] - 2019-06-11
 
 - support of alternating homedir/keyring location

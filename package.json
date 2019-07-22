@@ -6,7 +6,7 @@
   },
   "displayName": "GnuPG-Tool",
   "description": "Tool for a simple usage of GnuPG",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "JHeilingbrunner",
   "license": "MIT",
   "icon": "images/vscode-gnupg-tool-logo.png",
@@ -414,6 +414,17 @@
           "when": "resourceExtname == .sig"
         }
       ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "GnuPG Tool",
+      "properties": {
+        "GnuPG.homedir": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "The path to keyring, when not using default keyring."
+        }
+      }
     }
   },
   "main": "./dist/extension",
