@@ -288,16 +288,13 @@ export async function promiseKillGpgAgent(): Promise<void> {
   //gpgconf --kill gpg-agent: works on Windows
   //gpg-connect-agent killagent /bye
 
-  if (GnuPGGlobal.majorVersion === 2) {
-    // gpg-connect-agent since v2
-    promiseExec('gpg-connect-agent killagent /bye', {});
+  // kill default session
+  promiseExec('gpg-connect-agent killagent /bye', {});
 
-    if (GnuPGGlobal.homedir) {
-      let homedir = '--homedir ' + GnuPGGlobal.homedir;
-      promiseExec('gpg-connect-agent ' + homedir + ' killagent /bye', {});
-    }
-  } else {
-    return new Promise(resolve => resolve());
+  // kill session with alternate homedir
+  if (GnuPGGlobal.homedir) {
+    let homedir = '--homedir ' + GnuPGGlobal.homedir;
+    promiseExec('gpg-connect-agent ' + homedir + ' killagent /bye', {});
   }
 }
 
@@ -338,10 +335,10 @@ export async function promiseExec(cmd: string, opts: ExecOptions): Promise<void>
         err
           ? reject(err)
           : // : resolve({           -> Promise<{ stdout: string; stderr: string }>
-            //   stdout: stdout,
-            //   stderr: stderr
-            // })
-            resolve() //           -> Promise<void>
+          //   stdout: stdout,
+          //   stderr: stderr
+          // })
+          resolve() //           -> Promise<void>
     );
   });
 }
