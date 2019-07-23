@@ -650,7 +650,7 @@ async function checkGnuPG(onConfigChanged: boolean) {
       const version = linesToVersion(lines);
       const home = linesToHome(lines);
 
-      GnuPGGlobal.version = version;
+      GnuPGGlobal.setVersion(version);
       GnuPGGlobal.available = true;
 
       // console.log(home + '<--->' + GnuPGGlobal.homedir);
@@ -667,7 +667,7 @@ async function checkGnuPG(onConfigChanged: boolean) {
         }
       }
 
-      statusBarItem_show(GnuPGGlobal.version);
+      statusBarItem_show(GnuPGGlobal.majorVersion + '.' + GnuPGGlobal.minorVersion + '.' + GnuPGGlobal.patchVersion);
     }
   } catch (err) {
     statusBarItem_show(i18n().GnuPGNotAvailable);
