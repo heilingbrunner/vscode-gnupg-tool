@@ -1265,15 +1265,7 @@ async function editPublicKey() {
 function generateKey() {
   const terminal = vscode.window.createTerminal(i18n().GnuPGTerminal);
   terminal.show();
-
-  if(GnuPGGlobal.majorVersion === 1){
-    terminal.sendText('gpg --gen-key', false);
-  }
-
-  if(GnuPGGlobal.majorVersion === 2) {
-    terminal.sendText('gpg --full-generate-key', false);
-  }
-
+  terminal.sendText('gpg --full-generate-key', false);
   vscode.window.showInformationMessage(i18n().GnuPGSwitchToTerminalAndHitReturn);
 }
 
