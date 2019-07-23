@@ -288,9 +288,8 @@ export async function promiseKillGpgAgent(): Promise<void> {
   //gpgconf --kill gpg-agent: works on Windows
   //gpg-connect-agent killagent /bye
 
-
-  if (GnuPGGlobal.majorVersion > 1) {
-    // gpg-agent since v2
+  if (GnuPGGlobal.majorVersion === 2) {
+    // gpg-connect-agent since v2
     promiseExec('gpg-connect-agent killagent /bye', {});
 
     if (GnuPGGlobal.homedir) {
