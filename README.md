@@ -13,6 +13,7 @@
 
 ## Features
 
+- Supports GnuPG v2.2
 - __Check__ GnuPG availability/version.
 - Encryption for multiple __recipients__ or with simple __passphrase__.
 - __Encrypt__/__decrypt__ text or file to text, file or preview
