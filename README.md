@@ -9,19 +9,20 @@
 
 ## What's new in GnuPG-Tool
 
-- Support for an alternate homedir/key ring. Details see below.
+- VSCode setting for the `homedir` directory.
 
 ## Features
 
 - __Check__ GnuPG availability/version.
-- Encryption for multiple __recipients__ or with simple __passphrase__
+- Encryption for multiple __recipients__ or with simple __passphrase__.
 - __Encrypt__/__decrypt__ text or file to text, file or preview
 - Passphrase/Pin entry __only__ into original GnuPG __Pinentry__ dialog. Not through Visual Studio Code or something else.
 - End session to reset password cache by __killing gpg-agent__.
 - Works with __smartcards__.
 - __Sign__/__verify__ file.
 - Keys __generate__/__edit__/__delete__/__import__/__export__.
-- Detects local/alternated __homedir/key ring__
+- Detects local/alternated __homedir/key ring__.
+- VSCode setting for the `homedir` directory.
 
 ## Supported locales
 
