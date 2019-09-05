@@ -67,8 +67,8 @@ export interface Ii18n {
   GnuPGNoRecipientsSelectedForEncryption: string;
   GnuPGNoTextSelectedForDecryption: string;
   GnuPGNoTextSelectedForEncryption: string;
-  GnuPGFunctionIsNotSupportedInVersion1x: string;
-  GnuPGFunctionIsNotSupportedInVersion2x: string;
+  GnuPGFunctionIsNotSupportedWithVersion1x: string;
+  GnuPGFunctionIsNotSupportedWithVersion2x: string;
   GnuPGNotSupportedPlatform: string;
   GnuPGPublicKey: string;
   GnuPGPublicKeyDeletedSuccessfully: string;

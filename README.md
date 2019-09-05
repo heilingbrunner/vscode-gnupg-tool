@@ -9,7 +9,7 @@
 
 ## What's new in GnuPG-Tool
 
-- Support for an alternate homedir/key ring. Details see below.
+- Support for gpg __v1.4__ (see details below)
 
 ## Features
 
@@ -118,6 +118,10 @@ Additionally the extension supports a workspace configuration to set the path fo
 > Using several VSCode instances at the same time is not recommended, because the `gpg-agent` is running in the background for one session. Otherwise you have to kill the session. __TIP: Change folder in one instance, because `gpg-agent` will be killed automatically.__
 
 > Use `Check GnuPG` command to see the current used home directory.
+
+#### Support for gpg v1.4
+
+With gpg v1.4, there is no pin-entry window, where you can enter a pin. Therefore, all commands, which require a pin input, will be prepared to run in the internal terminal. The commands are written to the terminal and you have to press __RETURN__ and follow the instructions. Some functions are not available at all.
 
 ## Requirements
 

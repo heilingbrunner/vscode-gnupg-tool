@@ -35,7 +35,7 @@ export class GnuPGKey {
   get isValidToEncrypt(): boolean {
     switch (GnuPGGlobal.majorVersion) {
       case 1:
-        return !this.isDisabled && this.canEncrypt;
+        return !this.isDisabled && this.canEncrypt && this.isknown;
       case 2:
         return !this.isDisabled && this.canEncrypt && this.isknown;
       default:

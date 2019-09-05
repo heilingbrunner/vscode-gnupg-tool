@@ -4,10 +4,10 @@ import { GnuPGGlobal } from './gnupgglobal';
 import { GnuPGKey } from './gnupgkey';
 import {
   parseKeys,
-  promiseCheckVersion,
-  promiseListPublicKeys,
-  promiseListSecretKeys,
-  promiseShowSmartcard
+  asyncCheckVersion,
+  asyncListPublicKeys,
+  asyncListSecretKeys,
+  asyncShowSmartcard
 } from './gnupglib';
 
 export default class VirtualDocumentProvider implements vscode.TextDocumentContentProvider {
@@ -34,7 +34,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
   async listPublicKeys(): Promise<Buffer> {
     return new Promise<Buffer>(async resolve => {
       try {
-        const stdout = await promiseListPublicKeys();
+        const stdout = await asyncListPublicKeys();
         const keys = parseKeys(stdout);
         const recipients = keysToText(keys);
 
@@ -55,7 +55,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
   async listPrivateKeys(): Promise<Buffer> {
     return new Promise<Buffer>(async resolve => {
       try {
-        const stdout = await promiseListSecretKeys();
+        const stdout = await asyncListSecretKeys();
         const keys = parseKeys(stdout);
         const recipients = keysToText(keys);
         let content =
@@ -74,7 +74,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
   async showSmartcard(): Promise<Buffer> {
     return new Promise<Buffer>(async resolve => {
       try {
-        const stdout = await promiseShowSmartcard();
+        const stdout = await asyncShowSmartcard();
         resolve(stdout);
       } catch (err) {
         resolve(new Buffer(i18n().GnuPGShowSmartcardFailed + '\r\n' + err));
@@ -85,7 +85,7 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
   async showVersion(): Promise<Buffer> {
     return new Promise<Buffer>(async resolve => {
       try {
-        const stdout = await promiseCheckVersion();
+        const stdout = await asyncCheckVersion();
         resolve(stdout);
       } catch (err) {
         resolve(new Buffer(i18n().GnuPGNotAvailable + '\r\n' + err));
