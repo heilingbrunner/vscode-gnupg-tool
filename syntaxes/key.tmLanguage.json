@@ -11,9 +11,14 @@
     "armor-block": {
       "comment": "BEGIN/END PGP",
       "name": "constant.character.block.key",
-      "begin": "-{5}BEGIN (PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK)-{5}$",
-      "end": "-{5}END \\1-{5}",
-      "patterns": []
+      "begin": "-{5}(BEGIN (PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK))-{5}$",
+      "beginCaptures": {
+        "1": {"name": "constant.numeric.key"}
+      },
+      "end": "-{5}(END \\2)-{5}",
+      "endCaptures": {
+        "1": {"name": "constant.numeric.key"}
+      }
     }
   },
   "scopeName": "source.key"

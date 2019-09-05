@@ -63,4 +63,12 @@ export class GnuPGGlobal {
 
     return parameters;
   }
+
+  static get IsVersion1(): boolean {
+    return (GnuPGGlobal._majorVersion === 1);
+  }
+
+  static get IsVersion2(): boolean {
+    return (GnuPGGlobal._majorVersion === 2);
+  }
 }

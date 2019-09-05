@@ -62,6 +62,8 @@ const translation: Ii18n = {
   GnuPGNoRecipientsSelectedForEncryption: 'GnuPG: 没有选择加密的收件人.',
   GnuPGNoTextSelectedForDecryption: 'GnuPG: 未选择任何文本进行解密.',
   GnuPGNoTextSelectedForEncryption: 'GnuPG: 未选择加密文本.',
+  GnuPGFunctionIsNotSupportedInVersion1x: 'GnuPG: 版本 1.x 不支持该功能',
+  GnuPGFunctionIsNotSupportedInVersion2x: 'GnuPG: 版本 2.x 不支持该功能',
   GnuPGNotSupportedPlatform: 'GnuPG: 不支持的平台',
   GnuPGPublicKey: 'GnuPG 公钥',
   GnuPGPublicKeyDeletedSuccessfully: 'GnuPG: 公钥已成功删除',

@@ -56,7 +56,7 @@ export function isKeyRingDirectory(path: vscode.Uri | undefined): boolean {
 export async function promiseListPublicKeys(): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGGlobal.defaultargs;
-    args = args.concat(['-k', '--with-colons']);
+    args = args.concat(['-k', '--with-colons', '--fingerprint']);
 
     call('', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
@@ -67,7 +67,7 @@ export async function promiseListPublicKeys(): Promise<Buffer> {
 export async function promiseListSecretKeys(): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGGlobal.defaultargs;
-    args = args.concat(['-K', '--with-colons']);
+    args = args.concat(['-K', '--with-colons', '--fingerprint']);
 
     call('', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
@@ -91,99 +91,216 @@ export function parseKeys(stdout: Buffer): Map<string, GnuPGKey> {
     const line = lines[i].trim();
     const record = line.split(':');
 
-    //pub :: Public key
-    //crt :: X.509 certificate
-    //crs :: X.509 certificate and private key available
-    //sub :: Subkey (secondary key)
-    //sec :: Private key
-    //ssb :: Private subkey (secondary key)
-    //uid :: User id
-    //uat :: User attribute (same as user id except for field 10).
-    //sig :: Signature
-    //rev :: Revocation signature
-    //rvs :: Revocation signature (standalone) [since 2.2.9]
-    //fpr :: Fingerprint (fingerprint is in field 10)
-    //pkd :: Public key data [*]
-    //grp :: Keygrip
-    //rvk :: Revocation key
-    //tfs :: TOFU statistics [*]
-    //tru :: Trust database information [*]
-    //spk :: Signature subpacket [*]
-    //cfg :: Configuration data [*]
-    switch (record[0]) {
-      case 'pub':
-      case 'sec':
-        //#region Details pub Record:
+    switch (GnuPGGlobal.majorVersion) {
+      case 1:
+        //#region Records
 
-        //record[0]: Type of record
-        //record[1]: Validity
-        //record[2]: Key length
-        //record[3]: Public key algorithm
-        //record[4]: KeyID
-        //record[5]: Creation date
-        //record[6]: Expiration date
-        //record[7]: Certificate S/N, UID hash, trust signature info
-        //record[8]: Ownertrust
-        //record[9]: User-ID
-        //record[10]: Signature class
-        //record[11]: Key capabilities
-        //record[12]: Issuer certificate fingerprint or other info
-        //record[13]: Flag field
-        //record[14]: S/N of a token
-        //record[15]: Hash algorithm
-        //record[16]: Curve name
-        //record[17]: Compliance flags
-        //record[18]: Last update
-        //record[19]: Origin
-        //record[20]: Comment
+
+        //pub:u:2048:1:6766822C85E0F4E6:2019-09-04:::u:Delete Me (weg) <d.m@nix.de>::scSC:
+
+        //pub :: Public key
+        //crt :: X.509 certificate
+        //crs :: X.509 certificate and private key available
+        //sub :: Subkey (secondary key)
+        //sec :: Private key
+        //ssb :: Private subkey (secondary key)
+        //uid :: User id
+        //uat :: User attribute (same as user id except for field 10).
+        //sig :: Signature
+        //rev :: Revocation signature
+        //rvs :: Revocation signature (standalone) [since 2.2.9]
+        //fpr :: Fingerprint (fingerprint is in field 10)
+        //pkd :: Public key data [*]
+        //grp :: Keygrip
+        //rvk :: Revocation key
+        //tfs :: TOFU statistics [*]
+        //tru :: Trust database information [*]
+        //spk :: Signature subpacket [*]
+        //cfg :: Configuration data [*]
 
         //#endregion
+        switch (record[0]) {
+          case 'pub':
+          case 'sec':
+            //#region Details pub Record:
 
-        // Add previous key, if exists
-        if (key !== null && !keys.has(key.keyId)) {
-          keys.set(key.keyId, key);
+            //pub:u:4096:1:069E5389FFEE0B51:2019-09-04:::u:Donald Duck (The real Donald ...) <d.duck@disney.com>::scSC:
+
+            //record[0]: Type of record
+            //record[1]: Validity
+            //record[2]: Key length
+            //record[3]: Public key algorithm
+            //record[4]: KeyID
+            //record[5]: Creation date
+            //record[6]: Expiration date
+            //record[7]: Certificate S/N, UID hash, trust signature info
+            //record[8]: Ownertrust
+            //record[9]: User-ID
+            //record[10]: Signature class
+            //record[11]: Key capabilities
+            //record[12]: Issuer certificate fingerprint or other info
+            //record[13]: Flag field
+            //record[14]: S/N of a token
+            //record[15]: Hash algorithm
+            //record[16]: Curve name
+            //record[17]: Compliance flags
+            //record[18]: Last update
+            //record[19]: Origin
+            //record[20]: Comment
+
+            //#endregion
+
+            // Add previous key, if exists
+            if (key !== null && !keys.has(key.keyId)) {
+              keys.set(key.keyId, key);
+            }
+
+            //create new key
+            key = new GnuPGKey();
+            (key.keyId = record[4]),
+              (key.expiration = record[5]),
+              (key.capabilities = record[11]),
+              (key.validity = record[1]);
+
+            // v1
+            key.addUserId(record[9]);
+
+            break;
+
+          case 'fpr':
+            //#region Details fpr Record
+
+            //record[9]: fingerprint
+
+            //#endregion
+
+            // Fingerprint contains keyId
+            if (key !== null && record[9].endsWith(key.keyId)) {
+              key.fingerprint = record[9];
+            }
+            break;
+
+          case 'uid':
+            //#region Details uid Record
+
+            //record[9]: userid
+
+            //#endregion
+
+            // User Id: name email
+            if (key !== null) {
+              key.addUserId(record[9]);
+            }
+            break;
         }
-
-        //create new key
-        key = new GnuPGKey();
-        (key.keyId = record[4]),
-          (key.expiration = record[6]),
-          (key.capabilities = record[11]),
-          (key.validity = record[1]);
-
         break;
 
-      case 'fpr':
-        //#region Details fpr Record
+      case 2:
+        //#region Records
 
-        //record[9]: fingerprint
+        //pub :: Public key
+        //crt :: X.509 certificate
+        //crs :: X.509 certificate and private key available
+        //sub :: Subkey (secondary key)
+        //sec :: Private key
+        //ssb :: Private subkey (secondary key)
+        //uid :: User id
+        //uat :: User attribute (same as user id except for field 10).
+        //sig :: Signature
+        //rev :: Revocation signature
+        //rvs :: Revocation signature (standalone) [since 2.2.9]
+        //fpr :: Fingerprint (fingerprint is in field 10)
+        //pkd :: Public key data [*]
+        //grp :: Keygrip
+        //rvk :: Revocation key
+        //tfs :: TOFU statistics [*]
+        //tru :: Trust database information [*]
+        //spk :: Signature subpacket [*]
+        //cfg :: Configuration data [*]
 
         //#endregion
+        switch (record[0]) {
+          case 'pub':
+          case 'sec':
+            //#region Details pub Record:
 
-        // Fingerprint contains keyId
-        if (key !== null && record[9].endsWith(key.keyId)) {
-          key.fingerprint = record[9];
+            //pub:u:4096:1:8E04619523BDC7D4:1577740263:::u:::scESCA::::::23::0:
+            //uid:u::::1577740263::19196D19B299EFD63210E523D1F0AC5BFF893FB0::James Bond <j.bond@mi6.com>::::::::::0
+
+            //record[0]: Type of record
+            //record[1]: Validity
+            //record[2]: Key length
+            //record[3]: Public key algorithm
+            //record[4]: KeyID
+            //record[5]: Creation date
+            //record[6]: Expiration date
+            //record[7]: Certificate S/N, UID hash, trust signature info
+            //record[8]: Ownertrust
+            //record[9]: User-ID
+            //record[10]: Signature class
+            //record[11]: Key capabilities
+            //record[12]: Issuer certificate fingerprint or other info
+            //record[13]: Flag field
+            //record[14]: S/N of a token
+            //record[15]: Hash algorithm
+            //record[16]: Curve name
+            //record[17]: Compliance flags
+            //record[18]: Last update
+            //record[19]: Origin
+            //record[20]: Comment
+
+            //#endregion
+
+            // Add previous key, if exists
+            if (key !== null && !keys.has(key.keyId)) {
+              keys.set(key.keyId, key);
+            }
+
+            //create new key
+            key = new GnuPGKey();
+            (key.keyId = record[4]),
+              (key.expiration = record[6]),
+              (key.capabilities = record[11]),
+              (key.validity = record[1]);
+
+            break;
+
+          case 'fpr':
+            //#region Details fpr Record
+
+            //record[9]: fingerprint
+
+            //#endregion
+
+            // Fingerprint contains keyId
+            if (key !== null && record[9].endsWith(key.keyId)) {
+              key.fingerprint = record[9];
+            }
+            break;
+
+          case 'uid':
+            //#region Details uid Record
+
+            //record[9]: userid
+
+            //#endregion
+
+            // User Id: name email
+            if (key !== null) {
+              key.addUserId(record[9]);
+            }
+            break;
         }
         break;
 
-      case 'uid':
-        //#region Details uid Record
-
-        //record[9]: userid
-
-        //#endregion
-
-        // User Id: name email
-        if (key !== null) {
-          key.addUserId(record[9]);
-        }
+      default:
         break;
     }
-  }
 
-  // Add last key
-  if (key !== null && !keys.has(key.keyId)) {
-    keys.set(key.keyId, key);
+    // Add last key
+    if (key !== null && !keys.has(key.keyId)) {
+      keys.set(key.keyId, key);
+    }
   }
 
   return keys;
@@ -217,30 +334,80 @@ export async function promiseEncryptSymBuffer(content: Buffer): Promise<Buffer> 
   });
 }
 
+export function argsEncryptAsymUri(uri: vscode.Uri, keys?: { fingerprint: string }[]): string[] {
+  let args: string[] = [];
+
+  switch (GnuPGGlobal.majorVersion) {
+    case 1:
+      args = GnuPGGlobal.defaultargs;
+      args = args.concat(['--armor']);
+
+      if (keys !== undefined) {
+        keys.forEach(recipient => {
+          args = args.concat(['--recipient', recipient.fingerprint]);
+        });
+      }
+
+      args = args.concat(['--encrypt', uri.fsPath]);
+      break;
+
+    case 2:
+      args = GnuPGGlobal.defaultargs;
+      args = args.concat(['--armor']);
+
+      if (keys !== undefined) {
+        keys.forEach(recipient => {
+          args = args.concat(['--recipient', recipient.fingerprint]);
+        });
+      }
+
+      args = args.concat(['--encrypt', uri.fsPath]);
+      break;
+
+    default:
+  }
+
+  return args;
+}
+
 export async function promiseEncryptAsymUri(uri: vscode.Uri, keys?: { fingerprint: string }[]): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
-    let args = GnuPGGlobal.defaultargs;
-    args = args.concat(['--armor']);
+    let args = argsEncryptAsymUri(uri, keys);
 
-    if (keys !== undefined) {
-      keys.forEach(recipient => {
-        args = args.concat(['--recipient', recipient.fingerprint]);
-      });
-    }
-
-    args = args.concat(['--encrypt', uri.fsPath]);
     callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
 }
 
+export function argsEncryptSymUri(uri: vscode.Uri): string[] {
+  let args: string[] = [];
+
+  switch (GnuPGGlobal.majorVersion) {
+    case 1:
+      args = [];
+      args = args.concat(['--armor']);
+      args = args.concat(['--output', uri.fsPath + '.asc']);
+      args = args.concat(['--symmetric', uri.fsPath]);
+      break;
+
+    case 2:
+      args = GnuPGGlobal.defaultargs;
+      args = args.concat(['--armor']);
+      args = args.concat(['--symmetric', uri.fsPath]);
+      break;
+
+    default:
+  }
+
+  return args;
+}
+
+
 export async function promiseEncryptSymUri(uri: vscode.Uri): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
-    let args = GnuPGGlobal.defaultargs;
-    args = args.concat(['--armor']);
+    let args = argsEncryptSymUri(uri);
 
-    args = args.concat(['--symmetric', uri.fsPath]);
     callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
@@ -254,6 +421,30 @@ export async function promiseDecryptBuffer(content: Buffer): Promise<Buffer> {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
     });
   });
+}
+
+export function argsDecryptUri(uri: vscode.Uri): string[] {
+  let args: string[] = [];
+
+  switch (GnuPGGlobal.majorVersion) {
+    case 1:
+      let dest = '';
+      if (uri.fsPath.match(/.*\.(asc|gpg)$/i)) {
+        dest = uri.fsPath.slice(0, -'.asc'.length);
+      } else {
+        dest = uri.fsPath + '.decrypted';
+      }
+      args = []; //no GnuPGGlobal.defaultargs;
+      args = args.concat(['--output', dest, '--decrypt', uri.fsPath]);
+      break;
+
+    case 2:
+      break;
+
+    default:
+  }
+
+  return args;
 }
 
 export async function promiseDecryptUri(uri: vscode.Uri): Promise<Buffer> {
@@ -287,17 +478,20 @@ export async function promiseKillGpgAgent(): Promise<void> {
   //https://www.gnupg.org/documentation/manuals/gnupg/Controlling-gpg_002dconnect_002dagent.html#Controlling-gpg_002dconnect_002dagent
   //gpgconf --kill gpg-agent: works on Windows
   //gpg-connect-agent killagent /bye
+  switch (GnuPGGlobal.majorVersion) {
+    case 1:
+      return new Promise(resolve => resolve());
+    case 2:
+      // gpg-connect-agent since v2
+      promiseExec('gpg-connect-agent killagent /bye', {});
 
-  if (GnuPGGlobal.majorVersion === 2) {
-    // gpg-connect-agent since v2
-    promiseExec('gpg-connect-agent killagent /bye', {});
-
-    if (GnuPGGlobal.homedir) {
-      let homedir = '--homedir ' + GnuPGGlobal.homedir;
-      promiseExec('gpg-connect-agent ' + homedir + ' killagent /bye', {});
-    }
-  } else {
-    return new Promise(resolve => resolve());
+      if (GnuPGGlobal.homedir) {
+        let homedir = '--homedir ' + GnuPGGlobal.homedir;
+        promiseExec('gpg-connect-agent ' + homedir + ' killagent /bye', {});
+      }
+      break;
+    default:
+      return new Promise(resolve => resolve());
   }
 }
 
@@ -338,10 +532,10 @@ export async function promiseExec(cmd: string, opts: ExecOptions): Promise<void>
         err
           ? reject(err)
           : // : resolve({           -> Promise<{ stdout: string; stderr: string }>
-            //   stdout: stdout,
-            //   stderr: stderr
-            // })
-            resolve() //           -> Promise<void>
+          //   stdout: stdout,
+          //   stderr: stderr
+          // })
+          resolve() //           -> Promise<void>
     );
   });
 }
@@ -383,16 +577,41 @@ export function keysToText(keys: Map<string, GnuPGKey>): string[] {
   return recipients;
 }
 
+export function argsSign(uri: vscode.Uri, key?: { fingerprint: string }): string[] {
+  let args: string[] = [];
+
+  switch (GnuPGGlobal.majorVersion) {
+    case 1:
+      args = [];
+      args = args.concat(['--armor']);
+      args = args.concat(['--output', uri.fsPath + '.sig']);
+      if (key !== undefined) {
+        args = args.concat(['--local-user', key.fingerprint]);
+      }
+      args = args.concat(['--detach-sign']);
+      args = args.concat([uri.fsPath]);
+      break;
+
+    case 2:
+      args = GnuPGGlobal.defaultargs;
+      args = args.concat(['--armor']);
+      args = args.concat(['--output', uri.fsPath + '.sig']);
+      if (key !== undefined) {
+        args = args.concat(['--local-user', key.fingerprint]);
+      }
+      args = args.concat(['--detach-sign']);
+      args = args.concat([uri.fsPath]);
+      break;
+
+    default:
+  }
+
+  return args;
+}
+
 export async function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
-    let args = GnuPGGlobal.defaultargs;
-    args = args.concat(['--armor']);
-    args = args.concat(['--output', uri.fsPath + '.sig']);
-    if (key !== undefined) {
-      args = args.concat(['--local-user', key.fingerprint]);
-    }
-    args = args.concat(['--detach-sign']);
-    args = args.concat([uri.fsPath]);
+    let args = argsSign(uri, key);
 
     call('', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);
@@ -400,15 +619,39 @@ export async function promiseSign(uri: vscode.Uri, key?: { fingerprint: string }
   });
 }
 
+export function argsClearSign(uri: vscode.Uri, key?: { fingerprint: string }): string[] {
+  let args: string[] = [];
+
+  switch (GnuPGGlobal.majorVersion) {
+    case 1:
+      args = [];
+      args = args.concat(['--armor']);
+      if (key !== undefined) {
+        args = args.concat(['--local-user', key.fingerprint]);
+      }
+      args = args.concat(['--clearsign']); //<--v1
+      args = args.concat([uri.fsPath]);
+      break;
+
+    case 2:
+      args = GnuPGGlobal.defaultargs;
+      args = args.concat(['--armor']);
+      if (key !== undefined) {
+        args = args.concat(['--local-user', key.fingerprint]);
+      }
+      args = args.concat(['--clear-sign']); //<--v2
+      args = args.concat([uri.fsPath]);
+      break;
+
+    default:
+  }
+
+  return args;
+}
+
 export async function promiseClearSign(uri: vscode.Uri, key?: { fingerprint: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
-    let args = GnuPGGlobal.defaultargs;
-    args = args.concat(['--armor']);
-    if (key !== undefined) {
-      args = args.concat(['--local-user', key.fingerprint]);
-    }
-    args = args.concat(['--clear-sign']);
-    args = args.concat([uri.fsPath]);
+    let args = argsClearSign(uri, key);
 
     call('', args, (err?: Error, stdout?: Buffer) => {
       err ? reject(getLastGnuPGError(err)) : resolve(stdout);

@@ -62,6 +62,8 @@ const translation: Ii18n = {
   GnuPGNoRecipientsSelectedForEncryption: 'GnuPG: Kein Empfänger für die Verschlüsselung ausgewählt.',
   GnuPGNoTextSelectedForDecryption: 'GnuPG: Kein Text für Entschlüsselung ausgewählt.',
   GnuPGNoTextSelectedForEncryption: 'GnuPG: Kein Text für Verschlüsselung ausgewählt.',
+  GnuPGFunctionIsNotSupportedInVersion1x: 'GnuPG: Funktion ist nicht unterstützt in Version 1.x',
+  GnuPGFunctionIsNotSupportedInVersion2x: 'GnuPG: Funktion ist nicht unterstützt in Version 2.x',
   GnuPGNotSupportedPlatform: 'GnuPG: Plattform wird nicht unterstützt',
   GnuPGPublicKey: 'GnuPG Öffentliche Schlüssel',
   GnuPGPublicKeyDeletedSuccessfully: 'GnuPG: Öffentlichen Schlüssel erfolgreich gelöscht',

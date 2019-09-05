@@ -62,6 +62,8 @@ const translation: Ii18n = {
   GnuPGNoRecipientsSelectedForEncryption: 'GnuPG: Не выбран получатель для шифрования.',
   GnuPGNoTextSelectedForDecryption: 'GnuPG: Не выбран текст для расшифровки.',
   GnuPGNoTextSelectedForEncryption: 'GnuPG: Не выбран текст для шифрования.',
+  GnuPGFunctionIsNotSupportedInVersion1x: 'GnuPG: Функция не поддерживается в версии 1.x',
+  GnuPGFunctionIsNotSupportedInVersion2x: 'GnuPG: Функция не поддерживается в версии 2.x',
   GnuPGNotSupportedPlatform: 'GnuPG: Не поддерживается платформа',
   GnuPGPublicKey: 'GnuPG Открытый ключ',
   GnuPGPublicKeyDeletedSuccessfully: 'GnuPG: Открытый ключ успешно удален',

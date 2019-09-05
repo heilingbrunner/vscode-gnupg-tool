@@ -4,16 +4,36 @@
   "fileTypes": ["asc"],
   "patterns": [
     {
-      "include": "#armor-block"
+      "include": "#armor-block1"
+    },
+    {
+      "include": "#armor-block2"
     }
   ],
   "repository": {
-    "armor-block": {
-      "comment": "BEGIN/END PGP",
+    "armor-block1": {
+      "comment": "BEGIN PGP .../END",
       "name": "constant.character.block.asc",
-      "begin": "-{5}BEGIN (PGP MESSAGE|PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK|PGP MESSAGE, PART \\d+(|/\\d+)|PGP SIGNATURE)-{5}$",
-      "end": "-{5}END \\1-{5}",
-      "patterns": []
+      "begin": "-{5}(BEGIN (PGP MESSAGE|PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK|PGP SIGNATURE|PGP MESSAGE, PART \\d+(|/\\d+)|SIGNATURE))-{5}$",
+      "beginCaptures": {
+        "1": {"name": "constant.numeric.asc"}
+      },
+      "end": "-{5}(END \\2)-{5}",
+      "endCaptures": {
+        "1": {"name": "constant.numeric.asc"}
+      }
+    },
+    "armor-block2": {
+      "comment": "BEGIN PGP SIGNED MESSAGE",
+      "name": "constant.character.block.asc",
+      "begin": "-{5}(BEGIN PGP SIGNED MESSAGE)-{5}$",
+      "beginCaptures": {
+        "1": {"name": "constant.numeric.asc"}
+      },
+      "end": "^Hash: (.*)$",
+      "endCaptures": {
+        "1": {"name": "constant.numeric.asc"}
+      }
     }
   },
   "scopeName": "source.asc"
