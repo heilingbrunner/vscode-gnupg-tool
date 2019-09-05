@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import { isDirectory } from './utils';
-import { isKeyRingDirectory } from './gnupglib';
+import { isKeyRingDirectory } from './utils';
 
 export class Configuration {
   platform: string;

@@ -1,14 +1,14 @@
 import * as vscode from 'vscode';
+import { i18n } from './i18n';
+import { GnuPGGlobal } from './gnupgglobal';
+import { GnuPGKey } from './gnupgkey';
 import {
-  keysToText,
   parseKeys,
   promiseCheckVersion,
   promiseListPublicKeys,
   promiseListSecretKeys,
   promiseShowSmartcard
 } from './gnupglib';
-import { i18n } from './i18n';
-import { GnuPGGlobal } from './gnupgglobal';
 
 export default class VirtualDocumentProvider implements vscode.TextDocumentContentProvider {
   public async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
@@ -92,4 +92,14 @@ export default class VirtualDocumentProvider implements vscode.TextDocumentConte
       }
     });
   }
+}
+
+function keysToText(keys: Map<string, GnuPGKey>): string[] {
+  let recipients: string[] = [];
+
+  keys.forEach(key => {
+    recipients.push(key.toString());
+  });
+
+  return recipients;
 }

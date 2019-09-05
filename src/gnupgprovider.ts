@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
+import { GnuPGKey } from './gnupgkey';
+import { i18n } from './i18n';
 import {
-  filterKeys,
-  keysToQuickPickItems,
   parseKeys,
   promiseDecryptBuffer,
   promiseEncryptAsymBuffer,
@@ -9,9 +9,11 @@ import {
   promiseListPublicKeys,
   promiseVerify
 } from './gnupglib';
-import { getContent } from './utils';
-import { GnuPGKey } from './gnupgkey';
-import { i18n } from './i18n';
+import {
+  filterKeys,
+  getContent,
+  keysToQuickPickItems
+} from './utils';
 
 export default class GnuPGProvider implements vscode.TextDocumentContentProvider {
   public provideTextDocumentContent(uri: vscode.Uri): Thenable<string> {
@@ -90,7 +92,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         return new Promise(async resolve => {
           try {
             const verification = await promiseVerify(newUri);
-            
+
             resolve(i18n().GnuPGVerfication + ':\r\n' + verification);
           } catch (err) {
             resolve(i18n().GnuPGVerficationFailed + '\r\n' + err);

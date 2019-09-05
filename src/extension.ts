@@ -1,18 +1,19 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import * as cp from 'child_process';
-
+import VirtualDocumentProvider from './virtualdocumentprovider';
+import GnuPGProvider from './gnupgprovider';
+import { GnuPGKey } from './gnupgkey';
+import { i18n } from './i18n';
+import { GnuPGGlobal } from './gnupgglobal';
+import { Configuration } from './configuration';
 import {
   argsClearSign,
   argsDecryptUri,
   argsEncryptSymUri,
   argsSign,
-  bufferToLines,
-  filterKeys,
-  keysToQuickPickItems,
-  linesToHome,
-  linesToVersion,
+
   parseKeys,
+
   promiseCheckVersion,
   promiseCheckWorkspaceAsHomeDir,
   promiseClearSign,
@@ -33,13 +34,17 @@ import {
   promiseListSecretKeys,
   promiseSign
 } from './gnupglib';
-import VirtualDocumentProvider from './virtualdocumentprovider';
-import GnuPGProvider from './gnupgprovider';
-import { GnuPGKey } from './gnupgkey';
-import { i18n } from './i18n';
-import { getWorkspaceUri } from './utils';
-import { GnuPGGlobal } from './gnupgglobal';
-import { Configuration } from './configuration';
+
+import {
+  bufferToLines,
+  copyToClipboard,
+  filterKeys,
+  getWorkspaceUri,
+  keysToQuickPickItems,
+  linesToHome,
+  linesToVersion,
+  runInTerminal
+} from './utils';
 
 let statusBarItem: vscode.StatusBarItem;
 
@@ -1234,7 +1239,7 @@ async function clearSignUri(uri: vscode.Uri) {
     const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToSign);
     const quickpickitems = keysToQuickPickItems(keys);
     const key = await vscode.window.showQuickPick(quickpickitems, { placeHolder: i18n().SelectSigner });
-    
+
     switch (GnuPGGlobal.majorVersion) {
       case 1:
         const command = 'gpg ' + argsClearSign(uri, key).join(' ');
@@ -1401,7 +1406,7 @@ async function copyFingerprintToClipboard() {
   try {
     const stdout = await promiseListPublicKeys();
     const map = parseKeys(stdout);
-    const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
+    const keys = filterKeys(map, (k: GnuPGKey) => true);
     const quickpickitems = keysToQuickPickItems(keys);
     const key = await vscode.window.showQuickPick(quickpickitems, {
       placeHolder: i18n().GnuPGSelectPublicKey,
@@ -1432,27 +1437,5 @@ async function copyKeyIdToClipboard() {
     }
   } catch (err) {
     vscode.window.showErrorMessage(i18n().GnuPGCopyFingerprintToClipboardFailed + ' ' + err);
-  }
-}
-
-function runInTerminal(command: string) {
-  const terminal = vscode.window.createTerminal(i18n().GnuPGTerminal);
-  terminal.show();
-  terminal.sendText(command, false);
-}
-
-function copyToClipboard(text: string) {
-  switch (process.platform) {
-    case 'darwin':
-      cp.exec('echo ' + text + ' | pbcopy');
-      break;
-    case 'win32':
-      cp.exec('echo ' + text + ' | clip');
-      break;
-    case 'linux':
-      cp.exec('echo ' + text + ' | xclip -selection c');
-      break;
-    default:
-      throw new Error(i18n().GnuPGNotSupportedPlatform + "'" + process.platform + "'");
   }
 }
