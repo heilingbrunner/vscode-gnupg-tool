@@ -9,10 +9,11 @@
 
 ## What's new in GnuPG-Tool
 
-- Support for gpg __v1.4__ (see details below)
+- Support for GnuPG __v1.4__ (see details below)
 
 ## Features
 
+- Supports GnuPG v1.4 and v2.2
 - __Check__ GnuPG availability/version.
 - Encryption for multiple __recipients__ or with simple __passphrase__
 - __Encrypt__/__decrypt__ text or file to text, file or preview
@@ -119,9 +120,10 @@ Additionally the extension supports a workspace configuration to set the path fo
 
 > Use `Check GnuPG` command to see the current used home directory.
 
-#### Support for gpg v1.4
+#### Support for GnuPG v1.4
 
-With gpg v1.4, there is no pin-entry window, where you can enter a pin. Therefore, all commands, which require a pin input, will be prepared to run in the internal terminal. The commands are written to the terminal and you have to press __RETURN__ and follow the instructions. Some functions are not available at all.
+With GnuPG v1.4, there is no pinentry window, where you can enter a pin. Therefore, all commands, which require a pin input, will be prepared to run in the internal terminal. The commands are written to the terminal and you have to press __RETURN__ and follow the instructions. Some functions are not available at all.
+GnuPG does not work perfectly in the VSCode terminal, or in other terminal emulators (hyper, cmder, ...). Therefore all commands for the terminal are additionally copied to the clipboard so that you can insert them in a __real__ terminal window (cmd, bash, ...).
 
 ## Requirements
 
