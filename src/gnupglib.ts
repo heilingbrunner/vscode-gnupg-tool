@@ -413,10 +413,10 @@ export function argsGenerateKey() {
 
   switch (GnuPGGlobal.majorVersion) {
     case 1:
-      args = args.concat(['gpg --gen-key']);
+      args = args.concat(['--gen-key']);
       break;
     case 2:
-      args = args.concat(['gpg --full-generate-key']);
+      args = args.concat(['--full-generate-key']);
       break;
     default:
   }

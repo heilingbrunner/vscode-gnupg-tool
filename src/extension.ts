@@ -1364,6 +1364,7 @@ function generateKey() {
 
   const args = argsGenerateKey();
   const command = 'gpg ' + args.join(' ');
+  
   copyToClipboard(command);
   runInTerminal(command);
 
