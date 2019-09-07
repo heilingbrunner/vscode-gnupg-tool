@@ -44,8 +44,8 @@ The command palette ...
 Available commands:
 
 - Check GnuPG
-- Copy Fingerprint To Clipboard (using Windows: CLIP, Linux: XCLIP, MacOS: PBCOPY)
-- Copy KeyId To Clipboard (using Windows: CLIP, Linux: XCLIP, MacOS: PBCOPY)
+- Copy Fingerprint To Clipboard
+- Copy KeyId To Clipboard
 - Decrypt ... (opens sub menu)
 - Decrypt File
 - Decrypt Preview
@@ -106,6 +106,14 @@ The editor context menu ...
 #### The `*.key` Files
 
 - `<filename>.key`: This should be an ascii encrypted key (option: `--armor`)
+
+#### The Clipboard
+
+This extension uses simple command line tools to copy content (commands, fingerprints, key ids) to the clipboard.
+
+- Windows: CLIP
+- MacOS: PBCOPY
+- Linux: XCLIP
 
 #### Support for an alternate homedir/key ring
 
