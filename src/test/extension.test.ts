@@ -18,6 +18,7 @@ import { GnuPGGlobal } from "../gnupgglobal";
 
 // Defines a Mocha test suite to group tests of similar kind together
 suite("Extension Tests", function() {
+  
   test("asyncCheckVersion", async () => {
     if (GnuPGGlobal.available) {
       const buff = await asyncCheckVersion();
