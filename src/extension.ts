@@ -11,9 +11,7 @@ import {
   argsDecryptUri,
   argsEncryptSymUri,
   argsSign,
-
   parseKeys,
-
   asyncCheckVersion,
   asyncCheckWorkspaceAsHomeDir,
   asyncClearSign,
@@ -57,7 +55,7 @@ export async function activate(context: vscode.ExtensionContext) {
   try {
     await checkGnuPG(false);
     await asyncKillGpgAgent();
-  } catch { }
+  } catch {}
 
   context.subscriptions.push(
     vscode.workspace.registerTextDocumentContentProvider('virtual-document', new VirtualDocumentProvider())
@@ -622,7 +620,7 @@ export async function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
   try {
     asyncKillGpgAgent();
-  } catch { }
+  } catch {}
   statusBarItem.hide();
 }
 
@@ -1030,7 +1028,11 @@ async function importKeys(uri: vscode.Uri) {
       vscode.window.showErrorMessage(i18n().GnuPGKeyImportFailed + ' ' + err);
     }
   } else {
-    const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
+    const option: vscode.OpenDialogOptions = {
+      canSelectMany: false,
+      defaultUri: getWorkspaceUri(),
+      filters: { 'Key File': ['key'], 'All Files': ['*'] }
+    };
     const uriSelected = await vscode.window.showOpenDialog(option); //.then(uriSelected => {
 
     if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
@@ -1063,7 +1065,7 @@ async function exportPublicKeys(uri: vscode.Uri) {
       vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
     }
   } else {
-    const option: vscode.SaveDialogOptions = { defaultUri: getWorkspaceUri(), filters:{'Public Key': ['pub.key']}};
+    const option: vscode.SaveDialogOptions = { defaultUri: getWorkspaceUri(), filters: { 'Public Key': ['pub.key'] } };
     vscode.window.showSaveDialog(option).then(async uriSelected => {
       if (uriSelected && uriSelected.scheme === 'file') {
         try {
@@ -1097,7 +1099,7 @@ async function exportPrivateKeys(uri: vscode.Uri) {
       vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
     }
   } else {
-    const option: vscode.SaveDialogOptions = { defaultUri: getWorkspaceUri(), filters:{'Secret Key': ['sec.key']} };
+    const option: vscode.SaveDialogOptions = { defaultUri: getWorkspaceUri(), filters: { 'Secret Key': ['sec.key'] } };
     vscode.window.showSaveDialog(option).then(async uriSelected => {
       if (uriSelected && uriSelected.scheme === 'file') {
         try {
@@ -1131,7 +1133,10 @@ async function exportPrivateSubKeys(uri: vscode.Uri) {
       vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
     }
   } else {
-    const option: vscode.SaveDialogOptions = { defaultUri: getWorkspaceUri(), filters:{'Secret Sub Key': ['subsec.key']} };
+    const option: vscode.SaveDialogOptions = {
+      defaultUri: getWorkspaceUri(),
+      filters: { 'Secret Sub Key': ['subsec.key'] }
+    };
     vscode.window.showSaveDialog(option).then(async uriSelected => {
       if (uriSelected && uriSelected.scheme === 'file') {
         try {
@@ -1160,8 +1165,9 @@ async function encryptAsymUri(uri: vscode.Uri) {
     });
 
     switch (GnuPGGlobal.majorVersion) {
-      default: //v1,2
-        await async function () {
+      default:
+        //v1,2
+        await (async function() {
           if (recipients && recipients.length > 0) {
             return asyncEncryptAsymUri(uri, recipients);
           } else {
@@ -1169,7 +1175,7 @@ async function encryptAsymUri(uri: vscode.Uri) {
               reject(i18n().GnuPGNoRecipientsSelectedForEncryption);
             });
           }
-        }();
+        })();
         vscode.window.showInformationMessage(i18n().GnuPGFileEncryptedSuccessfully);
         break;
     }
@@ -1239,7 +1245,6 @@ async function signUri(uri: vscode.Uri) {
         break;
       default:
     }
-
   } catch (err) {
     vscode.window.showErrorMessage(i18n().GnuPGSignFailed + ' ' + err);
   }
@@ -1266,7 +1271,6 @@ async function clearSignUri(uri: vscode.Uri) {
         break;
       default:
     }
-
   } catch (err) {
     vscode.window.showErrorMessage(i18n().GnuPGSignFailed + ' ' + err);
   }
@@ -1361,10 +1365,9 @@ async function editPublicKey() {
 }
 
 function generateKey() {
-
   const args = argsGenerateKey();
   const command = 'gpg ' + args.join(' ');
-  
+
   copyToClipboard(command);
   runInTerminal(command);
 
