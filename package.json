@@ -36,54 +36,54 @@
   "contributes": {
     "languages": [
       {
-        "id": "GnuPG ASCII Armored",
+        "id": "GnuPG ASCII",
         "extensions": [
           ".asc"
         ],
-        "configuration": "./language-configurations/gnupg_ascii.language-configuration.json"
+        "configuration": "./languages/GnuPG ASCII.language-configuration.json"
       },
       {
         "id": "GnuPG Text",
         "extensions": [
           ".txt"
         ],
-        "configuration": "./language-configurations/gnupg_text.language-configuration.json"
+        "configuration": "./languages/GnuPG Text.language-configuration.json"
       },
       {
         "id": "GnuPG Signature",
         "extensions": [
           ".sig"
         ],
-        "configuration": "./language-configurations/gnupg_signature.language-configuration.json"
+        "configuration": "./languages/GnuPG Signature.language-configuration.json"
       },
       {
         "id": "GnuPG Key",
         "extensions": [
           ".key"
         ],
-        "configuration": "./language-configurations/gnupg_key.language-configuration.json"
+        "configuration": "./languages/GnuPG Key.language-configuration.json"
       }
     ],
     "grammars": [
       {
-        "language": "GnuPG ASCII Armored",
-        "scopeName": "source.gnupg_ascii",
-        "path": "./syntaxes/gnupg_ascii.tmLanguage.json"
+        "language": "GnuPG ASCII",
+        "scopeName": "source.gnupgascii",
+        "path": "./syntaxes/GnuPG ASCII.tmLanguage.json"
       },
       {
         "language": "GnuPG Text",
-        "scopeName": "source.gnupg_text",
-        "path": "./syntaxes/gnupg_text.tmLanguage.json"
+        "scopeName": "source.gnupgtext",
+        "path": "./syntaxes/GnuPG Text.tmLanguage.json"
       },
       {
         "language": "GnuPG Signature",
-        "scopeName": "source.gnupg_signature",
-        "path": "./syntaxes/gnupg_signature.tmLanguage.json"
+        "scopeName": "source.gnupgsignature",
+        "path": "./syntaxes/GnuPG Signature.tmLanguage.json"
       },
       {
         "language": "GnuPG Key",
-        "scopeName": "source.gnupg_key",
-        "path": "./syntaxes/gnupg_key.tmLanguage.json"
+        "scopeName": "source.gnupgkey",
+        "path": "./syntaxes/GnuPG Key.tmLanguage.json"
       }
     ],
     "commands": [

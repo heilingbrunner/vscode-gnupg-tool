@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "gnupg_key",
-  "fileTypes": ["key"],
+  "name": "gnupgsignature",
+  "fileTypes": ["sig"],
   "patterns": [
     {
       "include": "#armor-block"
@@ -10,16 +10,16 @@
   "repository": {
     "armor-block": {
       "comment": "BEGIN/END PGP",
-      "name": "constant.character.block.gnupg_key",
-      "begin": "-{5}(BEGIN (PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK))-{5}$",
+      "name": "constant.character.block.gnupgsignature",
+      "begin": "-{5}(BEGIN (PGP SIGNATURE))-{5}$",
       "beginCaptures": {
-        "1": {"name": "constant.numeric.gnupg_key"}
+        "1": {"name": "constant.numeric.gnupgsignature"}
       },
       "end": "-{5}(END \\2)-{5}",
       "endCaptures": {
-        "1": {"name": "constant.numeric.gnupg_key"}
+        "1": {"name": "constant.numeric.gnupgsignature"}
       }
     }
   },
-  "scopeName": "source.gnupg_key"
+  "scopeName": "source.gnupgsignature"
 }
