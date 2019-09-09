@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "gnupg_text",
+  "fileTypes": ["txt"],
+  "patterns": [
+    {
+      "include": "#armor-block1"
+    },
+    {
+      "include": "#armor-block2"
+    }
+  ],
+  "repository": {
+    "armor-block1": {
+      "comment": "BEGIN PGP .../END",
+      "name": "constant.character.block.gnupg_text",
+      "begin": "-{5}(BEGIN (PGP MESSAGE|PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK|PGP SIGNATURE|PGP MESSAGE, PART \\d+(|/\\d+)|SIGNATURE))-{5}$",
+      "beginCaptures": {
+        "1": {"name": "constant.numeric.gnupg_text"}
+      },
+      "end": "-{5}(END \\2)-{5}",
+      "endCaptures": {
+        "1": {"name": "constant.numeric.gnupg_text"}
+      }
+    },
+    "armor-block2": {
+      "comment": "BEGIN PGP SIGNED MESSAGE",
+      "name": "constant.character.block.gnupg_text",
+      "begin": "-{5}(BEGIN PGP SIGNED MESSAGE)-{5}$",
+      "beginCaptures": {
+        "1": {"name": "constant.numeric.gnupg_text"}
+      },
+      "end": "^Hash: (.*)$",
+      "endCaptures": {
+        "1": {"name": "constant.numeric.gnupg_text"}
+      }
+    }
+  },
+  "scopeName": "source.gnupg_text"
+}
