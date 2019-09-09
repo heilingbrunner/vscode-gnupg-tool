@@ -127,7 +127,7 @@ export function argsEncryptSymUri(uri: vscode.Uri): string[] {
 
     case 2:
       args = GnuPGGlobal.homedirArg;
-      args = args.concat(['--armor']);
+      args = args.concat(['--batch','--yes','--armor']);
       args = args.concat(['--symmetric', uri.fsPath]);
       break;
 
@@ -462,9 +462,7 @@ export function argsDeletePublicKey(key?: { fingerprint: string; userId: string 
 export async function asyncDeletePublicKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     if (key) {
-      let args = GnuPGGlobal.homedirArg;
-      args = args.concat(['--delete-keys']);
-      args = args.concat([key.fingerprint]);
+      let args = argsDeletePublicKey(key);
 
       call('', args, (err?: Error, stdout?: Buffer) => {
         err ? reject(getLastGnuPGError(err)) : resolve(stdout);
