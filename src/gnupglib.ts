@@ -438,22 +438,11 @@ export function argsEditKey(key?: { fingerprint: string; userId: string }) {
 export function argsDeletePublicKey(key?: { fingerprint: string; userId: string }): string[] {
   let args: string[] = [];
 
-  switch (GnuPGGlobal.majorVersion) {
-    case 1:
-      if (key) {
-        args = GnuPGGlobal.homedirArg;
-        args = args.concat(['--batch', '--yes', '--delete-key']);
-        args = args.concat([key.fingerprint]);
-      }
-      break;
-    case 2:
-      if (key) {
-        args = GnuPGGlobal.homedirArg;
-        args = args.concat(['--batch', '--yes', '--delete-keys']);
-        args = args.concat([key.fingerprint]);
-      }
-      break;
-    default:
+  //v1,2
+  if (key) {
+    args = GnuPGGlobal.homedirArg;
+    args = args.concat(['--batch', '--yes', '--delete-keys']);
+    args = args.concat([key.fingerprint]);
   }
 
   return args;
@@ -474,22 +463,11 @@ export async function asyncDeletePublicKey(key?: { fingerprint: string; userId: 
 export function argsDeleteSecretKey(key?: { fingerprint: string; userId: string }): string[] {
   let args: string[] = [];
 
-  switch (GnuPGGlobal.majorVersion) {
-    case 1:
-      if (key) {
-        args = GnuPGGlobal.homedirArg;
-        args = args.concat(['--batch', '--yes', '--delete-secret-key']);
-        args = args.concat([key.fingerprint]);
-      }
-      break;
-    case 2:
-      if (key) {
-        args = GnuPGGlobal.homedirArg;
-        args = args.concat(['--batch', '--yes', '--delete-secret-keys']);
-        args = args.concat([key.fingerprint]);
-      }
-      break;
-    default:
+  //v1,2
+  if (key) {
+    args = GnuPGGlobal.homedirArg;
+    args = args.concat(['--batch', '--yes', '--delete-secret-keys']);
+    args = args.concat([key.fingerprint]);
   }
 
   return args;
