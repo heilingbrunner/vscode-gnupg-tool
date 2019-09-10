@@ -6,6 +6,7 @@ import ru from './i18n/ru';
 import zh_CN from './i18n/zh-CN';
 
 export interface Ii18n {
+  AllFiles: string;
   CommandCheckGnuPG: string;
   CommandClearSignFile: string;
   CommandCopyFingerprintToClipboard: string;

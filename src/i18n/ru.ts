@@ -1,6 +1,7 @@
 import { Ii18n } from '../i18n';
 
 const translation: Ii18n = {
+  AllFiles: 'Все файлы',
   CommandCheckGnuPG: 'Проверьте GnuPG',
   CommandClearSignFile: 'Файл подписи (clear-sign)',
   CommandCopyFingerprintToClipboard: 'Скопировать отпечаток пальца в буфер обмена',
