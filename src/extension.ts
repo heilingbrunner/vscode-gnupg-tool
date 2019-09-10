@@ -1066,17 +1066,17 @@ async function exportPublicKeys(uri: vscode.Uri) {
     }
   } else {
     const option: vscode.SaveDialogOptions = { defaultUri: getWorkspaceUri(), filters: { 'Public Key': ['pub.key'] } };
-    vscode.window.showSaveDialog(option).then(async uriSelected => {
-      if (uriSelected && uriSelected.scheme === 'file') {
-        try {
-          const result = await asyncExportPublicKeys(uriSelected, user);
-          let txt = result.toString();
-          vscode.window.showInformationMessage(txt);
-        } catch (err) {
-          vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
-        }
+    const uriSelected = await vscode.window.showSaveDialog(option);
+
+    if (uriSelected && uriSelected.scheme === 'file') {
+      try {
+        const result = await asyncExportPublicKeys(uriSelected, user);
+        let txt = result.toString();
+        vscode.window.showInformationMessage(txt);
+      } catch (err) {
+        vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
       }
-    });
+    }
   }
 }
 
@@ -1100,17 +1100,17 @@ async function exportPrivateKeys(uri: vscode.Uri) {
     }
   } else {
     const option: vscode.SaveDialogOptions = { defaultUri: getWorkspaceUri(), filters: { 'Secret Key': ['sec.key'] } };
-    vscode.window.showSaveDialog(option).then(async uriSelected => {
-      if (uriSelected && uriSelected.scheme === 'file') {
-        try {
-          const result = await asyncExportSecretKeys(uriSelected, user);
-          let txt = result.toString();
-          vscode.window.showInformationMessage(txt);
-        } catch (err) {
-          vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
-        }
+    const uriSelected = await vscode.window.showSaveDialog(option);
+
+    if (uriSelected && uriSelected.scheme === 'file') {
+      try {
+        const result = await asyncExportSecretKeys(uriSelected, user);
+        let txt = result.toString();
+        vscode.window.showInformationMessage(txt);
+      } catch (err) {
+        vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
       }
-    });
+    }
   }
 }
 
@@ -1137,17 +1137,17 @@ async function exportPrivateSubKeys(uri: vscode.Uri) {
       defaultUri: getWorkspaceUri(),
       filters: { 'Secret Sub Key': ['subsec.key'] }
     };
-    vscode.window.showSaveDialog(option).then(async uriSelected => {
-      if (uriSelected && uriSelected.scheme === 'file') {
-        try {
-          const result = await asyncExportSecretSubKeys(uriSelected, user);
-          let txt = result.toString();
-          vscode.window.showInformationMessage(txt);
-        } catch (err) {
-          vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
-        }
+    const uriSelected = await vscode.window.showSaveDialog(option);
+    
+    if (uriSelected && uriSelected.scheme === 'file') {
+      try {
+        const result = await asyncExportSecretSubKeys(uriSelected, user);
+        let txt = result.toString();
+        vscode.window.showInformationMessage(txt);
+      } catch (err) {
+        vscode.window.showErrorMessage(i18n().GnuPGKeyExportFailed + ' ' + err);
       }
-    });
+    }
   }
 }
 
