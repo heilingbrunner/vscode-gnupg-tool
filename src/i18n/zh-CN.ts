@@ -1,6 +1,7 @@
 import { Ii18n } from '../i18n';
 
 const translation: Ii18n = {
+  AllFiles: '所有的文件',
   CommandCheckGnuPG: '检查 GnuPG',
   CommandClearSignFile: '签名文件 (clear-sign)',
   CommandCopyFingerprintToClipboard: '将指纹复制到剪贴板',
@@ -62,6 +63,8 @@ const translation: Ii18n = {
   GnuPGNoRecipientsSelectedForEncryption: 'GnuPG: 没有选择加密的收件人.',
   GnuPGNoTextSelectedForDecryption: 'GnuPG: 未选择任何文本进行解密.',
   GnuPGNoTextSelectedForEncryption: 'GnuPG: 未选择加密文本.',
+  GnuPGFunctionIsNotSupportedWithVersion1x: 'GnuPG: gpg v1.x 不支持该功能',
+  GnuPGFunctionIsNotSupportedWithVersion2x: 'GnuPG: gpg v2.x 不支持该功能',
   GnuPGNotSupportedPlatform: 'GnuPG: 不支持的平台',
   GnuPGPublicKey: 'GnuPG 公钥',
   GnuPGPublicKeyDeletedSuccessfully: 'GnuPG: 公钥已成功删除',

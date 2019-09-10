@@ -1,17 +1,19 @@
 import * as vscode from 'vscode';
-import {
-  filterKeys,
-  keysToQuickPickItems,
-  parseKeys,
-  promiseDecryptBuffer,
-  promiseEncryptAsymBuffer,
-  promiseEncryptSymBuffer,
-  promiseListPublicKeys,
-  promiseVerify
-} from './gnupglib';
-import { getContent } from './utils';
 import { GnuPGKey } from './gnupgkey';
 import { i18n } from './i18n';
+import {
+  parseKeys,
+  asyncDecryptBuffer,
+  asyncEncryptAsymBuffer,
+  asyncEncryptSymBuffer,
+  asyncListPublicKeys,
+  asyncVerify
+} from './gnupglib';
+import {
+  filterKeys,
+  getContent,
+  keysToQuickPickItems
+} from './utils';
 
 export default class GnuPGProvider implements vscode.TextDocumentContentProvider {
   public provideTextDocumentContent(uri: vscode.Uri): Thenable<string> {
@@ -26,7 +28,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         return new Promise(async resolve => {
           try {
             const content = await getContent(newUri);
-            const decrypted = await promiseDecryptBuffer(content);
+            const decrypted = await asyncDecryptBuffer(content);
             resolve(decrypted.toString('utf8'));
           } catch (err) {
             resolve(i18n().GnuPGDecryptionFailed + '\r\n' + err);
@@ -43,7 +45,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         return new Promise(async (resolve, reject) => {
           try {
             const content = await getContent(newUri);
-            const stdout = await promiseListPublicKeys();
+            const stdout = await asyncListPublicKeys();
             const map = parseKeys(stdout);
             const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
             const quickpickitems = keysToQuickPickItems(keys);
@@ -53,7 +55,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
             });
 
             if (recipients && recipients.length > 0) {
-              const encrypted = await promiseEncryptAsymBuffer(content, recipients);
+              const encrypted = await asyncEncryptAsymBuffer(content, recipients);
               resolve(encrypted.toString('utf8'));
             } else {
               reject(i18n().GnuPGNoRecipientsSelectedForEncryption);
@@ -73,7 +75,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         return new Promise(async resolve => {
           try {
             const content = await getContent(newUri);
-            const encrypted = await promiseEncryptSymBuffer(content);
+            const encrypted = await asyncEncryptSymBuffer(content);
 
             resolve(encrypted.toString('utf8'));
           } catch (err) {
@@ -89,8 +91,8 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         });
         return new Promise(async resolve => {
           try {
-            const verification = await promiseVerify(newUri);
-            
+            const verification = await asyncVerify(newUri);
+
             resolve(i18n().GnuPGVerfication + ':\r\n' + verification);
           } catch (err) {
             resolve(i18n().GnuPGVerficationFailed + '\r\n' + err);

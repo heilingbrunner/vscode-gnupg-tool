@@ -1,3 +1,4 @@
+import { GnuPGGlobal } from "./gnupgglobal";
 
 export class GnuPGKey {
   keyId = '';
@@ -7,7 +8,7 @@ export class GnuPGKey {
   validity = '';
 
   private _userIds: string[] = [];
-  get userIds(): string[]{
+  get userIds(): string[] {
     return this._userIds;
   }
 
@@ -32,24 +33,38 @@ export class GnuPGKey {
   }
 
   get isValidToEncrypt(): boolean {
-    return !this.isDisabled && this.canEncrypt && this.isknown;
+    switch (GnuPGGlobal.majorVersion) {
+      case 1:
+        return !this.isDisabled && this.canEncrypt && this.isknown;
+      case 2:
+        return !this.isDisabled && this.canEncrypt && this.isknown;
+      default:
+        return false;
+    }
   }
 
   get isValidToSign(): boolean {
-    return !this.isDisabled && this.canSign && this.isknown;
+    switch (GnuPGGlobal.majorVersion) {
+      case 1:
+        return !this.isDisabled;
+      case 2:
+        return !this.isDisabled && this.canSign && this.isknown;
+      default:
+        return false;
+    }
   }
 
   addUserId(userId: string) {
     this._userIds.push(userId);
   }
 
-  static getUserIdDetails(userId: string): {name: string; email: string}{
+  static getUserIdDetails(userId: string): { name: string; email: string } {
     const match = userId.match(/(.*)\s*<(.*)>/);
     if (match && match.length === 3) {
-      return { name:match[1].trim(), email: match[2].trim()};
+      return { name: match[1].trim(), email: match[2].trim() };
     }
 
-    return { name: '?', email: '?'};
+    return { name: '?', email: '?' };
   }
 
   get validityDescription(): string {
@@ -102,6 +117,6 @@ export class GnuPGKey {
   }
 
   toString() {
-    return this.keyId + ': ' + this.userIds.join(',') + ', [' + (this.isDisabled?'D':(this.canSign?'S':'') + (this.canCertify?'C':'') + (this.canEncrypt?'E':'')) + '], ' + this.validityDescription;
+    return this.keyId + ': ' + this.userIds.join(',') + ', [' + (this.isDisabled ? 'D' : (this.canSign ? 'S' : '') + (this.canCertify ? 'C' : '') + (this.canEncrypt ? 'E' : '')) + '], ' + this.validityDescription;
   }
 }

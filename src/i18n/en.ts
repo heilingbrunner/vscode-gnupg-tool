@@ -1,6 +1,7 @@
 import { Ii18n } from '../i18n';
 
 const translation: Ii18n = {
+  AllFiles: 'All Files',
   CommandCheckGnuPG: 'Check GnuPG',
   CommandClearSignFile: 'Sign File (clear-sign)',
   CommandCopyFingerprintToClipboard: 'Copy Fingerprint to Clipboard',
@@ -62,6 +63,8 @@ const translation: Ii18n = {
   GnuPGNoRecipientsSelectedForEncryption: 'GnuPG: No recipients selected for encryption.',
   GnuPGNoTextSelectedForDecryption: 'GnuPG: No text selected for decryption.',
   GnuPGNoTextSelectedForEncryption: 'GnuPG: No text selected for encryption.',
+  GnuPGFunctionIsNotSupportedWithVersion1x: 'GnuPG: Function is not supported with gpg v1.x',
+  GnuPGFunctionIsNotSupportedWithVersion2x: 'GnuPG: Function is not supported with gpg v2.x',
   GnuPGNotSupportedPlatform: 'GnuPG: Not supported platform',
   GnuPGPublicKey: 'GnuPG Public Key',
   GnuPGPublicKeyDeletedSuccessfully: 'GnuPG: Public Key deleted successfully',

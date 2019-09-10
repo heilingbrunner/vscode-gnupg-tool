@@ -1,6 +1,7 @@
 import { Ii18n } from '../i18n';
 
 const translation: Ii18n = {
+  AllFiles: 'Все файлы',
   CommandCheckGnuPG: 'Проверьте GnuPG',
   CommandClearSignFile: 'Файл подписи (clear-sign)',
   CommandCopyFingerprintToClipboard: 'Скопировать отпечаток пальца в буфер обмена',
@@ -62,6 +63,8 @@ const translation: Ii18n = {
   GnuPGNoRecipientsSelectedForEncryption: 'GnuPG: Не выбран получатель для шифрования.',
   GnuPGNoTextSelectedForDecryption: 'GnuPG: Не выбран текст для расшифровки.',
   GnuPGNoTextSelectedForEncryption: 'GnuPG: Не выбран текст для шифрования.',
+  GnuPGFunctionIsNotSupportedWithVersion1x: 'GnuPG: Функция не поддерживается с gpg v1.x',
+  GnuPGFunctionIsNotSupportedWithVersion2x: 'GnuPG: Функция не поддерживается с gpg v1.x',
   GnuPGNotSupportedPlatform: 'GnuPG: Не поддерживается платформа',
   GnuPGPublicKey: 'GnuPG Открытый ключ',
   GnuPGPublicKeyDeletedSuccessfully: 'GnuPG: Открытый ключ успешно удален',

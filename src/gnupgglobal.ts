@@ -1,4 +1,3 @@
-import * as vscode from 'vscode';
 export class GnuPGGlobal {
   //  gpg
   //  [--homedir name]
@@ -51,16 +50,21 @@ export class GnuPGGlobal {
     return GnuPGGlobal._patchVersion;
   }
 
-  static get defaultargs(): string[] {
+  static get homedirArg(): string[] {
     let parameters: string[] = [];
-
-    //default parameters ...
-    parameters = parameters.concat(['--batch', '--yes']);
 
     if (GnuPGGlobal._homedir) {
       parameters = parameters.concat(['--homedir', GnuPGGlobal._homedir]);
     }
 
     return parameters;
+  }
+
+  static get IsVersion1(): boolean {
+    return (GnuPGGlobal._majorVersion === 1);
+  }
+
+  static get IsVersion2(): boolean {
+    return (GnuPGGlobal._majorVersion === 2);
   }
 }
