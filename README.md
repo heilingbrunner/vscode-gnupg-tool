@@ -10,7 +10,7 @@
 ## What's new in GnuPG-Tool
 
 - Support for GnuPG __v1.4__ (see details below)
-- Code folding for __BEGIN PGP/END PGP__ blocks
+- Code folding for __BEGIN PGP ...__/__END PGP ...__ blocks
 
 ## Features
 
