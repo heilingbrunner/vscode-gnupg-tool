@@ -777,7 +777,7 @@ async function encryptSymmSelection(editor: vscode.TextEditor) {
   }
 }
 
-function encryptAsymFile(uri: vscode.Uri) {
+async function encryptAsymFile(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc)$/i)) {
       vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
@@ -786,19 +786,19 @@ function encryptAsymFile(uri: vscode.Uri) {
     }
   } else {
     const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-    vscode.window.showOpenDialog(option).then(uriSelected => {
-      if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
-        if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
-          vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
-        } else {
-          encryptAsymUri(uriSelected[0]);
-        }
+    const uriSelected = await vscode.window.showOpenDialog(option);
+
+    if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
+      if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
+        vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
+      } else {
+        encryptAsymUri(uriSelected[0]);
       }
-    });
+    }
   }
 }
 
-function encryptSymmFile(uri: vscode.Uri) {
+async function encryptSymmFile(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc)$/i)) {
       vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
@@ -807,19 +807,19 @@ function encryptSymmFile(uri: vscode.Uri) {
     }
   } else {
     const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-    vscode.window.showOpenDialog(option).then(uriSelected => {
-      if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
-        if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
-          vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
-        } else {
-          encryptSymmUri(uriSelected[0]);
-        }
+    const uriSelected = await vscode.window.showOpenDialog(option);
+
+    if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
+      if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
+        vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
+      } else {
+        encryptSymmUri(uriSelected[0]);
       }
-    });
+    }
   }
 }
 
-function encryptPreviewAsym(uri: vscode.Uri) {
+async function encryptPreviewAsym(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc)$/i)) {
       vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
@@ -828,19 +828,19 @@ function encryptPreviewAsym(uri: vscode.Uri) {
     }
   } else {
     const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-    vscode.window.showOpenDialog(option).then(uriSelected => {
-      if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
-        if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
-          vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
-        } else {
-          launchGnuPGProviderEncryptAsym(uriSelected[0]);
-        }
+    const uriSelected = await vscode.window.showOpenDialog(option);
+
+    if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
+      if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
+        vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
+      } else {
+        launchGnuPGProviderEncryptAsym(uriSelected[0]);
       }
-    });
+    }
   }
 }
 
-function encryptPreviewSymm(uri: vscode.Uri) {
+async function encryptPreviewSymm(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc)$/i)) {
       vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
@@ -849,15 +849,15 @@ function encryptPreviewSymm(uri: vscode.Uri) {
     }
   } else {
     const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-    vscode.window.showOpenDialog(option).then(uriSelected => {
-      if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
-        if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
-          vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
-        } else {
-          launchGnuPGProviderEncryptSymm(uriSelected[0]);
-        }
+    const uriSelected = await vscode.window.showOpenDialog(option);
+
+    if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
+      if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
+        vscode.window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
+      } else {
+        launchGnuPGProviderEncryptSymm(uriSelected[0]);
       }
-    });
+    }
   }
 }
 
@@ -894,7 +894,7 @@ async function decryptSelection(editor: vscode.TextEditor) {
   }
 }
 
-function decryptFile(uri: vscode.Uri) {
+async function decryptFile(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc|gpg)$/i)) {
       decryptUri(uri);
@@ -903,19 +903,19 @@ function decryptFile(uri: vscode.Uri) {
     }
   } else {
     const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-    vscode.window.showOpenDialog(option).then(uriSelected => {
-      if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
-        if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
-          decryptUri(uriSelected[0]);
-        } else {
-          vscode.window.showInformationMessage(i18n().GnuPGFileNotEncrypted);
-        }
+    const uriSelected = await vscode.window.showOpenDialog(option);
+
+    if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
+      if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
+        decryptUri(uriSelected[0]);
+      } else {
+        vscode.window.showInformationMessage(i18n().GnuPGFileNotEncrypted);
       }
-    });
+    }
   }
 }
 
-function decryptPreview(uri: vscode.Uri) {
+async function decryptPreview(uri: vscode.Uri) {
   switch (GnuPGGlobal.majorVersion) {
     case 1:
       vscode.window.showWarningMessage(i18n().GnuPGFunctionIsNotSupportedWithVersion1x);
@@ -930,15 +930,15 @@ function decryptPreview(uri: vscode.Uri) {
         }
       } else {
         const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-        vscode.window.showOpenDialog(option).then(uriSelected => {
-          if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
-            if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
-              launchGnuPGProviderForDecrypt(uriSelected[0]);
-            } else {
-              vscode.window.showInformationMessage(i18n().GnuPGFileNotEncrypted);
-            }
+        const uriSelected = await vscode.window.showOpenDialog(option);
+
+        if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
+          if (uriSelected[0].fsPath.match(/\.(asc)$/i)) {
+            launchGnuPGProviderForDecrypt(uriSelected[0]);
+          } else {
+            vscode.window.showInformationMessage(i18n().GnuPGFileNotEncrypted);
           }
-        });
+        }
       }
       break;
 
@@ -946,7 +946,7 @@ function decryptPreview(uri: vscode.Uri) {
   }
 }
 
-function signFile(uri: vscode.Uri) {
+async function signFile(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (!uri.fsPath.match(/\.(sig)$/i)) {
       signUri(uri);
@@ -955,19 +955,19 @@ function signFile(uri: vscode.Uri) {
     }
   } else {
     const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-    vscode.window.showOpenDialog(option).then(uriSelected => {
-      if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
-        if (!uriSelected[0].fsPath.match(/\.(sig)$/i)) {
-          signUri(uriSelected[0]);
-        } else {
-          vscode.window.showInformationMessage(i18n().GnuPGFileIsAlreadyASignature);
-        }
+    const uriSelected = await vscode.window.showOpenDialog(option);
+
+    if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
+      if (!uriSelected[0].fsPath.match(/\.(sig)$/i)) {
+        signUri(uriSelected[0]);
+      } else {
+        vscode.window.showInformationMessage(i18n().GnuPGFileIsAlreadyASignature);
       }
-    });
+    }
   }
 }
 
-function clearSignFile(uri: vscode.Uri) {
+async function clearSignFile(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (!uri.fsPath.match(/\.(sig)$/i)) {
       clearSignUri(uri);
@@ -976,19 +976,19 @@ function clearSignFile(uri: vscode.Uri) {
     }
   } else {
     const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-    vscode.window.showOpenDialog(option).then(uriSelected => {
-      if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
-        if (!uriSelected[0].fsPath.match(/\.(sig)$/i)) {
-          clearSignUri(uriSelected[0]);
-        } else {
-          vscode.window.showInformationMessage(i18n().GnuPGFileIsAlreadyASignature);
-        }
+    const uriSelected = await vscode.window.showOpenDialog(option);
+
+    if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
+      if (!uriSelected[0].fsPath.match(/\.(sig)$/i)) {
+        clearSignUri(uriSelected[0]);
+      } else {
+        vscode.window.showInformationMessage(i18n().GnuPGFileIsAlreadyASignature);
       }
-    });
+    }
   }
 }
 
-function verifyFile(uri: vscode.Uri) {
+async function verifyFile(uri: vscode.Uri) {
   if (uri !== undefined && uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(sig|asc)$/i)) {
       launchGnuPGProviderForVerify(uri);
@@ -997,15 +997,15 @@ function verifyFile(uri: vscode.Uri) {
     }
   } else {
     const option: vscode.OpenDialogOptions = { canSelectMany: false, defaultUri: getWorkspaceUri() };
-    vscode.window.showOpenDialog(option).then(uriSelected => {
-      if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
-        if (!uriSelected[0].fsPath.match(/\.(sig)$/i)) {
-          launchGnuPGProviderForVerify(uriSelected[0]);
-        } else {
-          vscode.window.showInformationMessage(i18n().GnuPGFileIsNotASignature);
-        }
+    const uriSelected = await vscode.window.showOpenDialog(option);
+
+    if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
+      if (!uriSelected[0].fsPath.match(/\.(sig)$/i)) {
+        launchGnuPGProviderForVerify(uriSelected[0]);
+      } else {
+        vscode.window.showInformationMessage(i18n().GnuPGFileIsNotASignature);
       }
-    });
+    }
   }
 }
 
@@ -1033,7 +1033,7 @@ async function importKeys(uri: vscode.Uri) {
       defaultUri: getWorkspaceUri(),
       filters: { 'Key File': ['key'], 'All Files': ['*'] }
     };
-    const uriSelected = await vscode.window.showOpenDialog(option); //.then(uriSelected => {
+    const uriSelected = await vscode.window.showOpenDialog(option);
 
     if (uriSelected && uriSelected[0] && uriSelected[0].scheme === 'file') {
       try {
