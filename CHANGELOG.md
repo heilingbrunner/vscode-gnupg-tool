@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.3.1] - 2019-09-10
+
+- travis ci tag removed
+
+## [1.3.0] - 2019-09-10
+
+- support for gnupg v1.4
+- code folding
+
 ## [1.2.0] - 2019-07-22
 
 - configuration setting for homedir/keyring location
