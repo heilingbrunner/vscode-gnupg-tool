@@ -24,6 +24,7 @@
 - __Sign__/__verify__ file.
 - Keys __generate__/__edit__/__delete__/__import__/__export__.
 - Detects local/alternated __homedir/key ring__
+- Code folding for __BEGIN PGP ...__/__END PGP ...__ blocks
 
 ## Supported locales
 
