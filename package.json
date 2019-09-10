@@ -37,53 +37,57 @@
     "languages": [
       {
         "id": "GnuPG ASCII",
+        "aliases": ["GnuPG ASCII"],
         "extensions": [
-          ".asc"
+          "asc"
         ],
-        "configuration": "./languages/GnuPG ASCII.language-configuration.json"
+        "configuration": "./languages/asc.language-configuration.json"
       },
       {
         "id": "GnuPG Text",
+        "aliases": ["GnuPG Text"],
         "extensions": [
-          ".txt"
+          "txt"
         ],
-        "configuration": "./languages/GnuPG Text.language-configuration.json"
+        "configuration": "./languages/txt.language-configuration.json"
       },
       {
         "id": "GnuPG Signature",
+        "aliases": ["GnuPG Signature"],
         "extensions": [
-          ".sig"
+          "sig"
         ],
-        "configuration": "./languages/GnuPG Signature.language-configuration.json"
+        "configuration": "./languages/sig.language-configuration.json"
       },
       {
         "id": "GnuPG Key",
+        "aliases": ["GnuPG Key"],
         "extensions": [
-          ".key"
+          "key"
         ],
-        "configuration": "./languages/GnuPG Key.language-configuration.json"
+        "configuration": "./languages/key.language-configuration.json"
       }
     ],
     "grammars": [
       {
         "language": "GnuPG ASCII",
         "scopeName": "source.gnupgascii",
-        "path": "./syntaxes/GnuPG ASCII.tmLanguage.json"
+        "path": "./syntaxes/asc.tmLanguage.json"
       },
       {
         "language": "GnuPG Text",
         "scopeName": "source.gnupgtext",
-        "path": "./syntaxes/GnuPG Text.tmLanguage.json"
+        "path": "./syntaxes/txt.tmLanguage.json"
       },
       {
         "language": "GnuPG Signature",
         "scopeName": "source.gnupgsignature",
-        "path": "./syntaxes/GnuPG Signature.tmLanguage.json"
+        "path": "./syntaxes/sig.tmLanguage.json"
       },
       {
         "language": "GnuPG Key",
         "scopeName": "source.gnupgkey",
-        "path": "./syntaxes/GnuPG Key.tmLanguage.json"
+        "path": "./syntaxes/key.tmLanguage.json"
       }
     ],
     "commands": [

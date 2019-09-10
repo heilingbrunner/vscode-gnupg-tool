@@ -1,7 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "gnupgtext",
-  "fileTypes": ["txt"],
+  "name": "GnuPG ASCII",
   "patterns": [
     {
       "include": "#armor-block1"
@@ -13,28 +12,28 @@
   "repository": {
     "armor-block1": {
       "comment": "BEGIN PGP .../END",
-      "name": "constant.character.block.gnupgtext",
+      "name": "constant.character.block.gnupgascii",
       "begin": "-{5}(BEGIN (PGP MESSAGE|PGP PUBLIC KEY BLOCK|PGP PRIVATE KEY BLOCK|PGP SIGNATURE|PGP MESSAGE, PART \\d+(|/\\d+)|SIGNATURE))-{5}$",
       "beginCaptures": {
-        "1": {"name": "constant.numeric.gnupgtext"}
+        "1": {"name": "constant.numeric.gnupgascii"}
       },
       "end": "-{5}(END \\2)-{5}",
       "endCaptures": {
-        "1": {"name": "constant.numeric.gnupgtext"}
+        "1": {"name": "constant.numeric.gnupgascii"}
       }
     },
     "armor-block2": {
       "comment": "BEGIN PGP SIGNED MESSAGE",
-      "name": "constant.character.block.gnupgtext",
+      "name": "constant.character.block.gnupgascii",
       "begin": "-{5}(BEGIN PGP SIGNED MESSAGE)-{5}$",
       "beginCaptures": {
-        "1": {"name": "constant.numeric.gnupgtext"}
+        "1": {"name": "constant.numeric.gnupgascii"}
       },
       "end": "^Hash: (.*)$",
       "endCaptures": {
-        "1": {"name": "constant.numeric.gnupgtext"}
+        "1": {"name": "constant.numeric.gnupgascii"}
       }
     }
   },
-  "scopeName": "source.gnupgtext"
+  "scopeName": "source.gnupgascii"
 }

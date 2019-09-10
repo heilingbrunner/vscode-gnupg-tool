@@ -1,7 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "gnupgsignature",
-  "fileTypes": ["sig"],
+  "name": "GnuPG Signature",
   "patterns": [
     {
       "include": "#armor-block"
