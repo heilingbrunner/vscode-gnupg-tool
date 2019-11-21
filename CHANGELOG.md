@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.3.2] - 2019-11-21
+
+- MacGPG2 fix
+
 ## [1.3.1] - 2019-09-10
 
 - travis ci tag removed
