@@ -3,7 +3,6 @@
 ![GnuPG Tool logo](https://raw.githubusercontent.com/heilingbrunner/vscode-gnupg-tool/master/images/vscode-gnupg-tool-logo.png)
 
 ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
-![Installs](https://vsmarketplacebadge.apphb.com/installs-short/JHeilingbrunner.vscode-gnupg-tool.svg)
 
 ## What's new in GnuPG-Tool
 
