@@ -1,12 +1,8 @@
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
-import { GnuPGKey } from "./gnupgkey";
-import { i18n } from "./i18n";
-import {
-  readFile,
-  writeFile,
-  statSync
-} from 'fs';
+import { GnuPGKey } from './gnupgkey';
+import { i18n } from './i18n';
+import { readFile, writeFile, statSync } from 'fs';
 
 export function getContent(uri: vscode.Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -147,6 +143,8 @@ export function linesToVersion(lines: string[]): string | undefined {
   for (let line of lines) {
     if (line.startsWith('gpg (GnuPG) ')) {
       return line.substr('gpg (GnuPG) '.length).trim();
+    } else if (line.startsWith('gpg (GnuPG/MacGPG2) ')) {
+      return line.substr('gpg (GnuPG/MacGPG2) '.length).trim();
     }
   }
   return undefined;
