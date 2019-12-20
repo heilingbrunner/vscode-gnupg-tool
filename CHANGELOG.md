@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.3.3] - 2019-12-20
+
+- security update
+
 ## [1.3.2] - 2019-11-21
 
 - MacGPG2 fix

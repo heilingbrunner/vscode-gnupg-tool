@@ -6,7 +6,7 @@
 
 ## What's new in GnuPG-Tool
 
-- bugfix for MacGPG2
+- security update
 
 ## Features
 
