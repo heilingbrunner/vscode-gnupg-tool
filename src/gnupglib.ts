@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import * as vscode from 'vscode';
 import * as child_process from 'child_process';
 import { ExecOptions } from 'child_process';

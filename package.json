@@ -452,7 +452,7 @@
     "webpack-dev": "webpack --mode development --watch",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test",
-    "lint": "eslint -c .eslintrc.js --ext .ts ./src"
+    "lint": "eslint -c .eslintrc.js --ext .ts --fix ./src"
   },
   "dependencies": {},
   "devDependencies": {
