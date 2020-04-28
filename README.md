@@ -6,7 +6,7 @@
 
 ## What's new in GnuPG-Tool
 
-- security update
+- addtional context menu (editor/title/context)
 
 ## Features
 

@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.3.5] - 2020-04-28
+
+- addtional context menu (editor/title/context)
+
 ## [1.3.4] - 2020-03-17
 
 - security update
