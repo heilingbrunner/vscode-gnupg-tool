@@ -6,7 +6,7 @@
   },
   "displayName": "GnuPG-Tool",
   "description": "Tool for a simple usage of GnuPG",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "publisher": "JHeilingbrunner",
   "license": "MIT",
   "icon": "images/vscode-gnupg-tool-logo.png",
@@ -383,6 +383,53 @@
         }
       ],
       "editor/title": [
+        {
+          "command": "extension.EncryptPreviewAsym",
+          "group": "gnupg1@1",
+          "when": "resourceExtname != .asc && resourceExtname != .gpg && resourceExtname != .sig"
+        },
+        {
+          "command": "extension.DecryptPreview",
+          "group": "gnupg1@3",
+          "when": "resourceExtname == .asc"
+        },
+        {
+          "command": "extension.DecryptPreview",
+          "group": "gnupg1@3",
+          "when": "resourceExtname == .gpg"
+        },
+        {
+          "command": "extension.EncryptFileAsym",
+          "group": "gnupg2@1",
+          "when": "resourceExtname != .asc && resourceExtname != .gpg && resourceExtname != .sig"
+        },
+        {
+          "command": "extension.EncryptFileSymm",
+          "group": "gnupg2@2",
+          "when": "resourceExtname != .asc && resourceExtname != .gpg && resourceExtname != .sig"
+        },
+        {
+          "command": "extension.DecryptFile",
+          "group": "gnupg2@3",
+          "when": "resourceExtname == .asc"
+        },
+        {
+          "command": "extension.DecryptFile",
+          "group": "gnupg2@3",
+          "when": "resourceExtname == .gpg"
+        },
+        {
+          "command": "extension.SignFile",
+          "group": "gnupg3@1",
+          "when": "resourceExtname != .asc && resourceExtname != .gpg && resourceExtname != .sig"
+        },
+        {
+          "command": "extension.VerifyFile",
+          "group": "gnupg3@2",
+          "when": "resourceExtname == .sig"
+        }
+      ],
+      "editor/title/context": [
         {
           "command": "extension.EncryptPreviewAsym",
           "group": "gnupg1@1",
