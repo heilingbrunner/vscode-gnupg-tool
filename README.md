@@ -6,7 +6,7 @@
 
 ## What's new in GnuPG-Tool
 
-- addtional context menu (editor/title/context)
+- README.md with links to github wiki
 
 ## Features
 

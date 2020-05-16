@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.3.6] - 2020-05-16
+
+- README.md with links to github wiki
+
 ## [1.3.5] - 2020-04-28
 
 - addtional context menu (editor/title/context)
