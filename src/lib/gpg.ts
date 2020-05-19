@@ -12,7 +12,7 @@
  * Module dependencies.
  */
 import { readFile } from 'fs';
-import { spawnGPG, streaming, cbfunc, options } from './spawnGPG';
+import { cbfunc, options, spawnGPG, streaming } from './spawnGPG';
 
 /**
  * Raw call to gpg.

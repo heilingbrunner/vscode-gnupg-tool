@@ -1,10 +1,10 @@
-import * as vscode from 'vscode';
-import * as cp from 'child_process';
+import { exec } from 'child_process';
+import { readFile, statSync, writeFile } from 'fs';
+import { Uri, window, workspace } from 'vscode';
 import { GnuPGKey } from './gnupgkey';
 import { i18n } from './i18n';
-import { readFile, writeFile, statSync } from 'fs';
 
-export function getContent(uri: vscode.Uri): Promise<Buffer> {
+export function getContent(uri: Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     if (uri.scheme === 'file') {
       const filepath = uri.fsPath;
@@ -22,10 +22,10 @@ export function getContent(uri: vscode.Uri): Promise<Buffer> {
   });
 }
 
-export function setContent(uri: vscode.Uri, content: Buffer): Promise<Buffer> {
+export function setContent(uri: Uri, content: Buffer): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     // fs.writeFileSync(newUri.fsPath, encrypted);
-    writeFile(uri.fsPath, content, err => {
+    writeFile(uri.fsPath, content, (err) => {
       if (err) {
         reject(err);
       } else {
@@ -35,8 +35,8 @@ export function setContent(uri: vscode.Uri, content: Buffer): Promise<Buffer> {
   });
 }
 
-export function getWorkspaceUri(): vscode.Uri | undefined {
-  let uri = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : undefined;
+export function getWorkspaceUri(): Uri | undefined {
+  let uri = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri : undefined;
   return uri;
 }
 
@@ -64,7 +64,7 @@ export function isFile(path: string): boolean {
   }
 }
 
-export function isKeyRingDirectory(path: vscode.Uri | undefined): boolean {
+export function isKeyRingDirectory(path: Uri | undefined): boolean {
   // Check ...
   // public : pubring.kbx or pubring.gpg
   // secret : folder: private-keys-v1.d or file : secring.gpg
@@ -90,25 +90,25 @@ export function keysToQuickPickItems(
   fingerprint: string;
   keyId: string;
 }[] {
-  const arr = keyarray.map(k => ({
+  const arr = keyarray.map((k) => ({
     label: k.userIds.join(','),
     description: k.validityDescription,
     detail: k.fingerprint + ', ' + k.validityDescription,
     validity: k.validity,
     userId: k.userIds[0],
     fingerprint: k.fingerprint,
-    keyId: k.keyId
+    keyId: k.keyId,
   }));
 
   return arr;
 }
 
 export function filterKeys(keys: Map<string, GnuPGKey>, predicate: (k: GnuPGKey) => boolean): Array<GnuPGKey> {
-  return Array.from(keys.values()).filter(k => predicate(k));
+  return Array.from(keys.values()).filter((k) => predicate(k));
 }
 
 export function runInTerminal(command: string) {
-  const terminal = vscode.window.createTerminal(i18n().GnuPGTerminal);
+  const terminal = window.createTerminal(i18n().GnuPGTerminal);
   terminal.show();
   terminal.sendText(command, false);
 }
@@ -116,13 +116,13 @@ export function runInTerminal(command: string) {
 export function copyToClipboard(text: string) {
   switch (process.platform) {
     case 'darwin':
-      cp.exec('echo ' + text + ' | pbcopy');
+      exec('echo ' + text + ' | pbcopy');
       break;
     case 'win32':
-      cp.exec('echo ' + text + ' | clip');
+      exec('echo ' + text + ' | clip');
       break;
     case 'linux':
-      cp.exec('echo ' + text + ' | xclip -selection c');
+      exec('echo ' + text + ' | xclip -selection c');
       break;
     default:
       throw new Error(i18n().GnuPGNotSupportedPlatform + "'" + process.platform + "'");
@@ -130,11 +130,7 @@ export function copyToClipboard(text: string) {
 }
 
 export function bufferToLines(stdout: Buffer): string[] {
-  let lines = stdout
-    .toString()
-    .replace(/\r/g, '')
-    .trim()
-    .split(/\n/g);
+  let lines = stdout.toString().replace(/\r/g, '').trim().split(/\n/g);
 
   return lines;
 }

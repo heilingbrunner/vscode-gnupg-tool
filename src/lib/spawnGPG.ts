@@ -9,9 +9,7 @@
  */
 
 import { spawn } from 'child_process';
-import { createReadStream as readStream } from 'fs';
-import { createWriteStream as writeStream } from 'fs';
-
+import { createReadStream, createWriteStream } from 'fs';
 
 export type cbfunc = {
   (err?: Error, stdout?: Buffer, stderr?: Buffer, data?: string): void;
@@ -28,7 +26,6 @@ export type options = { source?: any; dest?: any };
  * @param  {Function} cb          Callback.
  */
 export function spawnGPG(stdin: any, defaultArgs: any, args: string[], cb?: cbfunc) {
-
   cb = once(cb);
 
   var gpgArgs = (args || []).concat(defaultArgs);
@@ -37,16 +34,16 @@ export function spawnGPG(stdin: any, defaultArgs: any, args: string[], cb?: cbfu
   var data = '';
   var gpg = spawnIt(gpgArgs, cb);
 
-  gpg.stdout.on('data', function(buff) {
+  gpg.stdout.on('data', function (buff) {
     buffer.push(buff);
     bufferLength += buff.length;
   });
 
-  gpg.stderr.on('data', function(buff) {
+  gpg.stderr.on('data', function (buff) {
     data += buff.toString('utf8');
   });
 
-  gpg.on('close', function(code) {
+  gpg.on('close', function (code) {
     if (cb) {
       var stdout = Buffer.concat(buffer, bufferLength);
       if (code !== 0) {
@@ -86,7 +83,7 @@ export function streaming(options: options, args: any, cb: cbfunc) {
   if (!isSourceStream) {
     // This will throw if the file doesn't exist
     try {
-      sourceStream = readStream(options.source);
+      sourceStream = createReadStream(options.source);
     } catch (e) {
       return cb(new Error(options.source + ' does not exist. Error: ' + e.message));
     }
@@ -97,7 +94,7 @@ export function streaming(options: options, args: any, cb: cbfunc) {
   var destStream;
   if (!isDestStream) {
     try {
-      destStream = writeStream(options.dest);
+      destStream = createWriteStream(options.dest);
     } catch (e) {
       return cb(new Error('Error opening ' + options.dest + '. Error: ' + e.message));
     }
@@ -109,7 +106,7 @@ export function streaming(options: options, args: any, cb: cbfunc) {
   var gpg = spawnIt(args, cb);
 
   if (!isDestStream) {
-    gpg.on('close', function(code) {
+    gpg.on('close', function (code) {
       cb(undefined);
     });
   } else {
@@ -123,7 +120,7 @@ export function streaming(options: options, args: any, cb: cbfunc) {
 
 // Wrapper around spawn. Catches error events and passed global args.
 function spawnIt(args: string[], cb: cbfunc) {
-  var gpg = spawn('gpg', (args || []));
+  var gpg = spawn('gpg', args || []);
   gpg.on('error', cb);
   return gpg;
 }
@@ -131,7 +128,7 @@ function spawnIt(args: string[], cb: cbfunc) {
 // Ensures a callback is only ever called once.
 function once(cb?: cbfunc) {
   var called = false;
-  return function() {
+  return function () {
     if (called) {
       return;
     }
@@ -141,7 +138,7 @@ function once(cb?: cbfunc) {
       let stdout = arguments[1];
       let stderr = arguments[2];
       let data = arguments[3];
-      cb(err,stdout,stderr,data);
+      cb(err, stdout, stderr, data);
     }
   };
 }

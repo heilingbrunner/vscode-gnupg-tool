@@ -1,31 +1,27 @@
-import * as vscode from 'vscode';
+import { TextDocumentContentProvider, Uri, window } from 'vscode';
 import { GnuPGKey } from './gnupgkey';
-import { i18n } from './i18n';
 import {
-  parseKeys,
   asyncDecryptBuffer,
   asyncEncryptAsymBuffer,
   asyncEncryptSymBuffer,
   asyncListPublicKeys,
-  asyncVerify
+  asyncVerify,
+  parseKeys,
 } from './gnupglib';
-import {
-  filterKeys,
-  getContent,
-  keysToQuickPickItems
-} from './utils';
+import { i18n } from './i18n';
+import { filterKeys, getContent, keysToQuickPickItems } from './utils';
 
-export default class GnuPGProvider implements vscode.TextDocumentContentProvider {
-  public provideTextDocumentContent(uri: vscode.Uri): Thenable<string> {
-    let newUri: vscode.Uri;
+export default class GnuPGProvider implements TextDocumentContentProvider {
+  public provideTextDocumentContent(uri: Uri): Thenable<string> {
+    let newUri: Uri;
     switch (uri.authority) {
       case 'decrypt':
         newUri = uri.with({
           scheme: 'file',
           authority: '',
-          path: uri.fsPath.slice(0, -(' - ' + i18n().Decrypted).length)
+          path: uri.fsPath.slice(0, -(' - ' + i18n().Decrypted).length),
         });
-        return new Promise(async resolve => {
+        return new Promise(async (resolve) => {
           try {
             const content = await getContent(newUri);
             const decrypted = await asyncDecryptBuffer(content);
@@ -40,7 +36,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         newUri = uri.with({
           scheme: 'file',
           authority: '',
-          path: uri.fsPath.slice(0, -(' - ' + i18n().Encrypted).length)
+          path: uri.fsPath.slice(0, -(' - ' + i18n().Encrypted).length),
         });
         return new Promise(async (resolve, reject) => {
           try {
@@ -49,9 +45,9 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
             const map = parseKeys(stdout);
             const keys = filterKeys(map, (k: GnuPGKey) => k.isValidToEncrypt);
             const quickpickitems = keysToQuickPickItems(keys);
-            const recipients = await vscode.window.showQuickPick(quickpickitems, {
+            const recipients = await window.showQuickPick(quickpickitems, {
               placeHolder: i18n().SelectRecipients,
-              canPickMany: true
+              canPickMany: true,
             });
 
             if (recipients && recipients.length > 0) {
@@ -70,9 +66,9 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         newUri = uri.with({
           scheme: 'file',
           authority: '',
-          path: uri.fsPath.slice(0, -(' - ' + i18n().Encrypted).length)
+          path: uri.fsPath.slice(0, -(' - ' + i18n().Encrypted).length),
         });
-        return new Promise(async resolve => {
+        return new Promise(async (resolve) => {
           try {
             const content = await getContent(newUri);
             const encrypted = await asyncEncryptSymBuffer(content);
@@ -87,9 +83,9 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         newUri = uri.with({
           scheme: 'file',
           authority: '',
-          path: uri.fsPath.slice(0, -(' - ' + i18n().Verified).length)
+          path: uri.fsPath.slice(0, -(' - ' + i18n().Verified).length),
         });
-        return new Promise(async resolve => {
+        return new Promise(async (resolve) => {
           try {
             const verification = await asyncVerify(newUri);
 
@@ -100,7 +96,7 @@ export default class GnuPGProvider implements vscode.TextDocumentContentProvider
         });
 
       default:
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           resolve('.');
         });
     }
