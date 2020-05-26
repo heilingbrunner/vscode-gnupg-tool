@@ -724,7 +724,7 @@ async function encryptAsymSelection(editor: TextEditor) {
     const selection = editor.selection;
     const content = new Buffer(editor.document.getText(selection));
 
-    if (content && content.length > 0) {
+    if (content.length > 0) {
       try {
         switch (GnuPGGlobal.majorVersion) {
           case 1:
@@ -765,7 +765,7 @@ async function encryptSymmSelection(editor: TextEditor) {
     const selection = editor.selection;
     const content = new Buffer(editor.document.getText(selection));
 
-    if (content && content.length > 0) {
+    if (content.length > 0) {
       try {
         switch (GnuPGGlobal.majorVersion) {
           case 1:
@@ -789,7 +789,7 @@ async function encryptSymmSelection(editor: TextEditor) {
 }
 
 async function encryptAsymFile(uri: Uri) {
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc)$/i)) {
       window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
     } else {
@@ -810,7 +810,7 @@ async function encryptAsymFile(uri: Uri) {
 }
 
 async function encryptSymmFile(uri: Uri) {
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc)$/i)) {
       window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
     } else {
@@ -831,7 +831,7 @@ async function encryptSymmFile(uri: Uri) {
 }
 
 async function encryptPreviewAsym(uri: Uri) {
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc)$/i)) {
       window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
     } else {
@@ -852,7 +852,7 @@ async function encryptPreviewAsym(uri: Uri) {
 }
 
 async function encryptPreviewSymm(uri: Uri) {
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc)$/i)) {
       window.showInformationMessage(i18n().GnuPGFileAlreadyEncrypted);
     } else {
@@ -877,7 +877,7 @@ async function decryptSelection(editor: TextEditor) {
     const selection = editor.selection;
     const content = new Buffer(editor.document.getText(selection));
 
-    if (content && content.length > 0) {
+    if (content.length > 0) {
       try {
         switch (GnuPGGlobal.majorVersion) {
           case 1:
@@ -906,7 +906,7 @@ async function decryptSelection(editor: TextEditor) {
 }
 
 async function decryptFile(uri: Uri) {
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(asc|gpg)$/i)) {
       decryptUri(uri);
     } else {
@@ -933,7 +933,7 @@ async function decryptPreview(uri: Uri) {
       break;
 
     case 2:
-      if (uri !== undefined && uri.scheme === 'file') {
+      if (uri.scheme === 'file') {
         if (uri.fsPath.match(/\.(asc|gpg)$/i)) {
           launchGnuPGProviderForDecrypt(uri);
         } else {
@@ -958,7 +958,7 @@ async function decryptPreview(uri: Uri) {
 }
 
 async function signFile(uri: Uri) {
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     if (!uri.fsPath.match(/\.(sig)$/i)) {
       signUri(uri);
     } else {
@@ -979,7 +979,7 @@ async function signFile(uri: Uri) {
 }
 
 async function clearSignFile(uri: Uri) {
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     if (!uri.fsPath.match(/\.(sig)$/i)) {
       clearSignUri(uri);
     } else {
@@ -1000,7 +1000,7 @@ async function clearSignFile(uri: Uri) {
 }
 
 async function verifyFile(uri: Uri) {
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     if (uri.fsPath.match(/\.(sig|asc)$/i)) {
       launchGnuPGProviderForVerify(uri);
     } else {
@@ -1030,7 +1030,7 @@ async function endSession() {
 }
 
 async function importKeys(uri: Uri) {
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     try {
       const result = await asyncImportKeys(uri);
       let txt = result.toString();
@@ -1067,7 +1067,7 @@ async function exportPublicKeys(uri: Uri) {
     placeHolder: i18n().SelectKeyToExport,
     canPickMany: false,
   });
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     try {
       const result = asyncExportPublicKeys(uri, user);
       let txt = result.toString();
@@ -1101,7 +1101,7 @@ async function exportPrivateKeys(uri: Uri) {
     placeHolder: i18n().SelectKeyToExport,
     canPickMany: false,
   });
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     try {
       const result = await asyncExportSecretKeys(uri, user);
       let txt = result.toString();
@@ -1135,7 +1135,7 @@ async function exportPrivateSubKeys(uri: Uri) {
     placeHolder: i18n().SelectKeyToExport,
     canPickMany: false,
   });
-  if (uri !== undefined && uri.scheme === 'file') {
+  if (uri.scheme === 'file') {
     try {
       const result = await asyncExportSecretSubKeys(uri, user);
       let txt = result.toString();
