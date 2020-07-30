@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.3.8] - 2020-07-30
+
+- security update
+
 ## [1.3.7] - 2020-07-23
 
 - french translation improved
