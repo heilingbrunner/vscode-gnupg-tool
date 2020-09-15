@@ -30,7 +30,7 @@ export class GnuPGGlobal {
   static setVersion(version: string | undefined) {
     if (version) {
       const match = version.match(/(\d+)\.(\d+).(\d+)/);
-      if (match && match.length === 4) {
+      if (match?.length === 4) {
         GnuPGGlobal._majorVersion = parseInt(match[1]);
         GnuPGGlobal._minorVersion = parseInt(match[2]);
         GnuPGGlobal._patchVersion = parseInt(match[3]);
