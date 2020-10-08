@@ -60,7 +60,7 @@ export class GnuPGKey {
 
   static getUserIdDetails(userId: string): { name: string; email: string } {
     const match = userId.match(/(.*)\s*<(.*)>/);
-    if (match?.length === 3) {
+    if (match && match.length === 3) {
       return { name: match[1].trim(), email: match[2].trim() };
     }
 

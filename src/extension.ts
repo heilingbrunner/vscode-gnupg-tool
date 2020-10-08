@@ -1079,7 +1079,7 @@ async function exportPublicKeys(uri: Uri) {
     const option: SaveDialogOptions = { defaultUri: getWorkspaceUri(), filters: { 'Public Key': ['pub.key'] } };
     const uriSelected = await window.showSaveDialog(option);
 
-    if (uriSelected?.scheme === 'file') {
+    if (uriSelected && uriSelected.scheme === 'file') {
       try {
         const result = await asyncExportPublicKeys(uriSelected, user);
         let txt = result.toString();
@@ -1113,7 +1113,7 @@ async function exportPrivateKeys(uri: Uri) {
     const option: SaveDialogOptions = { defaultUri: getWorkspaceUri(), filters: { 'Secret Key': ['sec.key'] } };
     const uriSelected = await window.showSaveDialog(option);
 
-    if (uriSelected?.scheme === 'file') {
+    if (uriSelected && uriSelected.scheme === 'file') {
       try {
         const result = await asyncExportSecretKeys(uriSelected, user);
         let txt = result.toString();
@@ -1150,7 +1150,7 @@ async function exportPrivateSubKeys(uri: Uri) {
     };
     const uriSelected = await window.showSaveDialog(option);
 
-    if (uriSelected?.scheme === 'file') {
+    if (uriSelected && uriSelected.scheme === 'file') {
       try {
         const result = await asyncExportSecretSubKeys(uriSelected, user);
         let txt = result.toString();
