@@ -6,7 +6,6 @@
 
 ## What's new in GnuPG-Tool
 
-- french translation improved
 - security update
 
 ## Features
