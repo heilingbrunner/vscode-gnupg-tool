@@ -23,6 +23,8 @@
   "command.ExportSecretKeys.title": "导出密钥",
   "command.ExportSecretSubKeys.title": "导出秘密子密钥",
   "command.GenerateKey.title": "生成密钥",
+  "command.GitSetUserSigningKey.title": "Git: Set User.SigningKey",
+  "command.GitUnsetUserSigningKey.title": "Git: Unset User.SigningKey",
   "command.ImportKeys.title": "导入密钥",
   "command.Keys.title": "按键 ...",
   "command.ListPublicKeys.title": "列出公钥",

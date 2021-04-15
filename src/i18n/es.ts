@@ -27,6 +27,8 @@ const translation: Ii18n = {
   CommandExportSecretSubKeys: 'Claves secundarias secretas de exportación',
   CommandImportKeys: 'Claves de importación',
   CommandGenerateKey: 'Generar clave (via Terminal)',
+  CommandGitSetUserSigningKey: 'Git Set User.SigningKey',
+  CommandGitUnsetUserSigningKey: 'Git Unset User.SigningKey',
   CommandKeys: 'Llaves ...',
   CommandListPublicKeys: 'Lista de claves públicas',
   CommandListSecretKeys: 'Lista de claves secretas',
@@ -52,6 +54,8 @@ const translation: Ii18n = {
   GnuPGFileIsNotASignature: 'GnuPG: El archivo no es una firma (*.sig|*.asc).',
   GnuPGFileNotEncrypted: 'GnuPG: Archivo no cifrado (*.asc|*.gpg).',
   GnuPGFileSignedSuccessfully: 'GnuPG: Archivo firmado correctamente.',
+  GnuPGGitSetUserSigningKeyFailed: '',
+  GnuPGGitUnsetUserSigningKeyFailed: '',
   GnuPGGnuPGNotAvailable: 'GnuPG: GnuPG no disponible!',
   GnuPGKeyExportFailed: 'GnuPG: La exportación de clave falló!',
   GnuPGKeyExportSuccessfully: 'GnuPG: Exportación clave exitosa.',
@@ -71,6 +75,7 @@ const translation: Ii18n = {
   GnuPGSecretKey: 'GnuPG Llave secreta',
   GnuPGSecretKeyDeletedSuccessfully: 'GnuPG: Clave secreta eliminada exitosamente',
   GnuPGSelectPublicKey: 'Seleccionar clave pública ...',
+  GnuPGSelectSigningKey: 'Select Signing Key ...',
   GnuPGShowSmartcardFailed: 'GnuPG: Mostrar tarjeta inteligente falló!',
   GnuPGSignFailed: 'GnuPG: Firma fallida!',
   GnuPGSwitchToTerminalAndHitReturn: 'Cambia a terminal y pulsa <RETURN>',
@@ -81,7 +86,7 @@ const translation: Ii18n = {
   SelectKeyToExport: 'Seleccionar clave para exportar ...',
   SelectRecipients: 'Seleccionar destinatarios ...',
   SelectSigner: 'Seleccionar firmante ...',
-  Verified: 'verificado'
+  Verified: 'verificado',
 };
 
 export default translation;

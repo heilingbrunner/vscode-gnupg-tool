@@ -21,6 +21,8 @@ import {
   argsEditKey,
   argsEncryptSymUri,
   argsGenerateKey,
+  argsGitSetUserSigningKey,
+  argsGitUnsetUserSigningKey,
   argsSign,
   asyncCheckVersion,
   asyncCheckWorkspaceAsHomeDir,
@@ -617,6 +619,28 @@ export async function activate(context: ExtensionContext) {
       }
 
       copyKeyIdToClipboard();
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand('extension.GitSetUserSigningKey', async () => {
+      if (!GnuPGGlobal.available) {
+        window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
+      gitSetUserSigningKey();
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand('extension.GitUnsetUserSigningKey', async () => {
+      if (!GnuPGGlobal.available) {
+        window.showInformationMessage(i18n().GnuPGNotAvailable);
+        return;
+      }
+
+      gitUnsetUserSigningKey();
     })
   );
 
@@ -1458,5 +1482,42 @@ async function copyKeyIdToClipboard() {
     }
   } catch (err) {
     window.showErrorMessage(i18n().GnuPGCopyFingerprintToClipboardFailed + ' ' + err);
+  }
+}
+
+async function gitSetUserSigningKey() {
+  try {
+    const stdout = await asyncListSecretKeys();
+    const map = parseKeys(stdout);
+    const keys = filterKeys(map, (k: GnuPGKey) => true); // list all keys !!
+    const quickpickitems = keysToQuickPickItems(keys);
+    const seckey = await window.showQuickPick(quickpickitems, {
+      placeHolder: i18n().GnuPGSelectSigningKey,
+      canPickMany: false,
+    });
+
+    if (seckey) {
+      //v1,2
+      const args = argsGitSetUserSigningKey(seckey);
+      const command = 'git ' + args.join(' ');
+      copyToClipboard(command);
+      runInTerminal(command);
+      window.showInformationMessage(i18n().GnuPGSwitchToTerminalAndHitReturn);
+    }
+  } catch (err) {
+    window.showErrorMessage(i18n().GnuPGGitSetUserSigningKeyFailed + ' ' + err);
+  }
+}
+
+async function gitUnsetUserSigningKey() {
+  try {
+    //v1,2
+    const args = argsGitUnsetUserSigningKey();
+    const command = 'git ' + args.join(' ');
+    //copyToClipboard(command);
+    runInTerminal(command);
+    window.showInformationMessage(i18n().GnuPGSwitchToTerminalAndHitReturn);
+  } catch (err) {
+    window.showErrorMessage(i18n().GnuPGGitUnsetUserSigningKeyFailed + ' ' + err);
   }
 }

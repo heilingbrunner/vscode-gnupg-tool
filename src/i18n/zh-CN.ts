@@ -27,6 +27,8 @@ const translation: Ii18n = {
   CommandExportSecretSubKeys: '导出秘密子密钥',
   CommandImportKeys: '导入密钥',
   CommandGenerateKey: '生成密钥 （通过终端）',
+  CommandGitSetUserSigningKey: 'Git Set User.SigningKey',
+  CommandGitUnsetUserSigningKey: 'Git Unset User.SigningKey',
   CommandKeys: '按键 ...',
   CommandListPublicKeys: '列出公钥',
   CommandListSecretKeys: '列出密钥',
@@ -52,6 +54,8 @@ const translation: Ii18n = {
   GnuPGFileIsNotASignature: 'GnuPG: 文件不是签名 (*.sig|*.asc).',
   GnuPGFileNotEncrypted: 'GnuPG: 文件未加密 (*.asc|*.gpg).',
   GnuPGFileSignedSuccessfully: 'GnuPG: 文件签名成功.',
+  GnuPGGitSetUserSigningKeyFailed: '',
+  GnuPGGitUnsetUserSigningKeyFailed: '',
   GnuPGGnuPGNotAvailable: 'GnuPG: GnuPG 无法使用!',
   GnuPGKeyExportFailed: 'GnuPG: 密钥导出失败!',
   GnuPGKeyExportSuccessfully: 'GnuPG: 密钥导出成功!',
@@ -71,6 +75,7 @@ const translation: Ii18n = {
   GnuPGSecretKey: 'GnuPG 密钥',
   GnuPGSecretKeyDeletedSuccessfully: 'GnuPG: 密钥已成功删除',
   GnuPGSelectPublicKey: '选择公钥 ...',
+  GnuPGSelectSigningKey: 'Select Signing Key ...',
   GnuPGShowSmartcardFailed: 'GnuPG: 节目 Smartcard 失败!',
   GnuPGSignFailed: 'GnuPG: 签名失败!',
   GnuPGSwitchToTerminalAndHitReturn: '切换到终端并按 <RETURN>',
@@ -81,7 +86,7 @@ const translation: Ii18n = {
   SelectKeyToExport: '选择要导出的密钥 ...',
   SelectRecipients: '选择收件人 ...',
   SelectSigner: '选择签名者 ...',
-  Verified: '验证'
+  Verified: '验证',
 };
 
 export default translation;

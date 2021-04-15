@@ -26,6 +26,8 @@ const translation: Ii18n = {
   CommandExportSecretKeys: 'Geheime Schlüssel exportieren',
   CommandExportSecretSubKeys: 'Geheime Sub-Schlüssel exportieren',
   CommandGenerateKey: 'Schlüssel erzeugen (über Terminal)',
+  CommandGitSetUserSigningKey: 'Git Set User.SigningKey',
+  CommandGitUnsetUserSigningKey: 'Git Unset User.SigningKey',
   CommandKeys: 'Schlüssel ...',
   CommandImportKeys: 'Schlüssel importieren',
   CommandListPublicKeys: 'Öffentliche Schlüssel auflisten',
@@ -52,6 +54,8 @@ const translation: Ii18n = {
   GnuPGFileIsNotASignature: 'GnuPG: Datei ist keine Signatur (*.sig|*.asc).',
   GnuPGFileNotEncrypted: 'GnuPG: Datei nicht verschlüsselt (*.asc|*.gpg).',
   GnuPGFileSignedSuccessfully: 'GnuPG: Datei erfolgreich signiert.',
+  GnuPGGitSetUserSigningKeyFailed: '',
+  GnuPGGitUnsetUserSigningKeyFailed: '',
   GnuPGGnuPGNotAvailable: 'GnuPG: GnuPG nicht verfügbar!',
   GnuPGKeyExportFailed: 'GnuPG: Schlüsselexport fehlgeschlagen!',
   GnuPGKeyExportSuccessfully: 'GnuPG: Schlüsselexport erfolgreich.',
@@ -71,6 +75,7 @@ const translation: Ii18n = {
   GnuPGSecretKey: 'GnuPG Geheime Schlüssel',
   GnuPGSecretKeyDeletedSuccessfully: 'GnuPG: Geheimen Schlüssel erfolgreich gelöscht',
   GnuPGSelectPublicKey: 'Öffentlichen Schlüssel auswählen ...',
+  GnuPGSelectSigningKey:'Schlüssel auswählen ...',
   GnuPGShowSmartcardFailed: 'GnuPG: Anzeigen der Smartcard fehlgeschlagen!',
   GnuPGSignFailed: 'GnuPG: Signieren fehlgeschlagen!',
   GnuPGSwitchToTerminalAndHitReturn: 'Wechsel ins Terminal und drücke <RETURN>',
@@ -81,7 +86,7 @@ const translation: Ii18n = {
   SelectKeyToExport: 'Schlüssel für Export auswählen ...',
   SelectRecipients: 'Empfänger auswählen ...',
   SelectSigner: 'Unterzeichner auswählen ...',
-  Verified: 'verifiziert'
+  Verified: 'verifiziert',
 };
 
 export default translation;

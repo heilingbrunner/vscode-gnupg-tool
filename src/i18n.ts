@@ -31,6 +31,8 @@ export interface Ii18n {
   CommandExportSecretKeys: string;
   CommandExportSecretSubKeys: string;
   CommandGenerateKey: string;
+  CommandGitSetUserSigningKey: string;
+  CommandGitUnsetUserSigningKey: string;
   CommandKeys: string;
   CommandImportKeys: string;
   CommandListPublicKeys: string;
@@ -70,12 +72,15 @@ export interface Ii18n {
   GnuPGNoTextSelectedForEncryption: string;
   GnuPGFunctionIsNotSupportedWithVersion1x: string;
   GnuPGFunctionIsNotSupportedWithVersion2x: string;
+  GnuPGGitSetUserSigningKeyFailed: string;
+  GnuPGGitUnsetUserSigningKeyFailed: string;
   GnuPGNotSupportedPlatform: string;
   GnuPGPublicKey: string;
   GnuPGPublicKeyDeletedSuccessfully: string;
   GnuPGSecretKey: string;
   GnuPGSecretKeyDeletedSuccessfully: string;
   GnuPGSelectPublicKey: string;
+  GnuPGSelectSigningKey: string;
   GnuPGShowSmartcardFailed: string;
   GnuPGSignFailed: string;
   GnuPGSwitchToTerminalAndHitReturn: string;

@@ -439,6 +439,27 @@ export function argsDeletePublicKey(key?: { fingerprint: string; userId: string 
   return args;
 }
 
+export function argsGitSetUserSigningKey(key?: { fingerprint: string; userId: string }) {
+  let args: string[] = [];
+
+  ////git config --global user.signingkey <keyid>
+  if (key) {
+    args = GnuPGGlobal.homedirArg;
+    args = args.concat(['config', '--global', 'user.signingkey', key.fingerprint]);
+  }
+
+  return args;
+}
+
+export function argsGitUnsetUserSigningKey() {
+  let args: string[] = [];
+
+  //git config --global --unset user.signingkey <keyid>
+  args = args.concat(['config', '--global', '--unset', 'user.signingkey']);
+
+  return args;
+}
+
 export async function asyncDeletePublicKey(key?: { fingerprint: string; userId: string }): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     if (key) {

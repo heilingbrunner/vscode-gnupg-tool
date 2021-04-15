@@ -23,6 +23,8 @@
   "command.ExportSecretKeys.title": "Экспорт секретных ключей",
   "command.ExportSecretSubKeys.title": "Экспорт секретных суб-ключей",
   "command.GenerateKey.title": "Создать ключ",
+  "command.GitSetUserSigningKey.title": "Git: Set User.SigningKey",
+  "command.GitUnsetUserSigningKey.title": "Git: Unset User.SigningKey",
   "command.ImportKeys.title": "Ключи импорта",
   "command.Keys.title": "Ключи ...",
   "command.ListPublicKeys.title": "Список открытых ключей",
