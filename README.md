@@ -149,3 +149,7 @@ GnuPG does not work perfectly in the VSCode terminal, or in other terminal emula
 #### Debian
 
 - Refer to [GnuPG binary releases](https://gnupg.org/download/)
+
+#### Raspbian
+
+- additional `QT based PIN or pass-phrase entry dialog for GnuPG`, or equivalent, is required

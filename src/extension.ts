@@ -68,7 +68,7 @@ export async function activate(context: ExtensionContext) {
   try {
     await checkGnuPG(false);
     await asyncKillGpgAgent();
-  } catch {}
+  } catch { }
 
   context.subscriptions.push(
     workspace.registerTextDocumentContentProvider('virtual-document', new VirtualDocumentProvider())
@@ -655,17 +655,19 @@ export async function activate(context: ExtensionContext) {
 export function deactivate() {
   try {
     asyncKillGpgAgent();
-  } catch {}
+  } catch { }
   statusBarItem.hide();
 }
 
 // Commands .......................................................
 
 async function checkGnuPG(onConfigChanged: boolean) {
+  //Reset previous homedir
+  const previousWasNotDefaultHomedir = GnuPGGlobal.homedir !== undefined;
+  GnuPGGlobal.homedir = undefined;
+  GnuPGGlobal.available = false;
+  
   try {
-    //Reset previous homedir
-    const previousWasNotDefaultHomedir = GnuPGGlobal.homedir !== undefined;
-    GnuPGGlobal.homedir = undefined;
 
     // 1. Check workspace with local keyring
     // 2. When not 1., then check vscode configuration
@@ -694,24 +696,29 @@ async function checkGnuPG(onConfigChanged: boolean) {
       const version = linesToVersion(lines);
       const home = linesToHome(lines);
 
-      GnuPGGlobal.setVersion(version);
-      GnuPGGlobal.available = true;
+      if (version != undefined && home != undefined) {
 
-      // console.log(home + '<--->' + GnuPGGlobal.homedir);
+        GnuPGGlobal.setVersion(version);
+        GnuPGGlobal.available = true;
 
-      if (onConfigChanged) {
-        if (GnuPGGlobal.homedir) {
-          window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + GnuPGGlobal.homedir);
+        // console.log(home + '<--->' + GnuPGGlobal.homedir);
+
+        if (onConfigChanged) {
+          if (GnuPGGlobal.homedir) {
+            window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + GnuPGGlobal.homedir);
+          } else {
+            window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + home);
+          }
         } else {
-          window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + home);
+          if (GnuPGGlobal.homedir) {
+            window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + GnuPGGlobal.homedir);
+          }
         }
-      } else {
-        if (GnuPGGlobal.homedir) {
-          window.showInformationMessage(i18n().GnuPGUsingHomedir + '=' + GnuPGGlobal.homedir);
-        }
-      }
 
-      statusBarItem_show(GnuPGGlobal.majorVersion + '.' + GnuPGGlobal.minorVersion + '.' + GnuPGGlobal.patchVersion);
+        statusBarItem_show(GnuPGGlobal.majorVersion + '.' + GnuPGGlobal.minorVersion + '.' + GnuPGGlobal.patchVersion);
+      } else {
+        statusBarItem_show('$(question) Undefined.');
+      }
     }
   } catch (err) {
     statusBarItem_show(i18n().GnuPGNotAvailable);
