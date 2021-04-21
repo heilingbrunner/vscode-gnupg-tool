@@ -696,7 +696,7 @@ async function checkGnuPG(onConfigChanged: boolean) {
       const version = linesToVersion(lines);
       const home = linesToHome(lines);
 
-      if (version != undefined && home != undefined) {
+      if (version !== undefined && home !== undefined) {
 
         GnuPGGlobal.setVersion(version);
         GnuPGGlobal.available = true;
