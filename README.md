@@ -10,7 +10,7 @@
 
 ## Features
 
-- Supports GnuPG v1.4 and v2.2
+- Supports GnuPG v1.4, v2.2 and v2.3
 - __Check__ GnuPG availability/version.
 - Encryption for multiple __recipients__ or with simple __passphrase__
 - __Encrypt__/__decrypt__ text or file to text, file or preview
