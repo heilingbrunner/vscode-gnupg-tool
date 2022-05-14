@@ -9,8 +9,8 @@ import {
   asyncCheckVersion,
   asyncListPublicKeys,
   asyncListSecretKeys
-} from "../gnupglib";
-import { GnuPGGlobal } from "../gnupgglobal";
+} from "../../gnupglib";
+import { GnuPGGlobal } from "../../gnupgglobal";
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it

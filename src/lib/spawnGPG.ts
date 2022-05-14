@@ -85,7 +85,11 @@ export function streaming(options: options, args: any, cb: cbfunc) {
     try {
       sourceStream = createReadStream(options.source);
     } catch (e) {
-      return cb(new Error(options.source + ' does not exist. Error: ' + e.message));
+      let msg
+      if (e instanceof Error) msg = e.message
+      else msg = String(e)
+      
+      return cb(new Error(options.source + ' does not exist. Error: ' + msg));
     }
   } else {
     sourceStream = options.source;
@@ -96,7 +100,11 @@ export function streaming(options: options, args: any, cb: cbfunc) {
     try {
       destStream = createWriteStream(options.dest);
     } catch (e) {
-      return cb(new Error('Error opening ' + options.dest + '. Error: ' + e.message));
+      let msg
+      if (e instanceof Error) msg = e.message
+      else msg = String(e)
+
+      return cb(new Error('Error opening ' + options.dest + '. Error: ' + msg));
     }
   } else {
     destStream = options.dest;

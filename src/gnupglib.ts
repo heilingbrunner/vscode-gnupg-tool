@@ -8,18 +8,22 @@ import { call, callStreaming, decrypt, decryptToFile, encrypt } from './lib/gpg'
 import { getWorkspaceUri, isKeyRingDirectory } from './utils';
 
 export async function asyncCheckVersion(): Promise<Buffer> {
+
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGGlobal.homedirArg;
     args = args.concat(['--version']);
 
-    call('', args, (err?: Error, stdout?: Buffer) => {
+    call('', args, (err?: Error, stdout?: Buffer | PromiseLike<Buffer>) => {
       if (err) {
         reject(getLastGnuPGError(err));
       } else {
-        resolve(stdout);
+        if (stdout) {
+          resolve(stdout);
+        }
       }
     });
   });
+
 }
 
 export async function asyncCheckWorkspaceAsHomeDir(): Promise<string | undefined> {
@@ -42,7 +46,12 @@ export async function asyncListPublicKeys(): Promise<Buffer> {
     args = args.concat(['-k', '--with-colons', '--fingerprint']);
 
     call('', args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        if (stdout)
+          resolve(stdout);
+      }
     });
   });
 }
@@ -53,7 +62,12 @@ export async function asyncListSecretKeys(): Promise<Buffer> {
     args = args.concat(['-K', '--with-colons', '--fingerprint']);
 
     call('', args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        if (stdout)
+          resolve(stdout);
+      }
     });
   });
 }
@@ -70,7 +84,12 @@ export async function asyncEncryptAsymBuffer(content: Buffer, keys?: { fingerpri
     }
 
     encrypt(content, args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        if (stdout)
+          resolve(stdout);
+      }
     });
   });
 }
@@ -81,7 +100,12 @@ export async function asyncEncryptSymBuffer(content: Buffer): Promise<Buffer> {
     args = args.concat(['--armor', '--symmetric']);
 
     call(content, args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        if (stdout)
+          resolve(stdout);
+      }
     });
   });
 }
@@ -100,7 +124,12 @@ export async function asyncEncryptAsymUri(uri: Uri, keys?: { fingerprint: string
     args = args.concat(['--encrypt', uri.fsPath]);
 
     callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        if (stdout)
+          resolve(stdout);
+      }
     });
   });
 }
@@ -133,7 +162,12 @@ export async function asyncEncryptSymUri(uri: Uri): Promise<Buffer> {
     let args = argsEncryptSymUri(uri);
 
     callStreaming(uri.fsPath, uri.fsPath + '.asc', args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        if (stdout)
+          resolve(stdout);
+      }
     });
   });
 }
@@ -142,7 +176,12 @@ export async function asyncDecryptBuffer(content: Buffer): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     let args = GnuPGGlobal.homedirArg;
     decrypt(content, args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        if (stdout)
+          resolve(stdout);
+      }
     });
   });
 }
@@ -184,7 +223,12 @@ export async function asyncDecryptUri(uri: Uri): Promise<Buffer> {
     let args = argsDecryptUri(uri);
 
     decryptToFile({ source: uri.fsPath, dest: dest }, args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        if (stdout)
+          resolve(stdout);
+      }
     });
   });
 }
@@ -195,7 +239,12 @@ export async function asyncShowSmartcard(): Promise<Buffer> {
     args = args.concat(['--batch', '--yes', '--card-status']);
 
     call('', args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        if (stdout)
+          resolve(stdout);
+      }
     });
   });
 }
@@ -231,10 +280,10 @@ export async function asyncExec(cmd: string, opts: ExecOptions): Promise<void> {
         err
           ? reject(err)
           : // : resolve({           -> Promise<{ stdout: string; stderr: string }>
-            //   stdout: stdout,
-            //   stderr: stderr
-            // })
-            resolve() //           -> Promise<void>
+          //   stdout: stdout,
+          //   stderr: stderr
+          // })
+          resolve() //           -> Promise<void>
     );
   });
 }
@@ -260,7 +309,12 @@ export async function asyncSign(uri: Uri, key?: { fingerprint: string }): Promis
     let args = argsSign(uri, key);
 
     call('', args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        if (stdout)
+          resolve(stdout);
+      }
     });
   });
 }
@@ -300,7 +354,12 @@ export async function asyncClearSign(uri: Uri, key?: { fingerprint: string }): P
     let args = argsClearSign(uri, key);
 
     call('', args, (err?: Error, stdout?: Buffer) => {
-      err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+      if (err) {
+        reject(getLastGnuPGError(err));
+      } else {
+        if (stdout)
+          resolve(stdout);
+      }
     });
   });
 }
@@ -466,7 +525,12 @@ export async function asyncDeletePublicKey(key?: { fingerprint: string; userId: 
       let args = argsDeletePublicKey(key);
 
       call('', args, (err?: Error, stdout?: Buffer) => {
-        err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+        if (err) {
+          reject(getLastGnuPGError(err));
+        } else {
+          if (stdout)
+            resolve(stdout);
+        }
       });
     }
   });
@@ -491,7 +555,12 @@ export async function asyncDeleteSecretKey(key?: { fingerprint: string; userId: 
       let args = argsDeleteSecretKey(key);
 
       call('', args, (err?: Error, stdout?: Buffer) => {
-        err ? reject(getLastGnuPGError(err)) : resolve(stdout);
+        if (err) {
+          reject(getLastGnuPGError(err));
+        } else {
+          if (stdout)
+            resolve(stdout);
+        }
       });
     }
   });
