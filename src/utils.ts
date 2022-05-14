@@ -41,8 +41,8 @@ export function getWorkspaceUri(): Uri | undefined {
 }
 
 function isErrnoException(e: unknown): e is NodeJS.ErrnoException {
-  if ('code' in (e as any)) return true;
-  else return false;
+  if ('code' in (e as any)) {return true;}
+  else {return false;}
 }
 
 export function isDirectory(path: string): boolean {

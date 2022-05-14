@@ -50,7 +50,7 @@ export async function asyncListPublicKeys(): Promise<Buffer> {
         reject(getLastGnuPGError(err));
       } else {
         if (stdout)
-          resolve(stdout);
+          {resolve(stdout);}
       }
     });
   });
@@ -66,7 +66,7 @@ export async function asyncListSecretKeys(): Promise<Buffer> {
         reject(getLastGnuPGError(err));
       } else {
         if (stdout)
-          resolve(stdout);
+          {resolve(stdout);}
       }
     });
   });
@@ -88,7 +88,7 @@ export async function asyncEncryptAsymBuffer(content: Buffer, keys?: { fingerpri
         reject(getLastGnuPGError(err));
       } else {
         if (stdout)
-          resolve(stdout);
+          {resolve(stdout);}
       }
     });
   });
@@ -104,7 +104,7 @@ export async function asyncEncryptSymBuffer(content: Buffer): Promise<Buffer> {
         reject(getLastGnuPGError(err));
       } else {
         if (stdout)
-          resolve(stdout);
+          {resolve(stdout);}
       }
     });
   });
@@ -128,7 +128,7 @@ export async function asyncEncryptAsymUri(uri: Uri, keys?: { fingerprint: string
         reject(getLastGnuPGError(err));
       } else {
         if (stdout)
-          resolve(stdout);
+          {resolve(stdout);}
       }
     });
   });
@@ -166,7 +166,7 @@ export async function asyncEncryptSymUri(uri: Uri): Promise<Buffer> {
         reject(getLastGnuPGError(err));
       } else {
         if (stdout)
-          resolve(stdout);
+          {resolve(stdout);}
       }
     });
   });
@@ -180,7 +180,7 @@ export async function asyncDecryptBuffer(content: Buffer): Promise<Buffer> {
         reject(getLastGnuPGError(err));
       } else {
         if (stdout)
-          resolve(stdout);
+          {resolve(stdout);}
       }
     });
   });
@@ -227,7 +227,7 @@ export async function asyncDecryptUri(uri: Uri): Promise<Buffer> {
         reject(getLastGnuPGError(err));
       } else {
         if (stdout)
-          resolve(stdout);
+          {resolve(stdout);}
       }
     });
   });
@@ -243,7 +243,7 @@ export async function asyncShowSmartcard(): Promise<Buffer> {
         reject(getLastGnuPGError(err));
       } else {
         if (stdout)
-          resolve(stdout);
+          {resolve(stdout);}
       }
     });
   });
@@ -313,7 +313,7 @@ export async function asyncSign(uri: Uri, key?: { fingerprint: string }): Promis
         reject(getLastGnuPGError(err));
       } else {
         if (stdout)
-          resolve(stdout);
+          {resolve(stdout);}
       }
     });
   });
@@ -358,7 +358,7 @@ export async function asyncClearSign(uri: Uri, key?: { fingerprint: string }): P
         reject(getLastGnuPGError(err));
       } else {
         if (stdout)
-          resolve(stdout);
+          {resolve(stdout);}
       }
     });
   });
@@ -529,7 +529,7 @@ export async function asyncDeletePublicKey(key?: { fingerprint: string; userId: 
           reject(getLastGnuPGError(err));
         } else {
           if (stdout)
-            resolve(stdout);
+            {resolve(stdout);}
         }
       });
     }
@@ -559,7 +559,7 @@ export async function asyncDeleteSecretKey(key?: { fingerprint: string; userId: 
           reject(getLastGnuPGError(err));
         } else {
           if (stdout)
-            resolve(stdout);
+            {resolve(stdout);}
         }
       });
     }
