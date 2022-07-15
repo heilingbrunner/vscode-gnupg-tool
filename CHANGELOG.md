@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.4.0] - 2022-05--14
+
+- package updates
+- GitSetUserSigningKey/GitUnsetUserSigningKey
+
 ## [1.3.9] - 2020-10-09
 
 - security update
