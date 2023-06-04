@@ -14,7 +14,7 @@
       "runtimeExecutable": "${execPath}",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-      "preLaunchTask": "npm: webpack"
+      "preLaunchTask": "npm: esbuild"
     },
     {
       "name": "Extension Tests",
