@@ -1,8 +1,9 @@
 import { exec } from 'child_process';
-import { readFile, statSync, writeFile } from 'fs';
+import { readFile, statSync, writeFile, existsSync } from 'fs';
 import { Uri, window, workspace } from 'vscode';
 import { GnuPGKey } from './gnupgkey';
 import { i18n } from './i18n';
+import { join } from 'path';
 
 export function getContent(uri: Uri): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -73,11 +74,12 @@ export function isKeyRingDirectory(path: Uri | undefined): boolean {
   // Check ...
   // public : pubring.kbx or pubring.gpg
   // secret : folder: private-keys-v1.d or file : secring.gpg
-  if (path) {
-    let pubexists = isFile(path.fsPath + '/pubring.kbx') || isFile(path.fsPath + '/pubring.gpg');
-    let secexists = isDirectory(path.fsPath + '/private-keys-v1.d') || isFile(path.fsPath + '/secring.gpg');
 
-    if (pubexists && secexists) {
+  if (path) {
+    const pubExists = existsSync(join(path.fsPath, 'pubring.kbx')) || existsSync(join(path.fsPath, 'pubring.gpg'));
+    const secExists = existsSync(join(path.fsPath, 'private-keys-v1.d')) || existsSync(join(path.fsPath, 'secring.gpg'));
+
+    if (pubExists && secExists) {
       return true;
     }
   }

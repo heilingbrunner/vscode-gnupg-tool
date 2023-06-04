@@ -1,6 +1,11 @@
 # Change Log
 
-## [1.4.0] - 2022-05--14
+## [1.4.1] - 2023-06-04
+
+- bugfix to check gpg version (GnuPG not available)
+- security updates
+
+## [1.4.0] - 2022-05-14
 
 - package updates
 - GitSetUserSigningKey/GitUnsetUserSigningKey
