@@ -6,11 +6,12 @@
 
 ## What's new in GnuPG-Tool
 
+- bugfix to check keyring location, which caused 'GnuPG not available' message
 - security update
 
 ## Features
 
-- Supports GnuPG v1.4, v2.2 and v2.3
+- Supports GnuPG v1.4, v2.2, v2.3 and v2.4
 - __Check__ GnuPG availability/version.
 - Encryption for multiple __recipients__ or with simple __passphrase__
 - __Encrypt__/__decrypt__ text or file to text, file or preview

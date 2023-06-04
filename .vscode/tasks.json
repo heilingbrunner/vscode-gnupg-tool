@@ -25,6 +25,15 @@
             "type": "npm",
             "script": "lint",
             "problemMatcher": ["$eslint-stylish"]
-        }
+        },
+        {
+            "label": "vsce package",
+            "type": "shell",
+            "command": "vsce package",
+            "group": {
+              "kind": "build",
+              "isDefault": true
+            }
+          }
     ]
   }
