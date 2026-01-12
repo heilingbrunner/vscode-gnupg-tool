@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.4.2] - 2026-01-12
+
+- packages update
+- activation changed to 'onStartupFinished'
+
 ## [1.4.1] - 2023-06-04
 
 - bugfix to check gpg version (GnuPG not available)
