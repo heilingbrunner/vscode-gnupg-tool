@@ -6,7 +6,7 @@
   },
   "displayName": "GnuPG-Tool",
   "description": "Tool for a simple usage of GnuPG",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "publisher": "JHeilingbrunner",
   "license": "MIT",
   "icon": "images/vscode-gnupg-tool-logo.png",
@@ -31,7 +31,7 @@
     "theme": "dark"
   },
   "activationEvents": [
-    "*"
+    "onStartupFinished"
   ],
   "contributes": {
     "languages": [
