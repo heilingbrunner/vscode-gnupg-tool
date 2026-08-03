@@ -21,3 +21,4 @@ package.json:
 ## Create VSIX
 
 - run `vsce package` in root folder
+- or run `npx @vscode/vsce package` in root folder
