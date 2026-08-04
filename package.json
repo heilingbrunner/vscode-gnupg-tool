@@ -521,7 +521,8 @@
     "lint": "eslint -c .eslintrc.js --ext .ts --fix ./src",
     "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
     "esbuild": "npm run esbuild-base -- --sourcemap",
-    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch"
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "vsce-package": "npx @vscode/vsce package"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",
@@ -545,5 +546,8 @@
     "glob": "^13.0.6",
     "diff": "^8.0.3",
     "serialize-javascript": "^7.0.5"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
   }
 }
